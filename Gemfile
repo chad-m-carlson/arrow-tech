@@ -28,9 +28,9 @@ gem "devise_token_auth"
 gem 'graphql'
 gem 'graphiql-rails'
 
+gem "faker", :git => "https://github.com/stympy/faker.git", :branch => "master"
 group :development, :test do
   gem "pry-rails"
-  gem "faker", :git => "https://github.com/stympy/faker.git", :branch => "master"
 end
 
 group :development do
