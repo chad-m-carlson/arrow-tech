@@ -6,5 +6,5 @@ Rails.application.routes.draw do
     mount GraphiQL::Rails::Engine, at: "/graphiql", graphql_path: "graphql#execute"
   end
 
-  get '*other', to 'static#index'
+  get '*other', to: 'static#index'
 end
