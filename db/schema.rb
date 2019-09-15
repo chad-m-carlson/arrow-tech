@@ -10,10 +10,41 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_09_14_150741) do
+ActiveRecord::Schema.define(version: 2019_09_15_163019) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
+
+  create_table "calibrations", force: :cascade do |t|
+    t.bigint "dosimeter_id", null: false
+    t.bigint "user_id", null: false
+    t.float "tolerance", default: 0.0, null: false
+    t.datetime "date_received"
+    t.datetime "EL_date_in"
+    t.datetime "EL_date_out"
+    t.datetime "ACC_date"
+    t.datetime "VAC_date_in"
+    t.datetime "VAC_date_out"
+    t.datetime "final_date"
+    t.datetime "ship_back_date"
+    t.datetime "due_date"
+    t.boolean "EL_pass", default: true
+    t.boolean "VIP_pass", default: true
+    t.boolean "VAC_pass", default: true
+    t.boolean "ACC_pass", default: false
+    t.boolean "final_pass", default: false
+    t.integer "EL_read"
+    t.integer "ACC_read"
+    t.string "VIP_problems"
+    t.integer "VAC_reading"
+    t.integer "VAC_ref_reading"
+    t.string "certificate_number"
+    t.integer "batch"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["dosimeter_id"], name: "index_calibrations_on_dosimeter_id"
+    t.index ["user_id"], name: "index_calibrations_on_user_id"
+  end
 
   create_table "customers", force: :cascade do |t|
     t.string "name"
@@ -25,6 +56,7 @@ ActiveRecord::Schema.define(version: 2019_09_14_150741) do
     t.string "country"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.string "email"
   end
 
   create_table "dosimeters", force: :cascade do |t|
@@ -51,18 +83,27 @@ ActiveRecord::Schema.define(version: 2019_09_14_150741) do
     t.datetime "confirmed_at"
     t.datetime "confirmation_sent_at"
     t.string "unconfirmed_email"
-    t.string "name"
+    t.string "first_name"
     t.string "nickname"
     t.string "image"
     t.string "email"
     t.json "tokens"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.string "current_sign_in_ip"
+    t.string "last_sign_in_ip"
+    t.datetime "current_sign_in_at"
+    t.datetime "last_sign_in_at"
+    t.integer "sign_in_count", default: 0, null: false
+    t.boolean "is_admin", default: false
+    t.string "last_name"
     t.index ["confirmation_token"], name: "index_users_on_confirmation_token", unique: true
     t.index ["email"], name: "index_users_on_email", unique: true
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
     t.index ["uid", "provider"], name: "index_users_on_uid_and_provider", unique: true
   end
 
+  add_foreign_key "calibrations", "dosimeters"
+  add_foreign_key "calibrations", "users"
   add_foreign_key "dosimeters", "customers"
 end

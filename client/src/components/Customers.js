@@ -1,25 +1,21 @@
-import React from 'react';
+import React, {useState} from 'react';
+import Customer from './Customer';
 import { Query } from 'react-apollo';
 import gql from 'graphql-tag';
 
 const CUSTOMERS_QUERY = gql`
 query{
   customers{
+    id
     name
-    streetAddress1
-    city
-    state
-    zip
-    country
-    dosimeters{
-      modelNumber
-    }
   }
 }
 `;
 
 
 const Customers = () => {
+  const [showCustomer, setShowCustomer] = useState(false);
+
   return ( 
     <Query query={CUSTOMERS_QUERY}>
       {({ loading, error, data }) => {
@@ -29,10 +25,12 @@ const Customers = () => {
             <div>
               {data.customers.map( c => (
                 <>
-                <h1>{c.name}</h1>
-                {c.dosimeters.map( d => 
-                <p>{d.modelNumber}</p>
-                  )}
+                <h1 onClick={() => setShowCustomer(!showCustomer)}>{c.name}</h1>
+                {showCustomer && 
+                  <Customer
+                    id={c.id}
+                  />
+                }
                 </>
               ))}
             </div>

@@ -1,0 +1,13 @@
+class AddColumnsToUsersTable < ActiveRecord::Migration[6.0]
+  def change
+    add_column :users, :current_sign_in_ip, :string
+    add_column :users, :last_sign_in_ip, :string
+    add_column :users, :current_sign_in_at, :datetime
+    add_column :users, :last_sign_in_at, :datetime
+    add_column :users, :sign_in_count, :integer, :null => false, :default => 0
+    add_column :users, :is_admin, :boolean, :default => false
+    rename_column :users, :name, :first_name
+    add_column :users, :last_name, :string
+
+  end
+end

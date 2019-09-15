@@ -4,7 +4,10 @@ import { ApolloProvider } from 'react-apollo';
 import { ApolloClient } from 'apollo-client';
 import { createHttpLink } from 'apollo-link-http';
 import { InMemoryCache } from 'apollo-cache-inmemory';
-import './index.css';
+import {AuthProvider, } from './providers/AuthProvider';
+import {BrowserRouter as Router} from 'react-router-dom';
+import {initMiddleware, } from 'devise-axios';
+import 'semantic-ui-css/semantic.min.css';
 import App from './App';
 import * as serviceWorker from './serviceWorker';
 
@@ -17,10 +20,16 @@ const client = new ApolloClient({
   cache: new InMemoryCache()
 });
 
+initMiddleware();
+
 ReactDOM.render(
-<ApolloProvider client={client}>
-  <App />
-</ApolloProvider>
+<AuthProvider>
+  <ApolloProvider client={client}>
+    <Router>
+      <App />
+    </Router>
+  </ApolloProvider>
+</AuthProvider>
 
 
 , document.getElementById('root'));

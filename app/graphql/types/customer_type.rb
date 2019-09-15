@@ -10,9 +10,16 @@ module Types
     field :country, String, null: true
     field :dosimeters, [Types::DosimeterType], null: true
     field :dosimeter_count, Integer, null: true
+    field :calibrations, [Types::CalibrationType], null: false do
+      argument :id, ID, required: true
+    end
 
     def dosimeter_count
       object.dosimeters.size
+    end
+
+    def calibrations(id:)
+      Customer.find(id).calibrations
     end
 
   end
