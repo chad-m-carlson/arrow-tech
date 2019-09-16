@@ -7,6 +7,8 @@ import FetchUser from './components/FetchUser';
 import ProtectedRoute from './components/ProtectedRoute';
 import AdminRoute from './components/AdminRoute';
 import Home from './components/Home';
+import CalibrationForm from './components/calibration/CalibrationForm';
+import CalibrationReports from './components/calibration/CalibrationReports';
 import NoMatch from './components/NoMatch';
 import {Switch, Route, } from 'react-router-dom';
 import {Container, } from 'semantic-ui-react';
@@ -26,7 +28,9 @@ function App() {
             {/* <ProtectedRoute exact path='/' component={Home} /> */}
             {/* <AdminRoute exact path='/admin' component={AdminTools} /> */}
             <Route exact path='/' component={Home} />
-            <Route exact path='/customers' component={Customers} />
+            <ProtectedRoute exact path='/customers' component={Customers} />
+            <ProtectedRoute exact path='/calform' component={CalibrationForm} />
+            <ProtectedRoute exact path='/calreports' component={CalibrationReports} />
             <Route exact path='/register' component={Register} />
             <Route exact path='/login' component={Login} />
             <Route component={NoMatch} />

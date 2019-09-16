@@ -8,6 +8,7 @@ import {AuthProvider, } from './providers/AuthProvider';
 import {BrowserRouter as Router} from 'react-router-dom';
 import {initMiddleware, } from 'devise-axios';
 import 'semantic-ui-css/semantic.min.css';
+import 'react-datepicker/dist/react-datepicker-cssmodules.min.css'
 import App from './App';
 import * as serviceWorker from './serviceWorker';
 

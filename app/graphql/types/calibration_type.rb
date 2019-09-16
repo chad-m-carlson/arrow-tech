@@ -23,6 +23,7 @@ module Types
     field :VAC_ref_reading, Integer, null: true
     field :certificate_number, String, null: true
     field :batch, Integer, null: true
+    
     field :dosimeter, Types::DosimeterType, null: false do
       argument :id, ID, required: true
     end
