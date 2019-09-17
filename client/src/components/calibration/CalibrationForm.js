@@ -4,10 +4,12 @@ import CustomerDataForm from './CustomerDataForm';
 import DosimeterDataForm from './DosimeterDataForm';
 
 const CalibrationForm = () => {
-  const [customerId, setCustomerId] = useState('')
+  const [customerId, setCustomerId] = useState('');
+  const [batchNumber, setBatchNumber] = useState('');
 
-  const getCustomerId = (id) => {
+  const getCustomerId = (id, batch) => {
     setCustomerId(id)
+    setBatchNumber(batch)
   };
 
   return ( 
@@ -19,7 +21,10 @@ const CalibrationForm = () => {
         </Grid.Column>
         <Grid.Column style={{width: "60%", borderLeft: "1px solid gray"}}>
           <h1>Dosimeter Data</h1>
-          <DosimeterDataForm customerId={customerId}/>
+          <DosimeterDataForm 
+            customerId={customerId}
+            batchNumber={batchNumber}
+          />
         </Grid.Column>
       </Grid.Row>
 

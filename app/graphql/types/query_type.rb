@@ -9,6 +9,7 @@ module Types
     field :calibration, Types::CalibrationType, null: false do
       argument :id, ID, required: true
     end
+
     
     field :customer, Types::CustomerType, null: false do
       argument :id, ID, required: true
@@ -17,10 +18,14 @@ module Types
     field :dosimeter, Types::DosimeterType, null: false do
       argument :id, ID, required: true
     end
-
+    
     field :user, Types::UserType, null: false do
       argument :id, ID, required: true
     end
+    
+    field :unique_dosimeter_models, [Types::DosimeterType], null: false
+    
+    field :last_batch, Integer, null: false
 
     def calibrations
       Calibration.all
@@ -52,6 +57,27 @@ module Types
     
     def user(id:)
       User.find(id)
+    end
+
+    def unique_dosimeter_models
+      Dosimeter.find_by_sql(['
+      WITH uniq_dosimeter (id, model_number, is_r, is_mr, range)
+      AS(
+      SELECT id, model_number, is_r, is_mr, range
+      FROM dosimeters
+      WHERE id IN
+      (SELECT MIN(id) 
+      FROM dosimeters 
+      GROUP BY model_number 
+      ))
+      SELECT id, model_number, is_r, is_mr, range
+      FROM uniq_dosimeter
+      ORDER BY model_number
+      '])
+    end
+
+    def last_batch
+      batch = Calibration.last.batch
     end
 
   end

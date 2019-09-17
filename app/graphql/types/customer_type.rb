@@ -8,10 +8,22 @@ module Types
     field :state, String, null: true
     field :zip, String, null: true
     field :country, String, null: true
-    field :dosimeters, [Types::DosimeterType], null: true
     field :dosimeter_count, Integer, null: true
+
+    field :dosimeters, [Types::DosimeterType], null: true do
+      argument :id, ID, required: true
+    end
+    
     field :calibrations, [Types::CalibrationType], null: false do
       argument :id, ID, required: true
+    end
+
+    # field :unique_dosimeters_by_customer, [Types::DosimeterType], null: false do
+    #   argument :id, ID, required: true
+    # end
+
+    def dosimeters(id:)
+      Customer.find(id).dosimeters
     end
 
     def dosimeter_count
@@ -21,6 +33,23 @@ module Types
     def calibrations(id:)
       Customer.find(id).calibrations
     end
+
+    # def unique_dosimeters_by_customer(id:)
+    #   Dosimeter.find_by_sql(["
+    #   WITH uniq_dosimeter (id, model_number, customer_id)
+    #   AS(
+    #   SELECT id, model_number, customer_id
+    #   FROM dosimeters
+    #   WHERE id IN
+    #   (SELECT MIN(id) 
+    #   FROM dosimeters 
+    #   GROUP BY model_number 
+    #   ))
+    #   SELECT id, model_number
+    #   FROM uniq_dosimeter
+    #   WHERE customer_id = ?
+    #   ", id])
+    # end
 
   end
 end

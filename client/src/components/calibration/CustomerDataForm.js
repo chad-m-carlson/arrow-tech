@@ -1,10 +1,10 @@
 import React, {useState, useEffect } from 'react';
 import Search from '../Search';
-import {Form, Button} from 'semantic-ui-react';
+import {Form, Button, Divider} from 'semantic-ui-react';
 import gql from 'graphql-tag';
 import { useQuery } from '@apollo/react-hooks';
 
-const CUSTOMERS_QUERY = gql`
+const GET_ALL_CUSTOMERS_QUERY = gql`
 query{
   customers{
     id
@@ -16,6 +16,7 @@ query{
     zip
     country
   }
+  lastBatch
 }
 `;
 
@@ -25,10 +26,11 @@ const CustomerDataForm = ({sendCustomerIdToDosimeterForm}) => {
   const [dataLoading, setDataLoading] = useState(false);
   const [searchActive, setSearchActive] = useState(false);
   const [filteredCustomerList, setFilteredCustomerList] = useState([]);
-  const [selectedCustomer, setSelectedCustomer] = useState({})
-  const [editingCustomerInfo, setEditingCustomerInfo] = useState(false)
+  const [selectedCustomer, setSelectedCustomer] = useState({});
+  const [editingCustomerInfo, setEditingCustomerInfo] = useState(false);
+  const [batchNumber, setBatchNumber] = useState(null)
 
-  const {data, loading, error} = useQuery(CUSTOMERS_QUERY)
+  const {data, loading, error} = useQuery(GET_ALL_CUSTOMERS_QUERY)
 
   useEffect( () => {
     if(loading) setDataLoading(true)
@@ -36,6 +38,7 @@ const CustomerDataForm = ({sendCustomerIdToDosimeterForm}) => {
       setCustomerList([...data.customers])
       setCustomerSelection([...data.customers.map( c => ({key: c.id, text: c.name, value: c.id}))])
       setDataLoading(false)
+      // setBatchNumber(data.lastBatch)
     }
   }, [data, loading])
 
@@ -48,10 +51,13 @@ const CustomerDataForm = ({sendCustomerIdToDosimeterForm}) => {
 
   const handleCustomerSelection = (e, {value}) => {
     setSelectedCustomer(...customerList.filter( c => c.id === value))
-    sendCustomerIdToDosimeterForm(selectedCustomer.id)
   };
 
-  // sendCustomerIdToDosimeterForm(() => selectedCustomer.id)
+  const updateBatchNumber = () => {
+    setBatchNumber(data.lastBatch + 1)
+  };
+
+  sendCustomerIdToDosimeterForm(() => selectedCustomer.id, batchNumber)
 
   return ( 
     <div>
@@ -66,13 +72,19 @@ const CustomerDataForm = ({sendCustomerIdToDosimeterForm}) => {
           styles={{input:{background: "white", width: "10rem"}}}
           />
         <Form.Select
+          disabled={batchNumber ? true : false}
           style={{margin: "1rem"}}
           placeholder="Select a customer"
           options={searchActive ? filteredCustomerList : customerSelection}
           loading={dataLoading}
           onChange={handleCustomerSelection}
         />
+
       </Form.Group>
+        <p>Clicking the button below will generate a batch number and allow you to start entering THIS CUSTOMERS calibration data</p>
+        <Button inverted color='green' onClick={updateBatchNumber}>Enter Calibration data for batch</Button>
+        <Divider style={{margin: "1.5rem"}}/>
+
         <Form.Input
           disabled={!editingCustomerInfo}
           fluid
@@ -124,8 +136,6 @@ const CustomerDataForm = ({sendCustomerIdToDosimeterForm}) => {
         />
         </Form>
         <Button inverted color='blue' onClick={() => setEditingCustomerInfo(!editingCustomerInfo)}>Edit Customer</Button>
-
-
     </div>
    );
 }

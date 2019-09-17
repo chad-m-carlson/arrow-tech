@@ -4,8 +4,8 @@ module Types
     field :model_number, String, null: false
     field :serial_number, String, null: false
     field :range, Integer, null: false
-    field :is_mR, Boolean, null: false
-    field :is_R, Boolean, null: false
+    field :is_mr, Boolean, null: false
+    field :is_r, Boolean, null: false
     field :calibrations, [Types::CalibrationType], null: false do
       argument :id, ID, required: true
     end

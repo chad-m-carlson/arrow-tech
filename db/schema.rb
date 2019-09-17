@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_09_15_163019) do
+ActiveRecord::Schema.define(version: 2019_09_17_165526) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -18,7 +18,7 @@ ActiveRecord::Schema.define(version: 2019_09_15_163019) do
   create_table "calibrations", force: :cascade do |t|
     t.bigint "dosimeter_id", null: false
     t.bigint "user_id", null: false
-    t.float "tolerance", default: 0.0, null: false
+    t.float "tolerance", default: 0.1, null: false
     t.datetime "date_received"
     t.datetime "EL_date_in"
     t.datetime "EL_date_out"
@@ -63,8 +63,8 @@ ActiveRecord::Schema.define(version: 2019_09_15_163019) do
     t.string "model_number"
     t.string "serial_number"
     t.integer "range"
-    t.boolean "is_mR"
-    t.boolean "is_R"
+    t.boolean "is_mr"
+    t.boolean "is_r"
     t.bigint "customer_id", null: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
