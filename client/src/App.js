@@ -12,6 +12,7 @@ import CalibrationReports from './components/calibration/CalibrationReports';
 import NoMatch from './components/NoMatch';
 import {Switch, Route, } from 'react-router-dom';
 import {Container, } from 'semantic-ui-react';
+import { ApolloProvider } from '@apollo/react-hooks';
 
 // import Home from './components/User/Home';
 // import NoMatch from './components/NoMatch';
@@ -20,6 +21,7 @@ import {Container, } from 'semantic-ui-react';
 function App() {
   return (
     <>
+    <ApolloProvider>
     <NavBar />
     <Container>
       <FetchUser>
@@ -38,6 +40,7 @@ function App() {
         </div>
       </FetchUser>
     </Container>
+    </ApolloProvider>
   </>
   );
 }

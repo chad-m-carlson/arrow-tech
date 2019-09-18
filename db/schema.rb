@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_09_17_165526) do
+ActiveRecord::Schema.define(version: 2019_09_18_211818) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -20,24 +20,24 @@ ActiveRecord::Schema.define(version: 2019_09_17_165526) do
     t.bigint "user_id", null: false
     t.float "tolerance", default: 0.1, null: false
     t.datetime "date_received"
-    t.datetime "EL_date_in"
-    t.datetime "EL_date_out"
-    t.datetime "ACC_date"
-    t.datetime "VAC_date_in"
-    t.datetime "VAC_date_out"
+    t.datetime "el_date_in"
+    t.datetime "el_date_out"
+    t.datetime "acc_date"
+    t.datetime "vac_date_in"
+    t.datetime "vac_date_out"
     t.datetime "final_date"
     t.datetime "ship_back_date"
     t.datetime "due_date"
-    t.boolean "EL_pass", default: true
-    t.boolean "VIP_pass", default: true
-    t.boolean "VAC_pass", default: true
-    t.boolean "ACC_pass", default: false
+    t.boolean "el_pass", default: true
+    t.boolean "vip_pass", default: true
+    t.boolean "vac_pass", default: true
+    t.boolean "acc_pass", default: false
     t.boolean "final_pass", default: false
-    t.integer "EL_read"
-    t.integer "ACC_read"
-    t.string "VIP_problems"
-    t.integer "VAC_reading"
-    t.integer "VAC_ref_reading"
+    t.integer "el_read"
+    t.integer "acc_read"
+    t.string "vip_problems"
+    t.integer "vac_reading"
+    t.integer "vac_ref_reading"
     t.string "certificate_number"
     t.integer "batch"
     t.datetime "created_at", precision: 6, null: false

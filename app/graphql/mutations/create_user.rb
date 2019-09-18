@@ -31,3 +31,18 @@ class Mutations::CreateUser < Mutations::BaseMutation
     end
   end
 end
+
+# mutation CreateUser($first_name:String!, $last_name:String!, $is_admin:Boolean!, $email:String!, $password:String!, $password_confirmation:String!){
+#   createUser(input: {firstName:$first_name, lastName:$last_name, isAdmin:$is_admin, email:$email, password:$password, passwordConfirmation:$password_confirmation}){
+#     user{
+#       firstName
+#       lastName
+#       isAdmin
+#       email
+#       password
+#       passwordConfirmation
+#     }
+#     errors
+#   }
+
+# }

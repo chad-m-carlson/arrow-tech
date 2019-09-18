@@ -1,28 +1,30 @@
 module Types
   class CalibrationType < Types::BaseObject
-    field :id, ID, null: false
-    field :user_id, ID, null: false
-    field :tolerance, Integer, null: false
+    field :id, ID, null: true
+    field :user_id, Int, null: true
+    field :dosimeter_id, Int, null: true
+    field :tolerance, Int, null: true
     field :date_received, String, null: true
-    field :EL_date_in, String, null: true
-    field :EL_date_out, String, null: true
-    field :ACC_date, String, null: true
-    field :VAC_date_in, String, null: true
-    field :VAV_date_out, String, null: true
+    field :el_date_in, String, null: true
+    field :el_date_out, String, null: true
+    field :acc_date, String, null: true
+    field :vac_date_in, String, null: true
+    field :vac_date_out, String, null: true
     field :final_date, String, null: true
     field :ship_back_date, String, null: true
     field :due_date, String, null: true
-    field :EL_pass, Boolean, null: true
-    field :VIP_pass, Boolean, null: true
-    field :VAC_pass, Boolean, null: true
+    field :el_pass, Boolean, null: true
+    field :vip_pass, Boolean, null: true
+    field :vac_pass, Boolean, null: true
     field :final_pass, Boolean, null: true
-    field :EL_read, Integer, null: true
-    field :ACC_read, Integer, null: true
-    field :VIP_problems, String, null: true
-    field :VAC_reading, Integer, null: true
-    field :VAC_ref_reading, Integer, null: true
+    field :el_read, Int, null: true
+    field :acc_read, Int, null: true
+    field :acc_pass, Boolean, null: true
+    field :vip_problems, String, null: true
+    field :vac_reading, Int, null: true
+    field :vac_ref_reading, Int, null: true
     field :certificate_number, String, null: true
-    field :batch, Integer, null: true
+    field :batch, Int, null: true
     
     field :dosimeter, Types::DosimeterType, null: false do
       argument :id, ID, required: true

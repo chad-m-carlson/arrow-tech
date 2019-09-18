@@ -1,9 +1,10 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState, useEffect, useContext} from 'react';
+import {AuthContext} from '../../providers/AuthProvider';
 import {Form, Divider, Button, Popup} from 'semantic-ui-react'
 import DatePicker from 'react-datepicker';
 import "react-datepicker/dist/react-datepicker.css";
 import gql from 'graphql-tag';
-import { useQuery } from '@apollo/react-hooks';
+import { useQuery, useMutation } from '@apollo/react-hooks';
 
 const GET_UNIQUE_DOSIMETER_MODELS = gql`
   query{
@@ -17,31 +18,63 @@ const GET_UNIQUE_DOSIMETER_MODELS = gql`
   }
 `;
 
+const CREATE_CALIBRATION_RECORD =  gql`
+  mutation CreateCalibrationRecord($user_id: Int, $date_received: String, $el_date_in: String, $el_date_out: String, $acc_date: String, $vac_date_in: String, $vac_date_out: String, $final_date: String,  $due_date: String, $el_pass: Boolean, $vip_pass: Boolean, $vac_pass: Boolean, $acc_pass: Boolean, $final_pass: Boolean,$el_read: Int, $acc_read: Int, $vip_problems: String, $vac_reading: Int, $vac_ref_reading: Int, $batch: Int){
+    createCalibrationRecord(input: {userId: $user_id, dateReceived: $date_received, elDateIn: $el_date_in, elDateOut: $el_date_out, accDate: $acc_date, vacDateIn: $vac_date_in, vacDateOut: $vac_date_out, finalDate: $final_date, dueDate: $due_date, elPass: $el_pass, vipPass: $vip_pass, vacPass: $vac_pass, accPass: $acc_pass, finalPass: $final_pass, elRead: $el_read, accRead: $acc_read, vipProblems: $vip_problems, vacReading: $vac_reading, vacRefReading: $vac_ref_reading, batch: $batch }){
+      calibration{
+        userId
+        dateReceived
+        elDateIn
+        elDateOut
+        accDate
+        vacDateIn
+        vacDateOut
+        finalDate
+        dueDate
+        elPass
+        accPass
+        finalPass
+        elRead
+        accRead
+        vipProblems
+        vacRefReading
+        batch
+        vipPass
+        accPass
+        vacReading
+      }
+    }
+  }
+`;
+
 const DosimeterDataForm = (props) => {
-  const [dosimeterRange, setDosimeterRange] = useState(null);
+  const [dosimeterRange, setDosimeterRange] = useState(0);
   const [isR, setIsR] = useState(false);
   const [dateReceived, setDateReceived] = useState('');
   const [dosimeterModelSelected, setDosimeterModelSelected] = useState('');
   const [dosimeterSerialNumber, setDosimeterSerialNumber] = useState('');
   const [elDateIn, setElDateIn] = useState('');
   const [elDateOut, setElDateOut] = useState('');
-  const [elRead, setElRead] = useState(null);
+  const [elRead, setElRead] = useState(0);
   const [elPass, setElPass] = useState(false);
   const [accDate, setAccDate] = useState('');
-  const [accRead, setAccRead] = useState(null);
+  const [accRead, setAccRead] = useState(0);
   const [accPass, setAccPass] = useState(false);
   const [vacDateIn, setVacDateIn] = useState('');
   const [vacDateOut, setVacDateOut] = useState('');
-  const [vacRead, setVacRead] = useState(null);
-  const [vacRefRead, setVacRefRead] = useState(null);
+  const [vacRead, setVacRead] = useState(0);
+  const [vacRefRead, setVacRefRead] = useState(0);
   const [vacPass, setVacPass] = useState(true);
   const [vipProblems, setVipProblems] = useState('');
   const [vipPass, setVipPass] = useState(true);
+  const [finalPass, setFinalPass] = useState(false);
   const [finalPassDate, setFinalPassDate] = useState('');
   const [dueDate, setDueDate] = useState('');
   const [customerDosimeterModels, setCustomerDosimeterModels] = useState([]);
 
+  const {user} = useContext(AuthContext);
   const {data} = useQuery(GET_UNIQUE_DOSIMETER_MODELS)
+  const [create_calibration_record] = useMutation(CREATE_CALIBRATION_RECORD)
 
   useEffect(() =>{
     if(data){
@@ -58,7 +91,30 @@ const DosimeterDataForm = (props) => {
   const handleDosimeterCalibrationSubmission = (e) => {
     e.preventDefault()
     console.log('submitted')
-
+    create_calibration_record({variables: {
+        "user_id": user.id,
+        "date_received": dateReceived, 
+        "el_date_in": elDateIn, 
+        "el_date_out": elDateOut, 
+        "acc_date": accDate, 
+        "vac_date_in": vacDateIn, 
+        "vac_date_out": vacDateOut, 
+        "final_date": finalPassDate, 
+        // "shipBackDate": shipBackDate, 
+        "due_date": dueDate, 
+        "el_pass": elPass, 
+        "vip_pass": vipPass, 
+        "vac_pass": vacPass, 
+        "acc_pass": accPass, 
+        "final_pass": finalPass, 
+        "el_read": parseInt(elRead), 
+        "acc_read": parseInt(accRead), 
+        "vip_problems": vipProblems, 
+        "vac_reading": parseInt(vacRead), 
+        "vac_ref_reading": parseInt(vacRefRead), 
+        "batch": props.batchNumber
+      }
+    })
     // !if everything is successful, reset form
     resetForm()
   };
@@ -234,6 +290,13 @@ const DosimeterDataForm = (props) => {
       </Form.Group>
       <Divider style={{margin: "1.5rem"}}/>
       <Form.Group widths="equal">
+      <Form.Checkbox
+            style={{}}
+            label="Final Pass"
+            value={finalPass}
+            onChange={() => setFinalPass(!finalPass)}
+            checked={finalPass}
+          />
         <Form.Input label="Final Pass Date">
           <DatePicker
             selected={finalPassDate}
