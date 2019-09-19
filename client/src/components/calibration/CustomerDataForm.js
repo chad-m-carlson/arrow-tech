@@ -51,10 +51,10 @@ const CustomerDataForm = ({sendCustomerIdToDosimeterForm}) => {
 
   const handleCustomerSelection = (e, {value}) => {
     setSelectedCustomer(...customerList.filter( c => c.id === value))
+    setBatchNumber(data.lastBatch + 1)
   };
 
   const updateBatchNumber = () => {
-    setBatchNumber(data.lastBatch + 1)
   };
 
   sendCustomerIdToDosimeterForm(() => selectedCustomer.id, batchNumber)
@@ -72,7 +72,7 @@ const CustomerDataForm = ({sendCustomerIdToDosimeterForm}) => {
           styles={{input:{background: "white", width: "10rem"}}}
           />
         <Form.Select
-          disabled={batchNumber ? true : false}
+          // disabled={batchNumber ? true : false}
           style={{margin: "1rem"}}
           placeholder="Select a customer"
           options={searchActive ? filteredCustomerList : customerSelection}

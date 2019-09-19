@@ -1,6 +1,6 @@
 import React, {useState, useEffect, useContext} from 'react';
 import {AuthContext} from '../../providers/AuthProvider';
-import {Form, Divider, Button, Popup} from 'semantic-ui-react'
+import {Form, Divider, Button, Popup, Label} from 'semantic-ui-react'
 import DatePicker from 'react-datepicker';
 import "react-datepicker/dist/react-datepicker.css";
 import gql from 'graphql-tag';
@@ -19,8 +19,8 @@ const GET_UNIQUE_DOSIMETER_MODELS = gql`
 `;
 
 const CREATE_CALIBRATION_RECORD =  gql`
-  mutation CreateCalibrationRecord($user_id: Int, $date_received: String, $el_date_in: String, $el_date_out: String, $acc_date: String, $vac_date_in: String, $vac_date_out: String, $final_date: String,  $due_date: String, $el_pass: Boolean, $vip_pass: Boolean, $vac_pass: Boolean, $acc_pass: Boolean, $final_pass: Boolean,$el_read: Int, $acc_read: Int, $vip_problems: String, $vac_reading: Int, $vac_ref_reading: Int, $batch: Int){
-    createCalibrationRecord(input: {userId: $user_id, dateReceived: $date_received, elDateIn: $el_date_in, elDateOut: $el_date_out, accDate: $acc_date, vacDateIn: $vac_date_in, vacDateOut: $vac_date_out, finalDate: $final_date, dueDate: $due_date, elPass: $el_pass, vipPass: $vip_pass, vacPass: $vac_pass, accPass: $acc_pass, finalPass: $final_pass, elRead: $el_read, accRead: $acc_read, vipProblems: $vip_problems, vacReading: $vac_reading, vacRefReading: $vac_ref_reading, batch: $batch }){
+  mutation CreateCalibrationRecord($user_id: Int, $date_received: String, $el_date_in: String, $el_date_out: String, $acc_date: String, $vac_date_in: String, $vac_date_out: String, $final_date: String,  $due_date: String, $el_pass: Boolean, $vip_pass: Boolean, $vac_pass: Boolean, $acc_pass: Boolean, $final_pass: Boolean,$el_read: Float, $acc_read: Float, $vip_problems: String, $vac_reading: Float, $vac_ref_reading: Float, $batch: Int, $customer_id: Int, $model_number: String, $serial_number: String, $tolerance: Float){
+    createCalibrationRecord(input: {userId: $user_id, dateReceived: $date_received, elDateIn: $el_date_in, elDateOut: $el_date_out, accDate: $acc_date, vacDateIn: $vac_date_in, vacDateOut: $vac_date_out, finalDate: $final_date, dueDate: $due_date, elPass: $el_pass, vipPass: $vip_pass, vacPass: $vac_pass, accPass: $acc_pass, finalPass: $final_pass, elRead: $el_read, accRead: $acc_read, vipProblems: $vip_problems, vacReading: $vac_reading, vacRefReading: $vac_ref_reading, batch: $batch, customerId: $customer_id, modelNumber: $model_number, serialNumber: $serial_number, tolerance: $tolerance}){
       calibration{
         userId
         dateReceived
@@ -50,6 +50,8 @@ const CREATE_CALIBRATION_RECORD =  gql`
 const DosimeterDataForm = (props) => {
   const [dosimeterRange, setDosimeterRange] = useState(0);
   const [isR, setIsR] = useState(false);
+  const [tolerance, setTolerance] = useState(null);
+  const [customTolerance, setCustomTolerance] = useState(false);
   const [dateReceived, setDateReceived] = useState('');
   const [dosimeterModelSelected, setDosimeterModelSelected] = useState('');
   const [dosimeterSerialNumber, setDosimeterSerialNumber] = useState('');
@@ -82,11 +84,26 @@ const DosimeterDataForm = (props) => {
     } 
   },[data])
 
+  useEffect( () => {
+    handleFinalPass()
+  }, [elPass, accPass, vacPass, vipPass])
+
   const handleDosimeterModelSelection = (e, {value}) => {
     setDosimeterModelSelected(value)
     setDosimeterRange(data.uniqueDosimeterModels.filter( d => d.modelNumber === value)[0].range)
     setIsR(data.uniqueDosimeterModels.filter( d => d.modelNumber === value)[0].isR)
   };
+
+  const handleAccReading = (valueRead) => {
+    setAccRead(valueRead);
+    const midRange = (dosimeterRange / 2)
+    let lowestAcceptable = midRange - (!customTolerance ? dosimeterRange * 0.05 : dosimeterRange * ((tolerance / 100))/ 2)
+    let highestAcceptable = midRange + (!customTolerance ? dosimeterRange * 0.05 : dosimeterRange * ((tolerance / 100))/ 2)
+    debugger
+    if(valueRead >= lowestAcceptable && valueRead <= highestAcceptable){
+      setAccPass(true)
+    }else setAccPass(false)
+  }
 
   const handleDosimeterCalibrationSubmission = (e) => {
     e.preventDefault()
@@ -107,12 +124,16 @@ const DosimeterDataForm = (props) => {
         "vac_pass": vacPass, 
         "acc_pass": accPass, 
         "final_pass": finalPass, 
-        "el_read": parseInt(elRead), 
-        "acc_read": parseInt(accRead), 
+        "el_read": parseFloat(elRead), 
+        "acc_read": parseFloat(accRead), 
         "vip_problems": vipProblems, 
-        "vac_reading": parseInt(vacRead), 
-        "vac_ref_reading": parseInt(vacRefRead), 
-        "batch": props.batchNumber
+        "vac_reading": parseFloat(vacRead), 
+        "vac_ref_reading": parseFloat(vacRefRead), 
+        "batch": props.batchNumber,
+        "customer_id": parseInt(props.customerId),
+        "model_number": dosimeterModelSelected,
+        "serial_number": dosimeterSerialNumber,
+        "tolerance": tolerance/100,
       }
     })
     // !if everything is successful, reset form
@@ -129,14 +150,24 @@ const DosimeterDataForm = (props) => {
     setAccPass(false);
     setVacPass(true);
     setVipPass(true);
-    document.getElementById('focus').focus()
-    document.body.scrollTop = 0
+    document.getElementById('focus').focus();
+    document.body.scrollTop = 0;
+  };
+
+  const handleFinalPass = () => {
+    if(elPass === true && accPass === true && vacPass === true && vipPass === true){
+      setFinalPass(true);
+      setFinalPassDate(new Date());
+    }else {
+      setFinalPass(false);
+      setFinalPassDate('');
+    };
   };
 
   return ( 
     <div>
       <Form size="mini">
-      <Form.Group widths='equal'>
+      <Form.Group inline >
         <Form.Input label="Date Received">
           <DatePicker 
             selected={dateReceived} 
@@ -158,29 +189,22 @@ const DosimeterDataForm = (props) => {
             onChange={(e) => setDosimeterSerialNumber(e.target.value)}
           />
           :
-          <Popup
-            trigger={
             <Form.Input
-              // disabled={(props.batchNumber || props.customerID) ? false : true}
               label="Dosimeter Serial Number"
               id="focus"
               tabIndex='1'
               value={(props.batchNumber || props.customerID) ? dosimeterSerialNumber : ''}
-              onChange={(e) => setDosimeterSerialNumber(e.target.value)}
-            />}
-          content="Please select a customer to begin entering calibration data"
-        />
-
+              onChange={(e) => setDosimeterSerialNumber(e.target.value)}>
+                <Label 
+                  basic 
+                  color="red" 
+                  pointing="above">
+                  Please select a customer before entering dosimeter data
+                </Label>
+            </Form.Input>
         }
-        
-        
       </Form.Group>
-      <Form.Group widths='equal'>
-        <Form.Checkbox 
-          label="Custom Tolerance"
-          defaultValue={false}
-        />
-      </Form.Group>
+      <Divider style={{margin: "1.5rem"}}/>
       <Form.Group widths='equal' inline>
         <Form.Input label="EL Date in">
           <DatePicker
@@ -205,13 +229,27 @@ const DosimeterDataForm = (props) => {
         <Form.Checkbox
           style={{}}
           label="EL Pass"
-          value={elPass}
           onChange={() => setElPass(!elPass)}
           checked={elPass}
           />
       </div>
       <Divider style={{margin: "1.5rem"}}/>
-      <Form.Group widths='equal' inline>
+      <Form.Group widths='equal' inline style={{display: "flex", justifyContent: "space-around"}}>
+        <Form.Checkbox 
+          label="Custom Tolerance"
+          checked={customTolerance}
+          onChange={() => setCustomTolerance(!customTolerance)}
+        />
+        {customTolerance &&
+          <Form.Input
+            type="number"
+            label="Custom Tolerance"
+            value={tolerance}
+            onChange={(e) => setTolerance(e.target.value)}
+          />
+        }
+      </Form.Group>
+        <Form.Group widths='equal' inline>
         <Form.Input label="ACC Date">
           <DatePicker
             selected={accDate}
@@ -222,14 +260,13 @@ const DosimeterDataForm = (props) => {
           label="ACC Read"
           tabIndex='3'
           value={accRead}
-          onChange={(e) => setAccRead(e.target.value)}
+          onChange={(e) => handleAccReading(e.target.value)}
         />
       </Form.Group>
       <div style={{textAlign: "center"}}>
         <Form.Checkbox
           style={{}}
           label="ACC Pass"
-          value={accPass}
           onChange={() => setAccPass(!accPass)}
           checked={accPass}
         />
@@ -267,24 +304,20 @@ const DosimeterDataForm = (props) => {
         <Form.Checkbox
           style={{}}
           label="VAC Pass"
-          value={vacPass}
           onChange={() => setVacPass(!vacPass)}
-          defaultChecked
           checked={vacPass}
         />
       </div>
       <Divider style={{margin: "1.5rem"}}/>
-      <Form.Group style={{justifyContent: "space-around !important"}}>
+      <Form.Group inline>
         <Form.Input
           label="VIP Problems"
           onChange={(e) => setVipProblems(e.target.value)}
-        />
+          />
           <Form.Checkbox
-            style={{}}
+            style={{marginLeft: "8.6rem"}}
             label="VIP Pass"
-            value={vipPass}
             onChange={() => setVipPass(!vipPass)}
-            defaultChecked
             checked={vipPass}
           />
       </Form.Group>
@@ -293,7 +326,7 @@ const DosimeterDataForm = (props) => {
       <Form.Checkbox
             style={{}}
             label="Final Pass"
-            value={finalPass}
+            disabled
             onChange={() => setFinalPass(!finalPass)}
             checked={finalPass}
           />

@@ -17,12 +17,12 @@ module Types
     field :vip_pass, Boolean, null: true
     field :vac_pass, Boolean, null: true
     field :final_pass, Boolean, null: true
-    field :el_read, Int, null: true
-    field :acc_read, Int, null: true
+    field :el_read, Float, null: true
+    field :acc_read, Float, null: true
     field :acc_pass, Boolean, null: true
     field :vip_problems, String, null: true
-    field :vac_reading, Int, null: true
-    field :vac_ref_reading, Int, null: true
+    field :vac_reading, Float, null: true
+    field :vac_ref_reading, Float, null: true
     field :certificate_number, String, null: true
     field :batch, Int, null: true
     

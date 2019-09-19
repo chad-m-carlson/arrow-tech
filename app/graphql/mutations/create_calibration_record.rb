@@ -1,8 +1,8 @@
 class Mutations::CreateCalibrationRecord < Mutations::BaseMutation
-  argument :id, ID, required: false
+  # argument :id, ID, required: false
   argument :user_id, Int, required: false
-  argument :dosimeter_id, Int, required: false
-  argument :tolerance, Int, required: false
+  # argument :dosimeter_id, Int, required: false
+  # argument :tolerance, Int, required: false
   argument :date_received, String, required: false
   argument :el_date_in, String, required: false
   argument :el_date_out, String, required: false
@@ -16,30 +16,37 @@ class Mutations::CreateCalibrationRecord < Mutations::BaseMutation
   argument :vip_pass, Boolean, required: false
   argument :vac_pass, Boolean, required: false
   argument :final_pass, Boolean, required: false
-  argument :el_read, Int, required: false
-  argument :acc_read, Int, required: false
+  argument :el_read, Float, required: false
+  argument :acc_read, Float, required: false
   argument :acc_pass, Boolean, required: false
   argument :vip_problems, String, required: false
-  argument :vac_reading, Int, required: false
-  argument :vac_ref_reading, Int, required: false
+  argument :vac_reading, Float, required: false
+  argument :vac_ref_reading, Float, required: false
   argument :certificate_number, String, required: false
   argument :batch, Int, required: false
+
+  argument :customer_id, Int, required: false
+  argument :model_number, String, required: false
+  argument :serial_number, String, required: false
+  argument :tolerance, Float, required: false
 
   field :calibration, Types::CalibrationType, null: false
   field :errors, [String], null: false
 
   
-  def resolve( user_id:, date_received:, el_date_in:, el_date_out:, acc_date:, vac_date_in:, vac_date_out:, final_date:, due_date:, el_pass: , vip_pass: , vac_pass: , acc_pass: , final_pass: ,el_read:, acc_read:, vip_problems:, vac_reading:, vac_ref_reading:, batch:)
+  def resolve( user_id:, date_received:, el_date_in:, el_date_out:, acc_date:, vac_date_in:, vac_date_out:, final_date:, due_date:, el_pass: , vip_pass: , vac_pass: , acc_pass: , final_pass: ,el_read:, acc_read:, vip_problems:, vac_reading:, vac_ref_reading:, batch:, customer_id:, model_number:, serial_number:, tolerance:)
 
-    # user_id = current_user.id
-    binding.pry
-    dosimeter = Customer.find(82).dosimeters.where("model_number = 'AT 715' AND serial_number =  'dRwiCcdTxYv8ZNN'").first.id
+    dosimeter = Customer.find(customer_id).dosimeters.where("model_number = ? AND serial_number =  ?", model_number, serial_number ).first.id
 
+    if !tolerance
+      tolerance = 0.1
+    end
+    
     calibration = Calibration.new(
                                   user_id: user_id, 
                                   # todo need to enter in these parameters safely ie: "Client.where("orders_count = ?", params[:orders])"
                                   dosimeter_id: dosimeter,
-                                  tolerance: 0.1, 
+                                  tolerance: tolerance, 
                                   date_received: date_received, 
                                   el_date_in: el_date_in, 
                                   el_date_out: el_date_out, 
@@ -69,6 +76,8 @@ class Mutations::CreateCalibrationRecord < Mutations::BaseMutation
       }
     else
       {
+        # todo get flash messages working
+        # flash[:notice] = "This Dosimeter does not exist",
         user: nil,
         errors: calibration.errors.full_message,
       }

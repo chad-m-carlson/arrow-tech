@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_09_18_211818) do
+ActiveRecord::Schema.define(version: 2019_09_19_183216) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -33,11 +33,11 @@ ActiveRecord::Schema.define(version: 2019_09_18_211818) do
     t.boolean "vac_pass", default: true
     t.boolean "acc_pass", default: false
     t.boolean "final_pass", default: false
-    t.integer "el_read"
-    t.integer "acc_read"
+    t.float "el_read"
+    t.float "acc_read"
     t.string "vip_problems"
-    t.integer "vac_reading"
-    t.integer "vac_ref_reading"
+    t.float "vac_reading"
+    t.float "vac_ref_reading"
     t.string "certificate_number"
     t.integer "batch"
     t.datetime "created_at", precision: 6, null: false

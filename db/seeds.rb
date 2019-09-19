@@ -1,6 +1,10 @@
-models = ['AT 138', 'AT 715', 'AT 720', 'AT 725', 'AT 730', 'AT 742', 'AT 746']
+models = [['AT 138', 200],['AT 715', 1000], ['AT 720', 2000], ['AT 725', 5000], ['AT 730', 20000], ['AT 742', 200000], ['AT 746', 600000]]
 
 batch = 0 
+serial = 0
+
+User.create(email: "test@test.com", password: "password", is_admin: true, first_name: "Chad")
+User.create(email: "Bryan@test.com", password: "password", is_admin: true, first_name: "Bryan")
 
 20.times do 
   c = Customer.create(
@@ -15,40 +19,42 @@ batch = 0
   cert_number = "2019-#{rand(0..100)}"
   batch += 1
   puts "Cert Number: #{cert_number}"
-  10.times do
-    range = rand(100..1000000)
-    serial = [*'0'..'9',*'A'..'Z',*'a'..'z']
-    if range < 2000
-      @is_mR = true
-      @is_R = false
-    else
-      @is_mR = false
-      @is_R = true
+  models.each do |model, range|
+      if range <= 1000
+        @is_mr = true
+      else @is_mr = false
+      end
+      if range > 1000
+        @is_r = true
+      else @is_r = false
+      end
+      10.times do
+        serial += 1
+        d = Dosimeter.create!(
+          model_number: model,
+          serial_number: serial,
+          range: range,
+          is_mr: @is_mr,
+          is_r: @is_r,
+          customer_id: c.id
+          )
+          puts "batch number: #{batch}"
+          Calibration.create!(
+            dosimeter_id: d.id,
+            user_id: rand(1..2),
+            tolerance: 0.1,
+            date_received: (DateTime.now -1),
+            el_date_in: DateTime.now,
+            el_date_out: (DateTime.now + 2),
+            acc_date: (DateTime.now - 1),
+            vac_date_in: (DateTime.now - 3),
+            vac_date_out: (DateTime.now - 2),
+            final_date: (DateTime.now + 2),
+            due_date: (DateTime.now + 367),
+            final_pass: true,
+            certificate_number: cert_number,
+            batch: batch
+          )
+      end
     end
-    d = Dosimeter.create!(
-      model_number: models.sample,
-      serial_number: Array.new(15){serial.sample}.join,
-      range: range,
-      is_mR: @is_mR,
-      is_R: @is_R,
-      customer_id: c.id
-    )
-    puts "batch number: #{batch}"
-    Calibration.create!(
-      dosimeter_id: d.id,
-      user_id: rand(1..2),
-      tolerance: 0.1,
-      date_received: (DateTime.now -1),
-      EL_date_in: DateTime.now,
-      EL_date_out: (DateTime.now + 2),
-      ACC_date: (DateTime.now - 1),
-      VAC_date_in: (DateTime.now - 3),
-      VAC_date_out: (DateTime.now - 2),
-      final_date: (DateTime.now + 2),
-      due_date: (DateTime.now + 367),
-      final_pass: true,
-      certificate_number: cert_number,
-      batch: batch
-    )
-  end
 end
