@@ -55,6 +55,7 @@ const CustomerDataForm = ({sendCustomerIdToDosimeterForm}) => {
   };
 
   const updateBatchNumber = () => {
+    setBatchNumber(data.lastBatch + 1)
   };
 
   sendCustomerIdToDosimeterForm(() => selectedCustomer.id, batchNumber)

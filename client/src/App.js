@@ -10,6 +10,7 @@ import Home from './components/Home';
 import CalibrationForm from './components/calibration/CalibrationForm';
 import CalibrationReports from './components/calibration/CalibrationReports';
 import NoMatch from './components/NoMatch';
+import BatchReport from './components/BatchReport';
 import {Switch, Route, } from 'react-router-dom';
 // import {Container, } from 'semantic-ui-react';
 import { ApolloProvider } from '@apollo/react-hooks';
@@ -24,7 +25,7 @@ function App() {
     <ApolloProvider>
     <NavBar />
     <div style={{margin: "4rem"}}>
-      <FetchUser>>
+      <FetchUser>
           <Switch>
             {/* <ProtectedRoute exact path='/' component={Home} /> */}
             {/* <AdminRoute exact path='/admin' component={AdminTools} /> */}
@@ -32,6 +33,7 @@ function App() {
             <ProtectedRoute exact path='/customers' component={Customers} />
             <ProtectedRoute exact path='/calform' component={CalibrationForm} />
             <ProtectedRoute exact path='/calreports' component={CalibrationReports} />
+            <ProtectedRoute exact path='/batchreport' component={BatchReport} />
             <Route exact path='/register' component={Register} />
             <Route exact path='/login' component={Login} />
             <Route component={NoMatch} />

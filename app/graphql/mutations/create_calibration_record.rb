@@ -36,16 +36,32 @@ class Mutations::CreateCalibrationRecord < Mutations::BaseMutation
   
   def resolve( user_id:, date_received:, el_date_in:, el_date_out:, acc_date:, vac_date_in:, vac_date_out:, final_date:, due_date:, el_pass: , vip_pass: , vac_pass: , acc_pass: , final_pass: ,el_read:, acc_read:, vip_problems:, vac_reading:, vac_ref_reading:, batch:, customer_id:, model_number:, serial_number:, tolerance:)
 
-    dosimeter = Customer.find(customer_id).dosimeters.where("model_number = ? AND serial_number =  ?", model_number, serial_number ).first.id
+    dosimeter = Customer.find(customer_id).dosimeters.where("model_number = ? AND serial_number =  ?", model_number, serial_number ).first
 
-    if !tolerance
+    if dosimeter == nil
+      range = Dosimeter.where("model_number = ?", model_number).first.range
+      dosimeter = Dosimeter.create(
+        model_number: model_number,
+        serial_number: serial_number,
+        range: range,
+        is_r: range > 1001 ? true : false,
+        is_mr: range < 1001 ? true : false,
+        customer_id: customer_id
+        )
+    end
+        
+    
+    if tolerance == 0.0
       tolerance = 0.1
+    end
+
+    if final_pass == true
+      certificate_number = "#{DateTime.now.year}-#{batch}"
     end
     
     calibration = Calibration.new(
                                   user_id: user_id, 
-                                  # todo need to enter in these parameters safely ie: "Client.where("orders_count = ?", params[:orders])"
-                                  dosimeter_id: dosimeter,
+                                  dosimeter_id: dosimeter.id,
                                   tolerance: tolerance, 
                                   date_received: date_received, 
                                   el_date_in: el_date_in, 
@@ -66,8 +82,8 @@ class Mutations::CreateCalibrationRecord < Mutations::BaseMutation
                                   vip_problems: vip_problems, 
                                   vac_reading: vac_reading, 
                                   vac_ref_reading: vac_ref_reading, 
-                                  # certificate_number: certificate_number, 
-                                  batch: batch
+                                  batch: batch,
+                                  certificate_number: certificate_number
                                   )
     if calibration.save
       {

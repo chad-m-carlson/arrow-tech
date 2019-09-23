@@ -5,6 +5,7 @@ import DatePicker from 'react-datepicker';
 import "react-datepicker/dist/react-datepicker.css";
 import gql from 'graphql-tag';
 import { useQuery, useMutation } from '@apollo/react-hooks';
+import {Link, } from 'react-router-dom';
 
 const GET_UNIQUE_DOSIMETER_MODELS = gql`
   query{
@@ -95,15 +96,25 @@ const DosimeterDataForm = (props) => {
   };
 
   const handleAccReading = (valueRead) => {
-    setAccRead(valueRead);
     const midRange = (dosimeterRange / 2)
+    setAccRead(valueRead);
     let lowestAcceptable = midRange - (!customTolerance ? dosimeterRange * 0.05 : dosimeterRange * ((tolerance / 100))/ 2)
     let highestAcceptable = midRange + (!customTolerance ? dosimeterRange * 0.05 : dosimeterRange * ((tolerance / 100))/ 2)
-    debugger
-    if(valueRead >= lowestAcceptable && valueRead <= highestAcceptable){
+    if((isR ? (valueRead * 1000) : valueRead) >= lowestAcceptable && (isR ? (valueRead * 1000) : valueRead) <= highestAcceptable){
       setAccPass(true)
     }else setAccPass(false)
   }
+
+  const handleElReading = (valueRead) => {
+    setElRead(valueRead)
+    const testDuration = elDateOut.getDate() - elDateIn.getDate()
+    const perDayLeakageAllowed = 0.025 * dosimeterRange
+    if(testDuration * perDayLeakageAllowed >= (isR ? (valueRead * 1000) : valueRead)){
+      setElPass(true);
+    }else setElPass(false);
+    if(valueRead == '')setElPass(false);
+    // 2.5% of full scale reading per day is the maximum allowed. 200mR dosimeter passes a two day el leakage test if it reads less than 10mR
+  };
 
   const handleDosimeterCalibrationSubmission = (e) => {
     e.preventDefault()
@@ -174,27 +185,27 @@ const DosimeterDataForm = (props) => {
             onChange={date => setDateReceived(date)} 
             />
         </Form.Input>
-        <Form.Select
-          label="Dosimeter Model"
-          loading={customerDosimeterModels.length < 1}
-          options={customerDosimeterModels}
-          onChange={handleDosimeterModelSelection}
+          <Form.Select
+            label="Dosimeter Model"
+            loading={customerDosimeterModels.length < 1}
+            options={customerDosimeterModels}
+            onChange={handleDosimeterModelSelection}
           />
         {(props.batchNumber || props.customerID) ?
           <Form.Input
-            label="Dosimeter Serial Number"
+          label="Dosimeter Serial Number"
             id="focus"
             tabIndex='1'
             value={(props.batchNumber || props.customerID) ? dosimeterSerialNumber : ''}
             onChange={(e) => setDosimeterSerialNumber(e.target.value)}
-          />
+            />
           :
             <Form.Input
-              label="Dosimeter Serial Number"
-              id="focus"
-              tabIndex='1'
-              value={(props.batchNumber || props.customerID) ? dosimeterSerialNumber : ''}
-              onChange={(e) => setDosimeterSerialNumber(e.target.value)}>
+            label="Dosimeter Serial Number"
+            id="focus"
+            tabIndex='1'
+            value={(props.batchNumber || props.customerID) ? dosimeterSerialNumber : ''}
+            onChange={(e) => setDosimeterSerialNumber(e.target.value)}>
                 <Label 
                   basic 
                   color="red" 
@@ -204,6 +215,9 @@ const DosimeterDataForm = (props) => {
             </Form.Input>
         }
       </Form.Group>
+      {dosimeterRange > 1 &&
+      <p><b>Range:</b> {isR ? (dosimeterRange/1000) : dosimeterRange}{isR ? "R" : "mR"}</p>
+      }
       <Divider style={{margin: "1.5rem"}}/>
       <Form.Group widths='equal' inline>
         <Form.Input label="EL Date in">
@@ -222,7 +236,7 @@ const DosimeterDataForm = (props) => {
           label="EL Read"
           tabIndex='2'
           value={elRead}
-          onChange={(e) => setElRead(e.target.value)}
+          onChange={(e) => {handleElReading(e.target.value)}}
         />
       </Form.Group>
       <div style={{textAlign: "center"}}>
@@ -243,7 +257,8 @@ const DosimeterDataForm = (props) => {
         {customTolerance &&
           <Form.Input
             type="number"
-            label="Custom Tolerance"
+            label="Custom Tolerance %"
+            placeholder="Percentage"
             value={tolerance}
             onChange={(e) => setTolerance(e.target.value)}
           />
@@ -272,7 +287,7 @@ const DosimeterDataForm = (props) => {
         />
       </div>
       <Divider style={{margin: "1.5rem"}}/>
-      <Form.Group widths='equal' inline>
+      {/* <Form.Group widths='equal' inline>
         <Form.Input label="VAC Date In">
           <DatePicker
             selected={vacDateIn}
@@ -299,7 +314,7 @@ const DosimeterDataForm = (props) => {
           value={vacRefRead}
           onChange={(e) => setVacRefRead(e.target.value)}
         />
-      </Form.Group>
+      </Form.Group> */}
       <div style={{textAlign: "center"}}>
         <Form.Checkbox
           style={{}}
@@ -345,6 +360,7 @@ const DosimeterDataForm = (props) => {
         </Form.Input>
       </Form.Group>
       <Button tabIndex='6' onClick={handleDosimeterCalibrationSubmission}>Submit Dosimeter Calibration</Button>
+      <Button as={Link} to='/batchreport'>View Batch Report</Button>
       </Form>
     </div>
 
