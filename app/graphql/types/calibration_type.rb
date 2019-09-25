@@ -25,13 +25,24 @@ module Types
     field :vac_ref_reading, Float, null: true
     field :certificate_number, String, null: true
     field :batch, Int, null: true
-    
-    field :dosimeter, Types::DosimeterType, null: false do
-      argument :id, ID, required: true
+
+    field :dosimeter, Types::DosimeterType, null: false
+    field :user, Types::UserType, null: false
+
+    def dosimeter
+      object.dosimeter
+    end
+
+    def user
+      object.user
     end
     
-    def dosimeter(id:)
-      Calibration.find(id).dosimeter
-    end
+    # field :dosimeter, Types::DosimeterType, null: false do
+    #   argument :id, ID, required: true
+    # end
+    
+    # def dosimeter(id:)
+    #   Calibration.find(id).dosimeter
+    # end
   end
 end

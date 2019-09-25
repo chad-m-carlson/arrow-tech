@@ -14,7 +14,6 @@ module Types
       argument :batch, Int, required: true
     end
 
-    
     field :customer, Types::CustomerType, null: false do
       argument :id, ID, required: true
     end
@@ -35,20 +34,12 @@ module Types
       Calibration.all
     end
 
-    def calibrations_by_batch(batch:)
-      # Calibration.where(batch: batch)
-      # Calibration.where(batch: batch).dosimeters
-      x = Calibration.find_by_sql(["
-      SELECT d.model_number
-      FROM calibrations AS c
-      LEFT JOIN dosimeters AS d ON c.dosimeter_id = d.id
-      WHERE batch = ?
-      ", batch])
-      binding.pry
-    end
-
     def customers
       Customer.all
+    end
+
+    def calibrations_by_batch(batch:)
+      calibrations = Calibration.where(batch: batch)
     end
 
     def dosimeters

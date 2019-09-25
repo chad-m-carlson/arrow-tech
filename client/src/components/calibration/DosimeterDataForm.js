@@ -1,6 +1,6 @@
 import React, {useState, useEffect, useContext} from 'react';
 import {AuthContext} from '../../providers/AuthProvider';
-import {Form, Divider, Button, Popup, Label} from 'semantic-ui-react'
+import {Form, Divider, Button, Label} from 'semantic-ui-react'
 import DatePicker from 'react-datepicker';
 import "react-datepicker/dist/react-datepicker.css";
 import gql from 'graphql-tag';
@@ -360,7 +360,7 @@ const DosimeterDataForm = (props) => {
         </Form.Input>
       </Form.Group>
       <Button tabIndex='6' onClick={handleDosimeterCalibrationSubmission}>Submit Dosimeter Calibration</Button>
-      <Button as={Link} to='/batchreport'>View Batch Report</Button>
+      <Button as={Link} to={{pathname: '/batchreport', state: {batch: props.batchNumber}}}>View Batch Report</Button>
       </Form>
     </div>
 
