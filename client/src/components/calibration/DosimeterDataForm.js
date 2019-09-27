@@ -161,7 +161,7 @@ const DosimeterDataForm = (props) => {
     setAccPass(false);
     setVacPass(true);
     setVipPass(true);
-    document.getElementById('focus').focus();
+    document.getElementById('1').focus();
     document.body.scrollTop = 0;
   };
 
@@ -174,6 +174,16 @@ const DosimeterDataForm = (props) => {
       setFinalPassDate('');
     };
   };
+
+  const changeEnterToTab = (e) => {
+
+    if (e.keyCode == 13) {
+      let currentField = parseInt(e.currentTarget.attributes.id.nodeValue)
+      currentField ++
+      e.preventDefault()
+      document.getElementById(currentField.toString()).focus()
+    }
+  }
 
   return ( 
     <div>
@@ -194,17 +204,19 @@ const DosimeterDataForm = (props) => {
         {(props.batchNumber || props.customerID) ?
           <Form.Input
           label="Dosimeter Serial Number"
-            id="focus"
+            id="1"
             tabIndex='1'
             value={(props.batchNumber || props.customerID) ? dosimeterSerialNumber : ''}
+            onKeyDown={(e) => changeEnterToTab(e)}
             onChange={(e) => setDosimeterSerialNumber(e.target.value)}
             />
           :
             <Form.Input
             label="Dosimeter Serial Number"
-            id="focus"
+            id="1"
             tabIndex='1'
             value={(props.batchNumber || props.customerID) ? dosimeterSerialNumber : ''}
+            onKeyDown={(e) => changeEnterToTab(e)}
             onChange={(e) => setDosimeterSerialNumber(e.target.value)}>
                 <Label 
                   basic 
@@ -233,9 +245,11 @@ const DosimeterDataForm = (props) => {
           />
         </Form.Input>
         <Form.Input
+          id='2'
           label="EL Read"
           tabIndex='2'
           value={elRead}
+          onKeyDown={(e) => changeEnterToTab(e)}
           onChange={(e) => {handleElReading(e.target.value)}}
         />
       </Form.Group>
@@ -273,8 +287,10 @@ const DosimeterDataForm = (props) => {
         </Form.Input>
         <Form.Input
           label="ACC Read"
+          id='3'
           tabIndex='3'
           value={accRead}
+          onKeyDown={(e) => changeEnterToTab(e)}
           onChange={(e) => handleAccReading(e.target.value)}
         />
       </Form.Group>
@@ -359,7 +375,12 @@ const DosimeterDataForm = (props) => {
           />
         </Form.Input>
       </Form.Group>
-      <Button tabIndex='6' onClick={handleDosimeterCalibrationSubmission}>Submit Dosimeter Calibration</Button>
+      <Button 
+        id='4' 
+        tabIndex='4' 
+        onClick={handleDosimeterCalibrationSubmission}
+        >Submit Dosimeter Calibration
+      </Button>
       <Button as={Link} to={{pathname: '/batchreport', state: {batch: props.batchNumber}}}>View Batch Report</Button>
       </Form>
     </div>

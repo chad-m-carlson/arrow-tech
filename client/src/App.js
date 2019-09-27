@@ -11,6 +11,7 @@ import CalibrationForm from './components/calibration/CalibrationForm';
 import CalibrationReports from './components/calibration/CalibrationReports';
 import NoMatch from './components/NoMatch';
 import BatchReport from './components/BatchReport';
+import CertificateOfCalibration from './components/CertificateOfCalibration';
 import {Switch, Route, } from 'react-router-dom';
 // import {Container, } from 'semantic-ui-react';
 import { ApolloProvider } from '@apollo/react-hooks';
@@ -34,6 +35,7 @@ function App() {
             <ProtectedRoute exact path='/calform' component={CalibrationForm} />
             <ProtectedRoute exact path='/calreports' component={CalibrationReports} />
             <ProtectedRoute exact path='/batchreport' component={BatchReport} />
+            <ProtectedRoute exact path='/coc' component={CertificateOfCalibration} />
             <Route exact path='/register' component={Register} />
             <Route exact path='/login' component={Login} />
             <Route component={NoMatch} />

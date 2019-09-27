@@ -29,9 +29,9 @@ const Home = () => {
         </NavLink>
       </div>
       <div style={{width: "10rem"}}>
-        <NavLink to='/nothing'>
+        <NavLink to='/batchreport'>
           <Card>
-            <h3 >Other Stuff</h3>
+            <h3 >Batch Reports</h3>
           </Card>
         </NavLink>
       </div>

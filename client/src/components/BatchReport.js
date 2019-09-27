@@ -1,6 +1,7 @@
 import React, {useState, useEffect} from 'react';
 import { useQuery, } from '@apollo/react-hooks';
 import {Table, Icon, Form, Button} from 'semantic-ui-react';
+import {Link, } from 'react-router-dom';
 import { Query } from 'react-apollo';
 import gql from 'graphql-tag';
 
@@ -37,6 +38,7 @@ const CALIBRATIONS_BY_BATCH = gql`
 const BatchReport = (props) => {
 const [batch, setBatch] = useState('');
 const [triggerQuery, setTriggerQuery] = useState(false);
+const [calData, setCalData] = useState([]);
 
 useEffect( () => {
   if(props.location.state) setBatch(props.location.state.batch)
@@ -57,6 +59,7 @@ const handleSubmit = () => {
       </Form>
       <Query query={CALIBRATIONS_BY_BATCH} variables={{"batch": batch}}>
         {({ loading, error, data }) => {
+          setCalData(data)
             if (loading) return <div>Fetching..</div>
             if (error) return <div>Error!</div>
             if (data.calibrationsByBatch.length > 0){
@@ -113,6 +116,7 @@ const handleSubmit = () => {
             )}else return null
         }}
       </Query>
+      <Button as={Link} to={{pathname: '/coc', state: {calData: calData}}}>View Batch Report</Button>
     </>
   );
 }
