@@ -14,6 +14,10 @@ module Types
       argument :batch, Int, required: true
     end
 
+    field :customer_by_batch, Types::CustomerType, null: true do
+      argument :batch, Int, required: false
+    end
+
     field :customer, Types::CustomerType, null: false do
       argument :id, ID, required: true
     end
@@ -40,6 +44,13 @@ module Types
 
     def calibrations_by_batch(batch:)
       calibrations = Calibration.where(batch: batch)
+    end
+
+    def customer_by_batch(batch:)
+      customer = Calibration.where(batch: batch)
+        if customer.length > 0
+          customer.last.dosimeter.customer
+        end
     end
 
     def dosimeters

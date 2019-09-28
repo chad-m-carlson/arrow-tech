@@ -5,7 +5,7 @@ import DatePicker from 'react-datepicker';
 import "react-datepicker/dist/react-datepicker.css";
 import gql from 'graphql-tag';
 import { useQuery, useMutation } from '@apollo/react-hooks';
-import {Link, } from 'react-router-dom';
+import {Link, withRouter} from 'react-router-dom';
 
 const GET_UNIQUE_DOSIMETER_MODELS = gql`
   query{
@@ -49,6 +49,7 @@ const CREATE_CALIBRATION_RECORD =  gql`
 `;
 
 const DosimeterDataForm = (props) => {
+  const [batch, setBatch] = useState('')
   const [dosimeterRange, setDosimeterRange] = useState(0);
   const [isR, setIsR] = useState(false);
   const [tolerance, setTolerance] = useState(null);
@@ -83,7 +84,8 @@ const DosimeterDataForm = (props) => {
     if(data){
       setCustomerDosimeterModels(data.uniqueDosimeterModels.map( o => ({key: o.id, text: o.modelNumber, value: o.modelNumber})))
     } 
-  },[data])
+    setBatch(props.batchNumber)
+  },[data, props.batchNumber])
 
   useEffect( () => {
     handleFinalPass()
@@ -140,7 +142,7 @@ const DosimeterDataForm = (props) => {
         "vip_problems": vipProblems, 
         "vac_reading": parseFloat(vacRead), 
         "vac_ref_reading": parseFloat(vacRefRead), 
-        "batch": props.batchNumber,
+        "batch": batch,
         "customer_id": parseInt(props.customerId),
         "model_number": dosimeterModelSelected,
         "serial_number": dosimeterSerialNumber,
@@ -187,6 +189,12 @@ const DosimeterDataForm = (props) => {
 
   return ( 
     <div>
+      <div style={{display: "flex", justifyContent: "space-between"}}>
+        <h1>Dosimeter Data</h1>
+        {batch && 
+          <h4 style={{margin: "auto 0"}}>Batch {batch}</h4>
+        }
+      </div>
       <Form size="mini">
       <Form.Group inline >
         <Form.Input label="Date Received">

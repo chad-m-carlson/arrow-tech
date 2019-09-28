@@ -3,7 +3,7 @@ import {Grid, } from 'semantic-ui-react';
 import CustomerDataForm from './CustomerDataForm';
 import DosimeterDataForm from './DosimeterDataForm';
 
-const CalibrationForm = () => {
+const CalibrationForm = (props) => {
   const [customerId, setCustomerId] = useState('');
   const [batchNumber, setBatchNumber] = useState('');
 
@@ -16,14 +16,16 @@ const CalibrationForm = () => {
     <Grid columns={2}>
       <Grid.Row>
         <Grid.Column style={{width: "40%", borderRight: "1px solid gray"}}>
-          <h1>Customer Data</h1>
-          <CustomerDataForm sendCustomerIdToDosimeterForm={getCustomerId}/>
+          <CustomerDataForm 
+            sendCustomerIdToDosimeterForm={getCustomerId}
+            selectedBatch={props.location.state ? props.location.state.lastBatch : ''}
+          />
         </Grid.Column>
         <Grid.Column style={{width: "60%", borderLeft: "1px solid gray"}}>
-          <h1>Dosimeter Data</h1>
           <DosimeterDataForm 
+            // lastBatch={props.location.state ? props.location.state.lastBatch : ''}
             customerId={customerId}
-            batchNumber={batchNumber}
+            batchNumber={props.location.state ? props.location.state.lastBatch: batchNumber}
           />
         </Grid.Column>
       </Grid.Row>

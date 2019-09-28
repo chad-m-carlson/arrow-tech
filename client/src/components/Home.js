@@ -1,10 +1,19 @@
 import React, {useState} from 'react';
-import Customers from './Customers';
-import {NavLink, } from 'react-router-dom';
+import {NavLink,Link } from 'react-router-dom';
+import {Popup, Grid, Header, Button, Input} from 'semantic-ui-react';
 import styled from 'styled-components';
+import { Query } from 'react-apollo';
+import gql from 'graphql-tag'
+
+const LAST_BATCH = gql`
+query{
+  lastBatch
+}
+`;
 
 const Home = () => {
-  const [showCustomers, setShowCustomers] = useState(false)
+  const [otherBatchNumber, setOtherBatchNumber] =useState('');
+
   return ( 
     <Container>
       <div style={{width: "10rem"}}>
@@ -14,13 +23,50 @@ const Home = () => {
           </Card>
         </NavLink>
       </div>
-      <div style={{width: "10rem"}}>
-        <NavLink to='/calform'>
-          <Card>
-            <h3 >Calibration Form</h3>
-          </Card>
-        </NavLink>
-      </div>
+        <Query query={LAST_BATCH}>
+        {({ loading, error, data }) => {
+            if (loading) return <div>Fetching..</div>
+            if (error) return <div>Error!</div>
+            if (data)
+            return(
+              <Popup trigger={ 
+                <div style={{width: "10rem"}}>
+                  {/* <NavLink to='/calform'> */}
+                    <Card>
+                      <h3 >Calibration Form</h3>
+                    </Card>
+                  {/* </NavLink> */}
+                </div>} flowing hoverable>
+                <Grid centered divided columns={3}>
+                  <Grid.Column textAlign='center'>
+                    <Header as='h4'>New Batch</Header>
+                    <p>Start a new batch with new customer</p>
+                    <NavLink to='/calform'>
+                      <Button>Choose</Button>
+                    </NavLink>
+                  </Grid.Column>
+                  <Grid.Column textAlign='center'>
+                    <Header as='h4'>Last Batch</Header>
+                    <p>Continue working on the last batch</p>
+                    <p><i>Batch {data.lastBatch}</i></p>
+                    <Link to={{pathname: '/calform', state: {lastBatch: data.lastBatch}}}>
+                      <Button>Choose</Button>
+                    </Link>
+                  </Grid.Column>
+                  <Grid.Column textAlign='center'>
+                    <Header as='h4'>Other Batch</Header>
+                      <p>Enter a different batch number</p>
+                      <Input 
+                        value={otherBatchNumber}
+                        onChange={(e) => setOtherBatchNumber(parseInt(e.target.value))}
+                      />
+                      <Link to={{pathname: '/calform', state: {lastBatch: otherBatchNumber}}}>
+                        <Button>Choose</Button>
+                      </Link>
+                  </Grid.Column>
+                </Grid>
+              </Popup>)}}
+        </Query>
       <div style={{width: "10rem"}}>
         <NavLink to='/calreports'>
           <Card>
