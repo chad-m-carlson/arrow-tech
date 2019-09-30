@@ -1,52 +1,13 @@
 import React, {useState, useEffect, useContext} from 'react';
 import {AuthContext} from '../../providers/AuthProvider';
-import {Form, Divider, Button, Label} from 'semantic-ui-react'
+import {Form, Divider, Button, Label, Icon} from 'semantic-ui-react'
 import DatePicker from 'react-datepicker';
 import "react-datepicker/dist/react-datepicker.css";
-import gql from 'graphql-tag';
+import {GET_UNIQUE_DOSIMETER_MODELS, GET_PREVIOUS_CALIBRATION} from '../graphql/queries';
+import {CREATE_CALIBRATION_RECORD, } from '../graphql/mutations';
+import { Query } from 'react-apollo';
 import { useQuery, useMutation } from '@apollo/react-hooks';
-import {Link, withRouter} from 'react-router-dom';
-
-const GET_UNIQUE_DOSIMETER_MODELS = gql`
-  query{
-		uniqueDosimeterModels {
-      id
-      modelNumber
-      range
-      isR
-      isMr
-		}
-  }
-`;
-
-const CREATE_CALIBRATION_RECORD =  gql`
-  mutation CreateCalibrationRecord($user_id: Int, $date_received: String, $el_date_in: String, $el_date_out: String, $acc_date: String, $vac_date_in: String, $vac_date_out: String, $final_date: String,  $due_date: String, $el_pass: Boolean, $vip_pass: Boolean, $vac_pass: Boolean, $acc_pass: Boolean, $final_pass: Boolean,$el_read: Float, $acc_read: Float, $vip_problems: String, $vac_reading: Float, $vac_ref_reading: Float, $batch: Int, $customer_id: Int, $model_number: String, $serial_number: String, $tolerance: Float){
-    createCalibrationRecord(input: {userId: $user_id, dateReceived: $date_received, elDateIn: $el_date_in, elDateOut: $el_date_out, accDate: $acc_date, vacDateIn: $vac_date_in, vacDateOut: $vac_date_out, finalDate: $final_date, dueDate: $due_date, elPass: $el_pass, vipPass: $vip_pass, vacPass: $vac_pass, accPass: $acc_pass, finalPass: $final_pass, elRead: $el_read, accRead: $acc_read, vipProblems: $vip_problems, vacReading: $vac_reading, vacRefReading: $vac_ref_reading, batch: $batch, customerId: $customer_id, modelNumber: $model_number, serialNumber: $serial_number, tolerance: $tolerance}){
-      calibration{
-        userId
-        dateReceived
-        elDateIn
-        elDateOut
-        accDate
-        vacDateIn
-        vacDateOut
-        finalDate
-        dueDate
-        elPass
-        accPass
-        finalPass
-        elRead
-        accRead
-        vipProblems
-        vacRefReading
-        batch
-        vipPass
-        accPass
-        vacReading
-      }
-    }
-  }
-`;
+import {Link, } from 'react-router-dom';
 
 const DosimeterDataForm = (props) => {
   const [batch, setBatch] = useState('')
@@ -73,23 +34,81 @@ const DosimeterDataForm = (props) => {
   const [vipPass, setVipPass] = useState(true);
   const [finalPass, setFinalPass] = useState(false);
   const [finalPassDate, setFinalPassDate] = useState('');
+  const [certificateNumber, setCertificateNumber] = useState('');
   const [dueDate, setDueDate] = useState('');
   const [customerDosimeterModels, setCustomerDosimeterModels] = useState([]);
+  const [editing, setEditing] = useState(false);
 
   const {user} = useContext(AuthContext);
   const {data} = useQuery(GET_UNIQUE_DOSIMETER_MODELS)
   const [create_calibration_record] = useMutation(CREATE_CALIBRATION_RECORD)
-
+  
   useEffect(() =>{
     if(data){
       setCustomerDosimeterModels(data.uniqueDosimeterModels.map( o => ({key: o.id, text: o.modelNumber, value: o.modelNumber})))
     } 
+    if(props.lastCalibration){
+      const {accDate, accPass, accRead, certificateNumber, dateReceived, dueDate, elDateIn, elDateOut, elPass, elRead, finalDate, finalPass, id, tolerance, vacPass, vipPass, vipProblems, } = props.lastCalibration.lastCalibrationByBatch
+      const {modelNumber, serialNumber} = props.lastCalibration.dosimeterByBatch
+
+      setEditing(true)
+      setAccDate(new Date(accDate))
+      setAccPass(accPass)
+      setAccRead(accRead)
+      setCertificateNumber(certificateNumber)
+      setDateReceived(new Date(dateReceived))
+      // setDosimeterId(dosimeterId)
+      // handleDosimeterModelSelection(modelNumber)
+      setDosimeterModelSelected(modelNumber)
+      setDosimeterSerialNumber(serialNumber)
+      setDueDate(new Date(dueDate))
+      setElDateIn(new Date(elDateIn))
+      setElDateOut(new Date(elDateOut))
+      setElPass(elPass)
+      setElRead(elRead)
+      setFinalPassDate(new Date (finalDate))
+      setFinalPass(finalPass)
+      // setId(id)
+      setTolerance(tolerance)
+      // setUserId(userId)
+      setVacPass(vacPass)
+      setVipPass(vipPass)
+      setVipProblems(vipProblems)
+    }
     setBatch(props.batchNumber)
   },[data, props.batchNumber])
 
   useEffect( () => {
     handleFinalPass()
   }, [elPass, accPass, vacPass, vipPass])
+
+  const getPreviousRecord = () => {
+    const {modelNumber, serialNumber} = props.lastCalibration.dosimeterByBatch
+
+    setEditing(true)
+    setAccDate(new Date(accDate))
+    setAccPass(accPass)
+    setAccRead(accRead)
+    setCertificateNumber(certificateNumber)
+    setDateReceived(new Date(dateReceived))
+    // setDosimeterId(dosimeterId)
+    // handleDosimeterModelSelection(modelNumber)
+    setDosimeterModelSelected(modelNumber)
+    setDosimeterSerialNumber(serialNumber)
+    setDueDate(new Date(dueDate))
+    setElDateIn(new Date(elDateIn))
+    setElDateOut(new Date(elDateOut))
+    setElPass(elPass)
+    setElRead(elRead)
+    setFinalPassDate(new Date (finalDate))
+    setFinalPass(finalPass)
+    // setId(id)
+    setTolerance(tolerance)
+    // setUserId(userId)
+    setVacPass(vacPass)
+    setVipPass(vipPass)
+    setVipProblems(vipProblems)
+  };
 
   const handleDosimeterModelSelection = (e, {value}) => {
     setDosimeterModelSelected(value)
@@ -178,19 +197,22 @@ const DosimeterDataForm = (props) => {
   };
 
   const changeEnterToTab = (e) => {
-
     if (e.keyCode == 13) {
       let currentField = parseInt(e.currentTarget.attributes.id.nodeValue)
       currentField ++
       e.preventDefault()
       document.getElementById(currentField.toString()).focus()
-    }
-  }
+    };
+  };
 
   return ( 
     <div>
       <div style={{display: "flex", justifyContent: "space-between"}}>
         <h1>Dosimeter Data</h1>
+        <div>
+          <Icon style={{cursor: "pointer"}} onClick={getPreviousRecord} name="arrow left"/>
+          <Icon style={{cursor: "pointer"}} name="arrow right"/>
+        </div>
         {batch && 
           <h4 style={{margin: "auto 0"}}>Batch {batch}</h4>
         }
@@ -208,6 +230,7 @@ const DosimeterDataForm = (props) => {
             loading={customerDosimeterModels.length < 1}
             options={customerDosimeterModels}
             onChange={handleDosimeterModelSelection}
+            value={props.lastCalibration && dosimeterModelSelected}
           />
         {(props.batchNumber || props.customerID) ?
           <Form.Input
@@ -375,6 +398,11 @@ const DosimeterDataForm = (props) => {
             onChange={date => setFinalPassDate(date)}
           />
         </Form.Input>
+        <Form.Input 
+          label="Certificate Number"
+          value={certificateNumber}
+          onChange={(e) => setCertificateNumber(e.target.value)}
+        />
         <Form.Input label="Due Date">
           <DatePicker
             showYearDropdown
