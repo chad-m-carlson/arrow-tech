@@ -1,17 +1,11 @@
-import React, {useState, useEffect } from 'react';
+import React, {useState, } from 'react';
 import {Grid, } from 'semantic-ui-react';
 import CustomerDataForm from './CustomerDataForm';
 import DosimeterDataForm from './DosimeterDataForm';
-import {CALIBRATION_BY_BATCH} from '../graphql/queries';
-import { useQuery, } from '@apollo/react-hooks';
-
-
 
 const CalibrationForm = (props) => {
   const [customerId, setCustomerId] = useState('');
   const [batchNumber, setBatchNumber] = useState('');
-
-  const {data, refetch} = useQuery(CALIBRATION_BY_BATCH, {variables: {batch: props.location.state ? props.location.state.lastBatch : null, id: null}});
 
   const getCustomerId = (id, batch) => {
     setCustomerId(id)
@@ -31,9 +25,7 @@ const CalibrationForm = (props) => {
           <DosimeterDataForm 
             // lastBatch={props.location.state ? props.location.state.lastBatch : ''}
             customerId={customerId}
-            batchNumber={props.location.state ? props.location.state.lastBatch : batchNumber}
-            lastCalibration={data}
-            refetch={refetch}
+            batchNumber={props.location.state ? props.location.state.lastBatch: batchNumber}
           />
         </Grid.Column>
       </Grid.Row>
