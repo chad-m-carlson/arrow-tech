@@ -40,28 +40,28 @@ query{
 
 export const CALIBRATION_BY_BATCH = gql`
 query($batch:Int!, $id:ID){
-    lastCalibrationByBatch(batch:$batch){
-      id
-      userId
-      dosimeterId
-      tolerance
-      dateReceived
-      elDateIn
-      elDateOut
-      accDate
-      finalDate
-      dueDate
-      elPass
-      vipPass
-      vacPass
-      finalPass
-      elRead
-      accRead
-      accPass
-      vipProblems
-      certificateNumber
-    }
-    dosimeterByBatch(batch:$batch){
+    # lastCalibrationByBatch(batch:$batch){
+    #   id
+    #   userId
+    #   dosimeterId
+    #   tolerance
+    #   dateReceived
+    #   elDateIn
+    #   elDateOut
+    #   accDate
+    #   finalDate
+    #   dueDate
+    #   elPass
+    #   vipPass
+    #   vacPass
+    #   finalPass
+    #   elRead
+    #   accRead
+    #   accPass
+    #   vipProblems
+    #   certificateNumber
+    # }
+    dosimeterByBatch(batch:$batch, id:$id){
       modelNumber
       serialNumber
     }

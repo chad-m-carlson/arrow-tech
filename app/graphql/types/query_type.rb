@@ -30,6 +30,7 @@ module Types
 
     field :dosimeter_by_batch, Types::DosimeterType, null: false do
       argument :batch, Int, required: false
+      argument :id, ID, required: false
     end
 
     field :customer_by_batch, Types::CustomerType, null: true do
@@ -72,8 +73,9 @@ module Types
       if id
         Calibration.prev(batch, id)
       else
-        last_id = Calibration.last.id
-        Calibration.where("batch =  ? AND id = ?", batch, last_id - 1).first
+        Calibration.where(batch: batch).last
+        # last_id = Calibration.last.id
+        # Calibration.where("batch =  ? AND id = ?", batch, last_id - 1).first
       end
     end
 
@@ -81,8 +83,12 @@ module Types
       Calibration.next(batch, id)
     end
 
-    def dosimeter_by_batch(batch:)
-      Calibration.where(batch: batch).last.dosimeter
+    def dosimeter_by_batch(batch:, id:)
+      if id
+        Calibration.find(id).dosimeter
+      else
+        Calibration.where(batch: batch).last.dosimeter
+      end
     end
 
     def customer_by_batch(batch:)

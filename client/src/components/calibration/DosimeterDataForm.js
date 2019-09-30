@@ -11,6 +11,7 @@ import {Link, } from 'react-router-dom';
 
 const DosimeterDataForm = (props) => {
   const [batch, setBatch] = useState('')
+  const [calibrationId, setCalibrationId] = useState(null)
   const [dosimeterRange, setDosimeterRange] = useState(0);
   const [isR, setIsR] = useState(false);
   const [tolerance, setTolerance] = useState(null);
@@ -48,10 +49,11 @@ const DosimeterDataForm = (props) => {
       setCustomerDosimeterModels(data.uniqueDosimeterModels.map( o => ({key: o.id, text: o.modelNumber, value: o.modelNumber})))
     } 
     if(props.lastCalibration){
-      const {accDate, accPass, accRead, certificateNumber, dateReceived, dueDate, elDateIn, elDateOut, elPass, elRead, finalDate, finalPass, id, tolerance, vacPass, vipPass, vipProblems, } = props.lastCalibration.lastCalibrationByBatch
+      const {accDate, accPass, accRead, certificateNumber, dateReceived, dueDate, elDateIn, elDateOut, elPass, elRead, finalDate, finalPass, id, tolerance, vacPass, vipPass, vipProblems, } = props.lastCalibration.previousCalibration
       const {modelNumber, serialNumber} = props.lastCalibration.dosimeterByBatch
 
       setEditing(true)
+      setCalibrationId(id)
       setAccDate(new Date(accDate))
       setAccPass(accPass)
       setAccRead(accRead)
@@ -75,7 +77,7 @@ const DosimeterDataForm = (props) => {
       setVipPass(vipPass)
       setVipProblems(vipProblems)
     }
-    
+
     setBatch(props.batchNumber)
   },[data, props.batchNumber, props.lastCalibration])
 
@@ -223,7 +225,7 @@ const DosimeterDataForm = (props) => {
         <div>
           <Icon 
             style={{cursor: "pointer"}} 
-            onClick={getPreviousRecord} 
+            onClick={() => props.refetch({"batch": props.batchNumber, "id": calibrationId})} 
             name="arrow left"/>
           <Icon style={{cursor: "pointer"}} name="arrow right"/>
         </div>
