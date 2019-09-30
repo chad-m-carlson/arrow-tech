@@ -37,7 +37,6 @@ const CustomerDataForm = ({sendCustomerIdToDosimeterForm, selectedBatch}) => {
   const {data, loading, error} = useQuery(GET_ALL_CUSTOMERS_QUERY, {variables: {batch: selectedBatch ? selectedBatch : null}})
 
   useEffect( () => {
-    debugger
     if(loading) setDataLoading(true)
     if(error) console.log(error)
     if(data){
