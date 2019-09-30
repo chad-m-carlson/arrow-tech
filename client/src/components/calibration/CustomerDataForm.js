@@ -1,8 +1,28 @@
 import React, {useState, useEffect } from 'react';
 import Search from '../Search';
 import {Form, Button, Divider} from 'semantic-ui-react';
-import {GET_ALL_CUSTOMERS_QUERY, } from '../graphql/queries';
+import gql from 'graphql-tag';
 import { useQuery, } from '@apollo/react-hooks';
+
+
+const GET_ALL_CUSTOMERS_QUERY = gql`
+query($batch:Int){
+  customers{
+    id
+    name
+    streetAddress1
+    streetAddress2
+    city
+    state
+    zip
+    country
+  }
+  lastBatch
+  customerByBatch(batch:$batch){
+    id
+  }
+}
+`;
 
 const CustomerDataForm = ({sendCustomerIdToDosimeterForm, selectedBatch}) => {
   const [customerList, setCustomerList] = useState([]);

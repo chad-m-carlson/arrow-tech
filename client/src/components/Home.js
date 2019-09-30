@@ -3,7 +3,13 @@ import {NavLink,Link } from 'react-router-dom';
 import {Popup, Grid, Header, Button, Input} from 'semantic-ui-react';
 import styled from 'styled-components';
 import { Query } from 'react-apollo';
-import {LAST_BATCH, } from './graphql/queries';
+import gql from 'graphql-tag'
+
+const LAST_BATCH = gql`
+query{
+  lastBatch
+}
+`;
 
 const Home = () => {
   const [otherBatchNumber, setOtherBatchNumber] =useState('');
