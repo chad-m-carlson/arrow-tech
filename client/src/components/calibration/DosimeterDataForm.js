@@ -75,14 +75,16 @@ const DosimeterDataForm = (props) => {
       setVipPass(vipPass)
       setVipProblems(vipProblems)
     }
+    
     setBatch(props.batchNumber)
-  },[data, props.batchNumber])
+  },[data, props.batchNumber, props.lastCalibration])
 
   useEffect( () => {
     handleFinalPass()
   }, [elPass, accPass, vacPass, vipPass])
 
   const getPreviousRecord = () => {
+    props.refetch({"batch": props.batchNumber, "id": props.lastCalibration.lastCalibrationByBatch.id})
     const {modelNumber, serialNumber} = props.lastCalibration.dosimeterByBatch
 
     setEditing(true)
@@ -100,7 +102,7 @@ const DosimeterDataForm = (props) => {
     setElDateOut(new Date(elDateOut))
     setElPass(elPass)
     setElRead(elRead)
-    setFinalPassDate(new Date (finalDate))
+    // setFinalPassDate(new Date (finalDate))
     setFinalPass(finalPass)
     // setId(id)
     setTolerance(tolerance)
@@ -219,7 +221,10 @@ const DosimeterDataForm = (props) => {
       <div style={{display: "flex", justifyContent: "space-between"}}>
         <h1>Dosimeter Data</h1>
         <div>
-          <Icon style={{cursor: "pointer"}} onClick={getPreviousRecord} name="arrow left"/>
+          <Icon 
+            style={{cursor: "pointer"}} 
+            onClick={getPreviousRecord} 
+            name="arrow left"/>
           <Icon style={{cursor: "pointer"}} name="arrow right"/>
         </div>
         {batch && 

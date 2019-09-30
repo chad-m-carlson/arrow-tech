@@ -11,7 +11,7 @@ const CalibrationForm = (props) => {
   const [customerId, setCustomerId] = useState('');
   const [batchNumber, setBatchNumber] = useState('');
 
-  const {data} = useQuery(CALIBRATION_BY_BATCH, {variables: {batch: props.location.state ? props.location.state.lastBatch : null, id: null}});
+  const {data, refetch} = useQuery(CALIBRATION_BY_BATCH, {variables: {batch: props.location.state ? props.location.state.lastBatch : null, id: null}});
 
   const getCustomerId = (id, batch) => {
     setCustomerId(id)
@@ -33,6 +33,7 @@ const CalibrationForm = (props) => {
             customerId={customerId}
             batchNumber={props.location.state ? props.location.state.lastBatch : batchNumber}
             lastCalibration={data}
+            refetch={refetch}
           />
         </Grid.Column>
       </Grid.Row>
