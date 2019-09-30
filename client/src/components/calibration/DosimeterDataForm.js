@@ -20,15 +20,15 @@ const DosimeterDataForm = (props) => {
   const [dosimeterSerialNumber, setDosimeterSerialNumber] = useState('');
   const [elDateIn, setElDateIn] = useState('');
   const [elDateOut, setElDateOut] = useState('');
-  const [elRead, setElRead] = useState(0);
+  const [elRead, setElRead] = useState('');
   const [elPass, setElPass] = useState(false);
   const [accDate, setAccDate] = useState('');
-  const [accRead, setAccRead] = useState(0);
+  const [accRead, setAccRead] = useState('');
   const [accPass, setAccPass] = useState(false);
   const [vacDateIn, setVacDateIn] = useState('');
   const [vacDateOut, setVacDateOut] = useState('');
-  const [vacRead, setVacRead] = useState(0);
-  const [vacRefRead, setVacRefRead] = useState(0);
+  const [vacRead, setVacRead] = useState('');
+  const [vacRefRead, setVacRefRead] = useState('');
   const [vacPass, setVacPass] = useState(true);
   const [vipProblems, setVipProblems] = useState('');
   const [vipPass, setVipPass] = useState(true);
@@ -178,6 +178,7 @@ const DosimeterDataForm = (props) => {
     setAccRead('');
     setVacRead('');
     setVacRefRead('');
+    setVipProblems('');
     setElPass(false);
     setAccPass(false);
     setVacPass(true);
@@ -189,21 +190,29 @@ const DosimeterDataForm = (props) => {
   const handleFinalPass = () => {
     if(elPass === true && accPass === true && vacPass === true && vipPass === true){
       setFinalPass(true);
-      setFinalPassDate(new Date());
+      // setFinalPassDate(new Date());
     }else {
       setFinalPass(false);
-      setFinalPassDate('');
+      // setFinalPassDate('');
     };
   };
 
   const changeEnterToTab = (e) => {
-    if (e.keyCode == 13) {
-      let currentField = parseInt(e.currentTarget.attributes.id.nodeValue)
-      currentField ++
-      e.preventDefault()
-      document.getElementById(currentField.toString()).focus()
+    let currentField = parseInt(e.currentTarget.attributes.id.nodeValue)
+    if (e.keyCode === 13 && currentField === 4) {
+      handleDosimeterCalibrationSubmission(e)
     };
-  };
+
+    if (e.keyCode === 13 && currentField !== 4) {
+      currentField ++
+      document.getElementById(currentField.toString()).focus()
+    } else if (e.keyCode ===38) {
+      currentField --
+      document.getElementById(currentField.toString()).focus()
+    } 
+
+
+  }
 
   return ( 
     <div>
@@ -414,7 +423,8 @@ const DosimeterDataForm = (props) => {
       <Button 
         id='4' 
         tabIndex='4' 
-        onClick={handleDosimeterCalibrationSubmission}
+        onKeyDown={(e) => changeEnterToTab(e)}
+        // onClick={handleDosimeterCalibrationSubmission}
         >Submit Dosimeter Calibration
       </Button>
       <Button as={Link} to={{pathname: '/batchreport', state: {batch: props.batchNumber}}}>View Batch Report</Button>
