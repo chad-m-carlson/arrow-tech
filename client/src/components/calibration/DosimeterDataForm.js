@@ -84,6 +84,35 @@ const DosimeterDataForm = (props) => {
     if(data){
       setCustomerDosimeterModels(data.uniqueDosimeterModels.map( o => ({key: o.id, text: o.modelNumber, value: o.modelNumber})))
     } 
+    if(props.lastCalibration){
+      const {accDate, accPass, accRead, certificateNumber, dateReceived, dueDate, elDateIn, elDateOut, elPass, elRead, finalDate, finalPass, id, tolerance, vacPass, vipPass, vipProblems, } = props.lastCalibration.lastCalibrationByBatch
+      const {modelNumber, serialNumber} = props.lastCalibration.dosimeterByBatch
+
+      setEditing(true)
+      setAccDate(new Date(accDate))
+      setAccPass(accPass)
+      setAccRead(accRead)
+      setCertificateNumber(certificateNumber)
+      setDateReceived(new Date(dateReceived))
+      // setDosimeterId(dosimeterId)
+      // handleDosimeterModelSelection(modelNumber)
+      setDosimeterModelSelected(modelNumber)
+      setDosimeterSerialNumber(serialNumber)
+      setDueDate(new Date(dueDate))
+      setElDateIn(new Date(elDateIn))
+      setElDateOut(new Date(elDateOut))
+      setElPass(elPass)
+      setElRead(elRead)
+      setFinalPassDate(new Date (finalDate))
+      setFinalPass(finalPass)
+      // setId(id)
+      setTolerance(tolerance)
+      // setUserId(userId)
+      setVacPass(vacPass)
+      setVipPass(vipPass)
+      setVipProblems(vipProblems)
+    }
+    
     setBatch(props.batchNumber)
   },[data, props.batchNumber])
 
@@ -199,6 +228,13 @@ const DosimeterDataForm = (props) => {
     <div>
       <div style={{display: "flex", justifyContent: "space-between"}}>
         <h1>Dosimeter Data</h1>
+        <div>
+          <Icon 
+            style={{cursor: "pointer"}} 
+            onClick={getPreviousRecord} 
+            name="arrow left"/>
+          <Icon style={{cursor: "pointer"}} name="arrow right"/>
+        </div>
         {batch && 
           <h4 style={{margin: "auto 0"}}>Batch {batch}</h4>
         }
