@@ -49,6 +49,7 @@ const CREATE_CALIBRATION_RECORD =  gql`
 `;
 
 const DosimeterDataForm = (props) => {
+  
   const [batch, setBatch] = useState('')
   const [dosimeterRange, setDosimeterRange] = useState(0);
   const [isR, setIsR] = useState(false);
