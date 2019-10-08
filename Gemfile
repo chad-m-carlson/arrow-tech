@@ -27,6 +27,7 @@ gem 'bootsnap', '>= 1.4.2', require: false
 gem "devise_token_auth"
 gem 'graphql'
 gem 'graphiql-rails'
+gem "ar_lazy_preload"
 
 gem "faker", :git => "https://github.com/stympy/faker.git", :branch => "master"
 group :development, :test do

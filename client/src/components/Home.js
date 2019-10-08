@@ -39,7 +39,7 @@ const Home = () => {
                       <Button>Choose</Button>
                     </NavLink>
                   </Grid.Column>
-                  <Grid.Column textAlign='center'>
+                  {/* <Grid.Column textAlign='center'>
                     <Header as='h4'>Last Batch</Header>
                     <p>Continue working on the last batch</p>
                     <p><i>Batch {data.lastBatch}</i></p>
@@ -57,7 +57,7 @@ const Home = () => {
                       <Link to={{pathname: '/calform', state: {lastBatch: otherBatchNumber}}}>
                         <Button>Choose</Button>
                       </Link>
-                  </Grid.Column>
+                  </Grid.Column> */}
                 </Grid>
               </Popup>)}}
         </Query>

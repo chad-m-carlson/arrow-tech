@@ -8,6 +8,7 @@ import {CREATE_CALIBRATION_RECORD, } from '../graphql/mutations';
 import { Query } from 'react-apollo';
 import { useQuery, useMutation } from '@apollo/react-hooks';
 import {Link, } from 'react-router-dom';
+import {toast, } from 'react-toastify';
 
 const DosimeterDataForm = (props) => {
   const [batch, setBatch] = useState('')
@@ -19,6 +20,7 @@ const DosimeterDataForm = (props) => {
   const [dateReceived, setDateReceived] = useState('');
   const [dosimeterModelSelected, setDosimeterModelSelected] = useState('');
   const [dosimeterSerialNumber, setDosimeterSerialNumber] = useState('');
+  const [dosimeterId, setDosimeterId] = useState('');
   const [elDateIn, setElDateIn] = useState('');
   const [elDateOut, setElDateOut] = useState('');
   const [elRead, setElRead] = useState('');
@@ -39,57 +41,60 @@ const DosimeterDataForm = (props) => {
   const [dueDate, setDueDate] = useState('');
   const [customerDosimeterModels, setCustomerDosimeterModels] = useState([]);
   const [editing, setEditing] = useState(false);
+  const [error, setError] = useState(false);
+  // const [back, setBack] = useState(true);
+  // const [forward, setForward] = useState(false);
 
   const {user} = useContext(AuthContext);
   const {data} = useQuery(GET_UNIQUE_DOSIMETER_MODELS)
-  const [create_calibration_record] = useMutation(CREATE_CALIBRATION_RECORD)
+  const [create_calibration_record, {error: mutationError },] = useMutation(CREATE_CALIBRATION_RECORD)
+
   
   useEffect(() =>{
+    // fills drop down menu with dosimeter model data
     if(data){
       setCustomerDosimeterModels(data.uniqueDosimeterModels.map( o => ({key: o.id, text: o.modelNumber, value: o.modelNumber})))
     } 
-    if(props.lastCalibration){
-      const {accDate, accPass, accRead, certificateNumber, dateReceived, dueDate, elDateIn, elDateOut, elPass, elRead, finalDate, finalPass, id, tolerance, vacPass, vipPass, vipProblems, } = props.lastCalibration.previousCalibration
-      const {modelNumber, serialNumber} = props.lastCalibration.dosimeterByBatch
+    if(props.calibration){
+      const {accDate, accPass, accRead, certificateNumber, dateReceived, dueDate, elDateIn, elDateOut, elPass, elRead, finalDate, finalPass, id, tolerance, vacPass, vipPass, vipProblems, dosimeterId} = props.calibration.calibration
+      const {modelNumber, serialNumber, range, isR} = props.calibration.calibration.dosimeter
 
-      setEditing(true)
-      setCalibrationId(id)
-      setAccDate(new Date(accDate))
-      setAccPass(accPass)
-      setAccRead(accRead)
-      setCertificateNumber(certificateNumber)
-      setDateReceived(new Date(dateReceived))
-      // setDosimeterId(dosimeterId)
-      // handleDosimeterModelSelection(modelNumber)
-      setDosimeterModelSelected(modelNumber)
-      setDosimeterSerialNumber(serialNumber)
-      setDueDate(new Date(dueDate))
-      setElDateIn(new Date(elDateIn))
-      setElDateOut(new Date(elDateOut))
-      setElPass(elPass)
-      setElRead(elRead)
-      setFinalPassDate(new Date (finalDate))
-      setFinalPass(finalPass)
-      // setId(id)
-      setTolerance(tolerance)
-      // setUserId(userId)
-      setVacPass(vacPass)
-      setVipPass(vipPass)
-      setVipProblems(vipProblems)
+      setCurrentRecordToState(accDate, accPass, accRead, certificateNumber, dateReceived, dueDate, elDateIn, elDateOut, elPass, elRead, finalDate, finalPass, id, tolerance, vacPass, vipPass, vipProblems, dosimeterId, modelNumber, serialNumber, range, isR);
     }
+    // if(props.lastCalibration){
+      // if(props.lastCalibration.previousCalibration && back){
+      //   const {accDate, accPass, accRead, certificateNumber, dateReceived, dueDate, elDateIn, elDateOut, elPass, elRead, finalDate, finalPass, id, tolerance, vacPass, vipPass, vipProblems, dosimeterId} = props.lastCalibration.previousCalibration
+      //   setCurrentRecordToState(accDate, accPass, accRead, certificateNumber, dateReceived, dueDate, elDateIn, elDateOut, elPass, elRead, finalDate, finalPass, id, tolerance, vacPass, vipPass, vipProblems, dosimeterId);
+      // }else if(props.lastCalibration.nextCalibration && forward){
+      //   const {accDate, accPass, accRead, certificateNumber, dateReceived, dueDate, elDateIn, elDateOut, elPass, elRead, finalDate, finalPass, id, tolerance, vacPass, vipPass, vipProblems, dosimeterId} = props.lastCalibration.nextCalibration
+      //   setCurrentRecordToState(accDate, accPass, accRead, certificateNumber, dateReceived, dueDate, elDateIn, elDateOut, elPass, elRead, finalDate, finalPass, id, tolerance, vacPass, vipPass, vipProblems, dosimeterId)
+      // }else alert("This is the last record for this batch")
+    // }
 
     setBatch(props.batchNumber)
-  },[data, props.batchNumber, props.lastCalibration])
+  },[data, props.batchNumber, props.calibration]);
 
   useEffect( () => {
     handleFinalPass()
-  }, [elPass, accPass, vacPass, vipPass])
+  }, [elPass, accPass, vacPass, vipPass]);
 
-  const getPreviousRecord = () => {
-    props.refetch({"batch": props.batchNumber, "id": props.lastCalibration.lastCalibrationByBatch.id})
-    const {modelNumber, serialNumber} = props.lastCalibration.dosimeterByBatch
+  // const getNextRecord = () => {
+  //   setForward(true)
+  //   setBack(false)
+  //   props.refetch({"batch": props.batchNumber, "id": calibrationId})    
+  // };
 
+  // const getPreviousRecord = () => {
+  //   setForward(false)
+  //   setBack(true)
+  //   props.refetch({"batch": props.batchNumber, "id": calibrationId})
+  // };
+
+  const setCurrentRecordToState = (accDate, accPass, accRead, certificateNumber, dateReceived, dueDate, elDateIn, elDateOut, elPass, elRead, finalDate, finalPass, id, tolerance, vacPass, vipPass, vipProblems, dosimeterId,modelNumber, serialNumber, range, isR) => {
     setEditing(true)
+    setCalibrationId(id)
+    setDosimeterRange(range)
+    setIsR(isR)
     setAccDate(new Date(accDate))
     setAccPass(accPass)
     setAccRead(accRead)
@@ -97,14 +102,13 @@ const DosimeterDataForm = (props) => {
     setDateReceived(new Date(dateReceived))
     // setDosimeterId(dosimeterId)
     // handleDosimeterModelSelection(modelNumber)
-    setDosimeterModelSelected(modelNumber)
-    setDosimeterSerialNumber(serialNumber)
+    setDosimeterId(dosimeterId)
     setDueDate(new Date(dueDate))
     setElDateIn(new Date(elDateIn))
     setElDateOut(new Date(elDateOut))
     setElPass(elPass)
     setElRead(elRead)
-    // setFinalPassDate(new Date (finalDate))
+    setFinalPassDate(finalDate === null ? null : new Date (finalDate))
     setFinalPass(finalPass)
     // setId(id)
     setTolerance(tolerance)
@@ -112,12 +116,16 @@ const DosimeterDataForm = (props) => {
     setVacPass(vacPass)
     setVipPass(vipPass)
     setVipProblems(vipProblems)
+    setDosimeterSerialNumber(serialNumber)
+    setDosimeterModelSelected(modelNumber)
   };
 
   const handleDosimeterModelSelection = (e, {value}) => {
     setDosimeterModelSelected(value)
     setDosimeterRange(data.uniqueDosimeterModels.filter( d => d.modelNumber === value)[0].range)
     setIsR(data.uniqueDosimeterModels.filter( d => d.modelNumber === value)[0].isR)
+    handleAccReading(accRead)
+    handleElReading(elRead)
   };
 
   const handleAccReading = (valueRead) => {
@@ -132,11 +140,13 @@ const DosimeterDataForm = (props) => {
 
   const handleElReading = (valueRead) => {
     setElRead(valueRead)
-    const testDuration = elDateOut.getDate() - elDateIn.getDate()
-    const perDayLeakageAllowed = 0.025 * dosimeterRange
-    if(testDuration * perDayLeakageAllowed >= (isR ? (valueRead * 1000) : valueRead)){
-      setElPass(true);
-    }else setElPass(false);
+    if(elDateIn && elDateOut){
+      const testDuration = elDateOut.getDate() - elDateIn.getDate()
+      const perDayLeakageAllowed = 0.025 * dosimeterRange
+      if(testDuration * perDayLeakageAllowed >= (isR ? (valueRead * 1000) : valueRead)){
+        setElPass(true);
+      }else setElPass(false);
+    }
     if(valueRead == '')setElPass(false);
     // 2.5% of full scale reading per day is the maximum allowed. 200mR dosimeter passes a two day el leakage test if it reads less than 10mR
   };
@@ -145,7 +155,9 @@ const DosimeterDataForm = (props) => {
     e.preventDefault()
     console.log('submitted')
     create_calibration_record({variables: {
+        "id": calibrationId,
         "user_id": user.id,
+        "dosimeter_id": dosimeterId,
         "date_received": dateReceived, 
         "el_date_in": elDateIn, 
         "el_date_out": elDateOut, 
@@ -165,6 +177,7 @@ const DosimeterDataForm = (props) => {
         "vip_problems": vipProblems, 
         "vac_reading": parseFloat(vacRead), 
         "vac_ref_reading": parseFloat(vacRefRead), 
+        "certificate_number": certificateNumber,
         "batch": batch,
         "customer_id": parseInt(props.customerId),
         "model_number": dosimeterModelSelected,
@@ -172,8 +185,13 @@ const DosimeterDataForm = (props) => {
         "tolerance": tolerance/100,
       }
     })
+    if(mutationError)setError(true)
     // !if everything is successful, reset form
     resetForm()
+    if(editing){
+      setCalibrationId(null);
+      setEditing(false);
+    }
   };
   
   const resetForm = () => {
@@ -197,16 +215,16 @@ const DosimeterDataForm = (props) => {
       // setFinalPassDate(new Date());
     }else {
       setFinalPass(false);
-      // setFinalPassDate('');
+      // setFinalPassDate(null);
+      setCertificateNumber(null);
     };
   };
 
-  const changeEnterToTab = (e) => {
+  const customKeyBindings = (e) => {
     let currentField = parseInt(e.currentTarget.attributes.id.nodeValue)
     if (e.keyCode === 13 && currentField === 4) {
       handleDosimeterCalibrationSubmission(e)
     };
-
     if (e.keyCode === 13 && currentField !== 4) {
       currentField ++
       document.getElementById(currentField.toString()).focus()
@@ -214,21 +232,22 @@ const DosimeterDataForm = (props) => {
       currentField --
       document.getElementById(currentField.toString()).focus()
     } 
-
-
   }
 
   return ( 
     <div>
       <div style={{display: "flex", justifyContent: "space-between"}}>
-        <h1>Dosimeter Data</h1>
+        {/* <h1>Dosimeter Data</h1>
         <div>
           <Icon 
             style={{cursor: "pointer"}} 
-            onClick={() => props.refetch({"batch": props.batchNumber, "id": calibrationId})} 
+            onClick={() => getPreviousRecord()} 
             name="arrow left"/>
-          <Icon style={{cursor: "pointer"}} name="arrow right"/>
-        </div>
+          <Icon 
+            style={{cursor: "pointer"}} 
+            name="arrow right"
+            onClick={() => getNextRecord()}/>
+        </div> */}
         {batch && 
           <h4 style={{margin: "auto 0"}}>Batch {batch}</h4>
         }
@@ -244,17 +263,18 @@ const DosimeterDataForm = (props) => {
           <Form.Select
             label="Dosimeter Model"
             loading={customerDosimeterModels.length < 1}
+            // defaultValue={props.calibration ? props.calibration.calibration.dosimeter.id : null}
             options={customerDosimeterModels}
             onChange={handleDosimeterModelSelection}
-            value={props.lastCalibration && dosimeterModelSelected}
+            value={dosimeterModelSelected}
           />
-        {(props.batchNumber || props.customerID) ?
+        {(props.batchNumber || props.customerId || props.calibration) ?
           <Form.Input
           label="Dosimeter Serial Number"
             id="1"
             tabIndex='1'
-            value={(props.batchNumber || props.customerID) ? dosimeterSerialNumber : ''}
-            onKeyDown={(e) => changeEnterToTab(e)}
+            value={(props.batchNumber || props.customerID || props.calibration) ? dosimeterSerialNumber : ''}
+            onKeyDown={(e) => customKeyBindings(e)}
             onChange={(e) => setDosimeterSerialNumber(e.target.value)}
             />
           :
@@ -262,8 +282,8 @@ const DosimeterDataForm = (props) => {
             label="Dosimeter Serial Number"
             id="1"
             tabIndex='1'
-            value={(props.batchNumber || props.customerID) ? dosimeterSerialNumber : ''}
-            onKeyDown={(e) => changeEnterToTab(e)}
+            value={(props.batchNumber || props.customerID || props.calibration) ? dosimeterSerialNumber : ''}
+            onKeyDown={(e) => customKeyBindings(e)}
             onChange={(e) => setDosimeterSerialNumber(e.target.value)}>
                 <Label 
                   basic 
@@ -296,7 +316,7 @@ const DosimeterDataForm = (props) => {
           label="EL Read"
           tabIndex='2'
           value={elRead}
-          onKeyDown={(e) => changeEnterToTab(e)}
+          onKeyDown={(e) => customKeyBindings(e)}
           onChange={(e) => {handleElReading(e.target.value)}}
         />
       </Form.Group>
@@ -337,7 +357,7 @@ const DosimeterDataForm = (props) => {
           id='3'
           tabIndex='3'
           value={accRead}
-          onKeyDown={(e) => changeEnterToTab(e)}
+          onKeyDown={(e) => customKeyBindings(e)}
           onChange={(e) => handleAccReading(e.target.value)}
         />
       </Form.Group>
@@ -350,34 +370,6 @@ const DosimeterDataForm = (props) => {
         />
       </div>
       <Divider style={{margin: "1.5rem"}}/>
-      {/* <Form.Group widths='equal' inline>
-        <Form.Input label="VAC Date In">
-          <DatePicker
-            selected={vacDateIn}
-            onChange={date => setVacDateIn(date)}
-          />
-        </Form.Input>
-        <Form.Input label="VAC Date Out">
-          <DatePicker
-            selected={vacDateOut}
-            onChange={date => setVacDateOut(date)}
-          />
-        </Form.Input>
-      </Form.Group>
-      <Form.Group widths='equal' inline>
-        <Form.Input
-          label="VAC Reading"
-          tabIndex='4'
-          value={vacRead}
-          onChange={(e) => setVacRead(e.target.value)}
-        />
-        <Form.Input
-          label="VAC Ref Reading"
-          tabIndex='5'
-          value={vacRefRead}
-          onChange={(e) => setVacRefRead(e.target.value)}
-        />
-      </Form.Group> */}
       <div style={{textAlign: "center"}}>
         <Form.Checkbox
           style={{}}
@@ -430,11 +422,13 @@ const DosimeterDataForm = (props) => {
       <Button 
         id='4' 
         tabIndex='4' 
-        onKeyDown={(e) => changeEnterToTab(e)}
-        // onClick={handleDosimeterCalibrationSubmission}
-        >Submit Dosimeter Calibration
+        onKeyDown={(e) => customKeyBindings(e)}
+        // onClick={(e) => handleDosimeterCalibrationSubmission(e)}
+        >{!editing ? "Submit Dosimeter Calibration" : "Update Dosimeter Calibration" }
       </Button>
-      <Button as={Link} to={{pathname: '/batchreport', state: {batch: props.batchNumber}}}>View Batch Report</Button>
+      {/* {props.batchNumber || props.calibration &&
+        <Button as={Link} to={{pathname: '/batchreport', state: {batch: props.batchNumber ? props.batchNumber : props.calibration.calibration.batch}}}>View Batch Report</Button>
+      } */}
       </Form>
     </div>
 

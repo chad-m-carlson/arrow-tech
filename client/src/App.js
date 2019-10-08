@@ -12,6 +12,8 @@ import CalibrationReports from './components/calibration/CalibrationReports';
 import NoMatch from './components/NoMatch';
 import BatchReport from './components/BatchReport';
 import CertificateOfCalibration from './components/CertificateOfCalibration';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import {Switch, Route, } from 'react-router-dom';
 // import {Container, } from 'semantic-ui-react';
 import { ApolloProvider } from '@apollo/react-hooks';
@@ -25,6 +27,7 @@ function App() {
     <>
     <ApolloProvider>
     <NavBar />
+    <ToastContainer />
     <div style={{margin: "4rem"}}>
       <FetchUser>
           <Switch>

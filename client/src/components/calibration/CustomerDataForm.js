@@ -4,7 +4,7 @@ import {Form, Button, Divider} from 'semantic-ui-react';
 import {GET_ALL_CUSTOMERS_QUERY, } from '../graphql/queries';
 import { useQuery, } from '@apollo/react-hooks';
 
-const CustomerDataForm = ({sendCustomerIdToDosimeterForm, selectedBatch}) => {
+const CustomerDataForm = ({sendCustomerIdToDosimeterForm, selectedBatch, customerId}, props) => {
   const [customerList, setCustomerList] = useState([]);
   const [customerSelection, setCustomerSelection] = useState([]);
   const [dataLoading, setDataLoading] = useState(false);
@@ -28,6 +28,10 @@ const CustomerDataForm = ({sendCustomerIdToDosimeterForm, selectedBatch}) => {
         setBatchNumber(selectedBatch);
         sendCustomerIdToDosimeterForm();
       };
+      if(customerId){
+        // debugger
+        setSelectedCustomer(...data.customers.filter( c => c.id === customerId))
+      }
       // setBatchNumber(data.lastBatch)
     }
   }, [data, loading])
@@ -40,7 +44,7 @@ const CustomerDataForm = ({sendCustomerIdToDosimeterForm, selectedBatch}) => {
   };
 
   const handleCustomerSelection = (e, {value}) => {
-    setSelectedCustomer(...customerList.filter( c => c.id === value))
+    setSelectedCustomer(...customerList.filter( c => c.id == value))
     setBatchNumber(data.lastBatch + 1)
   };
 
@@ -67,6 +71,7 @@ const CustomerDataForm = ({sendCustomerIdToDosimeterForm, selectedBatch}) => {
           disabled={selectedBatch ? true : false}
           style={{margin: "1rem"}}
           placeholder="Select a customer"
+          defaultValue={customerId ? customerId : null}
           options={searchActive ? filteredCustomerList : customerSelection}
           loading={dataLoading}
           onChange={handleCustomerSelection}

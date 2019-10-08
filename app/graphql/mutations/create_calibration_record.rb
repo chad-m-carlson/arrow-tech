@@ -1,7 +1,7 @@
 class Mutations::CreateCalibrationRecord < Mutations::BaseMutation
-  # argument :id, ID, required: false
-  argument :user_id, Int, required: false
-  # argument :dosimeter_id, Int, required: false
+  argument :id, ID, required: false
+  argument :user_id, ID, required: false
+  argument :dosimeter_id, ID, required: false
   # argument :tolerance, Int, required: false
   argument :date_received, String, required: false
   argument :el_date_in, String, required: false
@@ -31,74 +31,103 @@ class Mutations::CreateCalibrationRecord < Mutations::BaseMutation
   argument :tolerance, Float, required: false
 
   field :calibration, Types::CalibrationType, null: false
-  field :errors, [String], null: false
+  field :errors, [String], null: true
 
-  
-  def resolve( user_id:, date_received:, el_date_in:, el_date_out:, acc_date:, vac_date_in:, vac_date_out:, final_date:, due_date:, el_pass: , vip_pass: , vac_pass: , acc_pass: , final_pass: ,el_read:, acc_read:, vip_problems:, vac_reading:, vac_ref_reading:, batch:, customer_id:, model_number:, serial_number:, tolerance:)
+  def resolve( id:, user_id:, dosimeter_id:,  date_received:, el_date_in:, el_date_out:, acc_date:, vac_date_in:, vac_date_out:, final_date:, due_date:, el_pass: , vip_pass: , vac_pass: , acc_pass: , final_pass: ,el_read:, acc_read:, vip_problems:, vac_reading:, vac_ref_reading:, certificate_number:, batch:, customer_id:, model_number:, serial_number:, tolerance:)
+    if final_pass == false
+      final_date = nil
+      certificate_number = nil
+      due_date = nil
+    end
 
     dosimeter = Customer.find(customer_id).dosimeters.where("model_number = ? AND serial_number =  ?", model_number, serial_number ).first
-
+    
     if dosimeter == nil
-      range = Dosimeter.where("model_number = ?", model_number).first.range
-      dosimeter = Dosimeter.create(
-        model_number: model_number,
+      dosimeter = Dosimeter.where("model_number = ?", model_number).first.dup
+      dosimeter.update(
         serial_number: serial_number,
-        range: range,
-        is_r: range > 1001 ? true : false,
-        is_mr: range < 1001 ? true : false,
         customer_id: customer_id
-        )
+      )
     end
-        
     
     if tolerance == 0.0
       tolerance = 0.1
     end
 
-    if final_pass == true
-      certificate_number = "#{DateTime.now.year}-#{batch}"
-    end
-    
-    calibration = Calibration.new(
-                                  user_id: user_id, 
-                                  dosimeter_id: dosimeter.id,
-                                  tolerance: tolerance, 
-                                  date_received: date_received, 
-                                  el_date_in: el_date_in, 
-                                  el_date_out: el_date_out, 
-                                  acc_date: acc_date, 
-                                  acc_pass: acc_pass, 
-                                  vac_date_in: vac_date_in, 
-                                  vac_date_out: vac_date_out, 
-                                  final_date: final_date, 
-                                  # ship_back_date: ship_back_date, 
-                                  due_date: due_date, 
-                                  el_pass: el_pass, 
-                                  vip_pass: vip_pass, 
-                                  vac_pass: vac_pass, 
-                                  final_pass: final_pass, 
-                                  el_read: el_read, 
-                                  acc_read: acc_read, 
-                                  vip_problems: vip_problems, 
-                                  vac_reading: vac_reading, 
-                                  vac_ref_reading: vac_ref_reading, 
-                                  batch: batch,
-                                  certificate_number: certificate_number
-                                  )
-    if calibration.save
-      {
-        calibration: calibration,
-        errors: [],
-      }
-    else
-      {
-        # todo get flash messages working
-        # flash[:notice] = "This Dosimeter does not exist",
-        user: nil,
-        errors: calibration.errors.full_message,
-      }
-    end
-    
+    if id
+      #! IF WE ARE UPDATING A CALIBRATION RECORD
+      calibration = Calibration.find(id)
+      calibration.update(user_id: user_id, 
+                        dosimeter_id: dosimeter.id,
+                        tolerance: tolerance, 
+                        date_received: date_received, 
+                        el_date_in: el_date_in, 
+                        el_date_out: el_date_out, 
+                        acc_date: acc_date, 
+                        acc_pass: acc_pass, 
+                        vac_date_in: vac_date_in, 
+                        vac_date_out: vac_date_out, 
+                        final_date: final_date, 
+                        # ship_back_date: ship_back_date, 
+                        due_date: due_date, 
+                        el_pass: el_pass, 
+                        vip_pass: vip_pass, 
+                        vac_pass: vac_pass, 
+                        final_pass: final_pass, 
+                        el_read: el_read, 
+                        acc_read: acc_read, 
+                        vip_problems: vip_problems, 
+                        vac_reading: vac_reading, 
+                        vac_ref_reading: vac_ref_reading, 
+                        batch: batch,
+                        certificate_number: certificate_number
+      )
+      if calibration.save!
+        {
 
+        }
+      else
+        {
+
+        }
+      end
+
+    else
+      #! IF WE ARE CREATING A NEW CALIBRATION RECORD
+      calibration = Calibration.new(user_id: user_id, 
+                                    dosimeter_id: dosimeter.id,
+                                    tolerance: tolerance, 
+                                    date_received: date_received, 
+                                    el_date_in: el_date_in, 
+                                    el_date_out: el_date_out, 
+                                    acc_date: acc_date, 
+                                    acc_pass: acc_pass, 
+                                    vac_date_in: vac_date_in, 
+                                    vac_date_out: vac_date_out, 
+                                    final_date: final_date, 
+                                    # ship_back_date: ship_back_date, 
+                                    due_date: due_date, 
+                                    el_pass: el_pass, 
+                                    vip_pass: vip_pass, 
+                                    vac_pass: vac_pass, 
+                                    final_pass: final_pass, 
+                                    el_read: el_read, 
+                                    acc_read: acc_read, 
+                                    vip_problems: vip_problems, 
+                                    vac_reading: vac_reading, 
+                                    vac_ref_reading: vac_ref_reading, 
+                                    batch: batch,
+                                    certificate_number: certificate_number
+        )
+        if calibration.save!
+          {
+
+          }
+        else
+          {
+            # todo get flash messages working
+          }
+      end
+    end
   end
 end

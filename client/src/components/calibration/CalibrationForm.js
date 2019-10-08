@@ -2,7 +2,7 @@ import React, {useState, useEffect } from 'react';
 import {Grid, } from 'semantic-ui-react';
 import CustomerDataForm from './CustomerDataForm';
 import DosimeterDataForm from './DosimeterDataForm';
-import {CALIBRATION_BY_BATCH} from '../graphql/queries';
+import {CALIBRATION} from '../graphql/queries';
 import { useQuery, } from '@apollo/react-hooks';
 
 
@@ -11,11 +11,20 @@ const CalibrationForm = (props) => {
   const [customerId, setCustomerId] = useState('');
   const [batchNumber, setBatchNumber] = useState('');
 
-  const {data, refetch} = useQuery(CALIBRATION_BY_BATCH, {variables: {batch: props.location.state ? props.location.state.lastBatch : null, id: null}});
+  const {data, fetching, error} = useQuery(CALIBRATION, {variables: {id: props.location.state ? props.location.state.calibrationId : null }, fetchPolicy: "no-cache"})
+
+  useEffect( () => {
+    if(props.location.state){
+      setBatchNumber(props.location.state.batch)
+      setCustomerId(props.location.state.customerId)
+    }
+  },[props.location.state])
 
   const getCustomerId = (id, batch) => {
-    setCustomerId(id)
-    setBatchNumber(batch)
+    if(!props.location.state){
+      setCustomerId(id)
+      setBatchNumber(batch)
+    }
   };
 
   return ( 
@@ -24,16 +33,18 @@ const CalibrationForm = (props) => {
         <Grid.Column style={{width: "40%", borderRight: "1px solid gray"}}>
           <CustomerDataForm 
             sendCustomerIdToDosimeterForm={getCustomerId}
-            selectedBatch={props.location.state ? props.location.state.lastBatch : ''}
+            selectedBatch={props.location.state ? props.location.state.batch : null}
+            customerId={props.location.state ? props.location.state.customerId : null}
           />
         </Grid.Column>
         <Grid.Column style={{width: "60%", borderLeft: "1px solid gray"}}>
+          {/* {error &&
+            <h1>ERROR {error.message}</h1>
+          } */}
           <DosimeterDataForm 
-            // lastBatch={props.location.state ? props.location.state.lastBatch : ''}
             customerId={customerId}
-            batchNumber={props.location.state ? props.location.state.lastBatch : batchNumber}
-            lastCalibration={data}
-            refetch={refetch}
+            batchNumber={props.location.state ? props.location.state.batch : batchNumber}
+            calibration={data}
           />
         </Grid.Column>
       </Grid.Row>

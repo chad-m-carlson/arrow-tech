@@ -62,7 +62,7 @@ module Types
     end
 
     def calibrations_by_batch(batch:)
-      Calibration.where(batch: batch)
+      Calibration.order(:id).where(batch: batch)
     end
 
     def last_calibration_by_batch(batch:)
@@ -71,21 +71,23 @@ module Types
 
     def previous_calibration(batch:, id:)
       if id
-        Calibration.prev(batch, id)
+        Calibration.order(:id).prev(batch, id)
       else
-        Calibration.where(batch: batch).last
+        Calibration.order(:id).where(batch: batch).last
         # last_id = Calibration.last.id
         # Calibration.where("batch =  ? AND id = ?", batch, last_id - 1).first
       end
     end
 
     def next_calibration(batch:, id:)
-      Calibration.next(batch, id)
+      Calibration.order(:id).next(batch, id)
     end
 
     def dosimeter_by_batch(batch:, id:)
-      if id
-        Calibration.find(id).dosimeter
+      x = Calibration.order(:id).prev(batch, id)
+      if x != nil && id
+        x.dosimeter
+        # ! .prev method breaks if no more previous calibration records exist. Will have to add error handling here instead of the alert in the dosimeterform
       else
         Calibration.where(batch: batch).last.dosimeter
       end

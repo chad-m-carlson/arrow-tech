@@ -64,6 +64,9 @@ query($batch:Int!, $id:ID){
     dosimeterByBatch(batch:$batch, id:$id){
       modelNumber
       serialNumber
+      range
+      isR
+      id
     }
   	previousCalibration(batch:$batch, id:$id){
     	id
@@ -138,5 +141,69 @@ export const GET_PREVIOUS_CALIBRATION = gql `
       serialNumber
     }
 }
+`;
+
+export const CALIBRATIONS_BY_BATCH = gql`
+  query($batch: Int!){
+  calibrationsByBatch(batch: $batch) {
+    id
+    userId
+    dosimeterId
+    dateReceived
+    finalDate
+    certificateNumber
+    batch
+    vacPass
+    vipPass
+    accPass
+    elPass
+    finalPass
+    user{
+      firstName
+      lastName
+    }
+    dosimeter{
+      modelNumber
+      serialNumber
+      customer{
+        id
+        name
+      }
+    }
+  } 
+}
+`;
+
+export const CALIBRATION = gql `
+    query Calibration($id:ID!){
+    calibration(id:$id){
+      id
+      userId
+      dosimeterId
+      tolerance
+      dateReceived
+      elDateIn
+      elDateOut
+      accDate
+      finalDate
+      dueDate
+      elPass
+      vipPass
+      vacPass
+      finalPass
+      elRead
+      accRead
+      accPass
+      vipProblems
+      certificateNumber
+      dosimeter{
+        modelNumber
+        serialNumber
+        range
+        isR
+        id
+      }
+    }
+  }
 `;
 
