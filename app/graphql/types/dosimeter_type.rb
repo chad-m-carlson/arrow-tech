@@ -6,6 +6,8 @@ module Types
     field :range, Integer, null: false
     field :is_mr, Boolean, null: false
     field :is_r, Boolean, null: false
+    field :is_sv, Boolean, null: false
+    field :is_msv, Boolean, null: false
     field :customer_id, ID, null: false
     field :calibrations, [Types::CalibrationType], null: false do
       argument :id, ID, required: true

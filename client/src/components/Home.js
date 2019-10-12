@@ -23,43 +23,49 @@ const Home = () => {
             if (error) return <div>Error!</div>
             if (data)
             return(
-              <Popup trigger={ 
-                <div style={{width: "10rem"}}>
-                  {/* <NavLink to='/calform'> */}
-                    <Card>
-                      <h3 >Calibration Form</h3>
-                    </Card>
-                  {/* </NavLink> */}
-                </div>} flowing hoverable>
-                <Grid centered divided columns={3}>
-                  <Grid.Column textAlign='center'>
-                    <Header as='h4'>New Batch</Header>
-                    <p>Start a new batch with new customer</p>
-                    <NavLink to='/calform'>
-                      <Button>Choose</Button>
-                    </NavLink>
-                  </Grid.Column>
-                  {/* <Grid.Column textAlign='center'>
-                    <Header as='h4'>Last Batch</Header>
-                    <p>Continue working on the last batch</p>
-                    <p><i>Batch {data.lastBatch}</i></p>
-                    <Link to={{pathname: '/calform', state: {lastBatch: data.lastBatch}}}>
-                      <Button>Choose</Button>
-                    </Link>
-                  </Grid.Column>
-                  <Grid.Column textAlign='center'>
-                    <Header as='h4'>Other Batch</Header>
-                      <p>Enter a different batch number</p>
-                      <Input 
-                        value={otherBatchNumber}
-                        onChange={(e) => setOtherBatchNumber(parseInt(e.target.value))}
-                      />
-                      <Link to={{pathname: '/calform', state: {lastBatch: otherBatchNumber}}}>
-                        <Button>Choose</Button>
-                      </Link>
-                  </Grid.Column> */}
-                </Grid>
-              </Popup>)}}
+              <NavLink to='/calform'>
+                <Card>
+                  <h3>Calibration Form</h3>
+                </Card>
+              </NavLink>
+              // <Popup trigger={ 
+              //   <div style={{width: "10rem"}}>
+              //     {/* <NavLink to='/calform'> */}
+              //       <Card>
+              //         <h3 >Calibration Form</h3>
+              //       </Card>
+              //     {/* </NavLink> */}
+              //   </div>} flowing hoverable>
+              //   <Grid centered divided columns={3}>
+              //     <Grid.Column textAlign='center'>
+              //       <Header as='h4'>New Batch</Header>
+              //       <p>Start a new batch with new customer</p>
+              //       <NavLink to='/calform'>
+              //         <Button>Choose</Button>
+              //       </NavLink>
+              //     </Grid.Column>
+              //     <Grid.Column textAlign='center'>
+              //       <Header as='h4'>Last Batch</Header>
+              //       <p>Continue working on the last batch</p>
+              //       <p><i>Batch {data.lastBatch}</i></p>
+              //       <Link to={{pathname: '/calform', state: {lastBatch: data.lastBatch}}}>
+              //         <Button>Choose</Button>
+              //       </Link>
+              //     </Grid.Column>
+              //     <Grid.Column textAlign='center'>
+              //       <Header as='h4'>Other Batch</Header>
+              //         <p>Enter a different batch number</p>
+              //         <Input 
+              //           value={otherBatchNumber}
+              //           onChange={(e) => setOtherBatchNumber(parseInt(e.target.value))}
+              //         />
+              //         <Link to={{pathname: '/calform', state: {lastBatch: otherBatchNumber}}}>
+              //           <Button>Choose</Button>
+              //         </Link>
+              //     </Grid.Column>
+              //   </Grid>
+              // </Popup>
+              )}}
         </Query>
       <div style={{width: "10rem"}}>
         <NavLink to='/calreports'>

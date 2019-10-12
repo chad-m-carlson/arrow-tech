@@ -31,7 +31,7 @@ const BatchReport = (props) => {
     <>
       <Form>
         <Form.Input
-          autofocus={true}
+          autoFocus
           value={batch}
           onChange={(e) => setBatch(e.target.value)}
         />
@@ -119,7 +119,7 @@ const BatchReport = (props) => {
             )}else return null
         }}
       </Query>
-      <Button as={Link} to={{pathname: '/coc', state: {calData: calData}}}>View Batch Report</Button>
+      <Button as={Link} to={{pathname: '/coc', state: {calData: calData}}}>View Calibration Report</Button>
     </>
   );
 }

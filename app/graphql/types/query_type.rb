@@ -126,16 +126,16 @@ module Types
 
     def unique_dosimeter_models
       Dosimeter.find_by_sql(['
-      WITH uniq_dosimeter (id, model_number, is_r, is_mr, range)
+      WITH uniq_dosimeter (id, model_number, is_r, is_mr, is_sv, is_msv, range)
       AS(
-      SELECT id, model_number, is_r, is_mr, range
+      SELECT id, model_number, is_r, is_mr, is_sv, is_msv, range
       FROM dosimeters
       WHERE id IN
       (SELECT MIN(id) 
       FROM dosimeters 
       GROUP BY model_number 
       ))
-      SELECT id, model_number, is_r, is_mr, range
+      SELECT id, model_number, is_r, is_mr, is_sv, is_msv, range
       FROM uniq_dosimeter
       ORDER BY model_number
       '])

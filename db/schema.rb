@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_09_19_183216) do
+ActiveRecord::Schema.define(version: 2019_10_12_213616) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -63,11 +63,13 @@ ActiveRecord::Schema.define(version: 2019_09_19_183216) do
     t.string "model_number"
     t.string "serial_number"
     t.integer "range"
-    t.boolean "is_mr"
-    t.boolean "is_r"
+    t.boolean "is_mr", default: false
+    t.boolean "is_r", default: false
     t.bigint "customer_id", null: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.boolean "is_sv", default: false
+    t.boolean "is_msv", default: false
     t.index ["customer_id"], name: "index_dosimeters_on_customer_id"
   end
 
