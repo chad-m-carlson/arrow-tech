@@ -15,6 +15,9 @@ const DosimeterDataForm = (props) => {
   const [calibrationId, setCalibrationId] = useState(null)
   const [dosimeterRange, setDosimeterRange] = useState(0);
   const [isR, setIsR] = useState(false);
+  const [isMr, setIsMr] = useState(false);
+  const [isSv, setIsSv] = useState(false);
+  const [isMsv, setIsMsv] = useState(false);
   const [tolerance, setTolerance] = useState(null);
   const [customTolerance, setCustomTolerance] = useState(false);
   const [dateReceived, setDateReceived] = useState('');
@@ -57,9 +60,9 @@ const DosimeterDataForm = (props) => {
     } 
     if(props.calibration){
       const {accDate, accPass, accRead, certificateNumber, dateReceived, dueDate, elDateIn, elDateOut, elPass, elRead, finalDate, finalPass, id, tolerance, vacPass, vipPass, vipProblems, dosimeterId} = props.calibration.calibration
-      const {modelNumber, serialNumber, range, isR} = props.calibration.calibration.dosimeter
+      const {modelNumber, serialNumber, range, isR, isMr, isSv, isMsv} = props.calibration.calibration.dosimeter
 
-      setCurrentRecordToState(accDate, accPass, accRead, certificateNumber, dateReceived, dueDate, elDateIn, elDateOut, elPass, elRead, finalDate, finalPass, id, tolerance, vacPass, vipPass, vipProblems, dosimeterId, modelNumber, serialNumber, range, isR);
+      setCurrentRecordToState(accDate, accPass, accRead, certificateNumber, dateReceived, dueDate, elDateIn, elDateOut, elPass, elRead, finalDate, finalPass, id, tolerance, vacPass, vipPass, vipProblems, dosimeterId, modelNumber, serialNumber, range, isR, isMr, isSv, isMsv);
     }
     // if(props.lastCalibration){
       // if(props.lastCalibration.previousCalibration && back){
@@ -90,11 +93,14 @@ const DosimeterDataForm = (props) => {
   //   props.refetch({"batch": props.batchNumber, "id": calibrationId})
   // };
 
-  const setCurrentRecordToState = (accDate, accPass, accRead, certificateNumber, dateReceived, dueDate, elDateIn, elDateOut, elPass, elRead, finalDate, finalPass, id, tolerance, vacPass, vipPass, vipProblems, dosimeterId,modelNumber, serialNumber, range, isR) => {
+  const setCurrentRecordToState = (accDate, accPass, accRead, certificateNumber, dateReceived, dueDate, elDateIn, elDateOut, elPass, elRead, finalDate, finalPass, id, tolerance, vacPass, vipPass, vipProblems, dosimeterId,modelNumber, serialNumber, range, isR, isMr, isSv, isMsv) => {
     setEditing(true)
     setCalibrationId(id)
     setDosimeterRange(range)
     setIsR(isR)
+    setIsMr(isMr)
+    setIsSv(isSv)
+    setIsMsv(isMsv)
     setAccDate(new Date(accDate))
     setAccPass(accPass)
     setAccRead(accRead)
@@ -124,6 +130,9 @@ const DosimeterDataForm = (props) => {
     setDosimeterModelSelected(value)
     setDosimeterRange(data.uniqueDosimeterModels.filter( d => d.modelNumber === value)[0].range)
     setIsR(data.uniqueDosimeterModels.filter( d => d.modelNumber === value)[0].isR)
+    setIsMr(data.uniqueDosimeterModels.filter( d => d.modelNumber === value)[0].isMr)
+    setIsMsv(data.uniqueDosimeterModels.filter( d => d.modelNumber === value)[0].isMsv)
+    setIsSv(data.uniqueDosimeterModels.filter( d => d.modelNumber === value)[0].isSv)
     handleAccReading(accRead)
     handleElReading(elRead)
   };
@@ -133,7 +142,7 @@ const DosimeterDataForm = (props) => {
     setAccRead(valueRead);
     let lowestAcceptable = midRange - (!customTolerance ? dosimeterRange * 0.05 : dosimeterRange * ((tolerance / 100))/ 2)
     let highestAcceptable = midRange + (!customTolerance ? dosimeterRange * 0.05 : dosimeterRange * ((tolerance / 100))/ 2)
-    if((isR ? (valueRead * 1000) : valueRead) >= lowestAcceptable && (isR ? (valueRead * 1000) : valueRead) <= highestAcceptable){
+    if((isSv ? (valueRead * 1000) : valueRead) >= lowestAcceptable && (isR ? (valueRead * 1000) : valueRead) <= highestAcceptable){
       setAccPass(true)
     }else setAccPass(false)
   }
@@ -234,6 +243,18 @@ const DosimeterDataForm = (props) => {
     } 
   }
 
+  const determineCalculatedDosimeterRange = (dosimeterRange) => {
+    if(isR){
+      return `${dosimeterRange/1000} R`
+    }else if (isMr){
+      return `${dosimeterRange} mR`
+    }else if (isSv){
+      return `${dosimeterRange/10000} sV`
+    }else if (isMsv) {
+      return `${dosimeterRange/100} mSv`
+    }
+  }
+
   return ( 
     <div>
       <div style={{display: "flex", justifyContent: "space-between"}}>
@@ -295,7 +316,7 @@ const DosimeterDataForm = (props) => {
         }
       </Form.Group>
       {dosimeterRange > 1 &&
-      <p><b>Range:</b> {isR ? (dosimeterRange/1000) : dosimeterRange}{isR ? "R" : "mR"}</p>
+      <p><b>Range:</b> {determineCalculatedDosimeterRange(dosimeterRange)}</p>
       }
       <Divider style={{margin: "1.5rem"}}/>
       <Form.Group widths='equal' inline>
@@ -419,17 +440,20 @@ const DosimeterDataForm = (props) => {
           />
         </Form.Input>
       </Form.Group>
+      </Form>
       <Button 
         id='4' 
         tabIndex='4' 
         onKeyDown={(e) => customKeyBindings(e)}
-        // onClick={(e) => handleDosimeterCalibrationSubmission(e)}
+        onClick={(e) => handleDosimeterCalibrationSubmission(e)}
         >{!editing ? "Submit Dosimeter Calibration" : "Update Dosimeter Calibration" }
       </Button>
-      {/* {props.batchNumber || props.calibration &&
-        <Button as={Link} to={{pathname: '/batchreport', state: {batch: props.batchNumber ? props.batchNumber : props.calibration.calibration.batch}}}>View Batch Report</Button>
-      } */}
-      </Form>
+      {props.batchNumber &&
+        <Button 
+          as={Link} 
+          to={{pathname: '/batchreport', state: {batch: props.batchNumber }}}
+        >View Batch Report</Button>
+      }
     </div>
 
    );

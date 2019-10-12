@@ -8,6 +8,8 @@ query{
     range
     isR
     isMr
+    isSv
+    isMsv
   }
 }
 `;
