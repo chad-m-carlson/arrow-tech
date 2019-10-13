@@ -142,7 +142,8 @@ const DosimeterDataForm = (props) => {
     setAccRead(valueRead);
     let lowestAcceptable = midRange - (!customTolerance ? dosimeterRange * 0.05 : dosimeterRange * ((tolerance / 100))/ 2)
     let highestAcceptable = midRange + (!customTolerance ? dosimeterRange * 0.05 : dosimeterRange * ((tolerance / 100))/ 2)
-    if((isSv ? (valueRead * 1000) : valueRead) >= lowestAcceptable && (isR ? (valueRead * 1000) : valueRead) <= highestAcceptable){
+    debugger
+    if(convertValueReadToMr(valueRead) >= lowestAcceptable && convertValueReadToMr(valueRead) <= highestAcceptable){
       setAccPass(true)
     }else setAccPass(false)
   }
@@ -152,7 +153,7 @@ const DosimeterDataForm = (props) => {
     if(elDateIn && elDateOut){
       const testDuration = elDateOut.getDate() - elDateIn.getDate()
       const perDayLeakageAllowed = 0.025 * dosimeterRange
-      if(testDuration * perDayLeakageAllowed >= (isR ? (valueRead * 1000) : valueRead)){
+      if(testDuration * perDayLeakageAllowed >= convertValueReadToMr(valueRead)){
         setElPass(true);
       }else setElPass(false);
     }
@@ -252,8 +253,19 @@ const DosimeterDataForm = (props) => {
       return `${dosimeterRange/10000} sV`
     }else if (isMsv) {
       return `${dosimeterRange/100} mSv`
-    }
-  }
+    };
+  };
+
+  const convertValueReadToMr = (valueRead) => {
+    if(isR){
+      valueRead = valueRead * 1000
+    }else if (isMsv){
+      valueRead = valueRead * 100
+    }else if (isSv){
+      valueRead = valueRead * 10000
+    }else valueRead = valueRead
+    return valueRead
+  };
 
   return ( 
     <div>
@@ -337,6 +349,7 @@ const DosimeterDataForm = (props) => {
           label="EL Read"
           tabIndex='2'
           value={elRead}
+          disabled={elDateIn && elDateOut ? false : true}
           onKeyDown={(e) => customKeyBindings(e)}
           onChange={(e) => {handleElReading(e.target.value)}}
         />
