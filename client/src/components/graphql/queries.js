@@ -25,6 +25,7 @@ query($batch:Int){
     state
     zip
     country
+    email
   }
   lastBatch
   customerByBatch(batch:$batch){

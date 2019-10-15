@@ -8,6 +8,8 @@ module Types
     field :state, String, null: true
     field :zip, String, null: true
     field :country, String, null: true
+    field :email, String, null: true
+
     field :dosimeter_count, Integer, null: true
 
     field :dosimeters, [Types::DosimeterType], null: true do

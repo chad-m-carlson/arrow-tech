@@ -114,7 +114,7 @@ const DosimeterDataForm = (props) => {
     setElDateOut(new Date(elDateOut))
     setElPass(elPass)
     setElRead(elRead)
-    setFinalPassDate(finalDate === null ? null : new Date (finalDate))
+    setFinalPassDate(finalDate === null ? '' : new Date (finalDate))
     setFinalPass(finalPass)
     // setId(id)
     setTolerance(tolerance)
@@ -163,7 +163,6 @@ const DosimeterDataForm = (props) => {
 
   const handleDosimeterCalibrationSubmission = (e) => {
     e.preventDefault()
-    console.log('submitted')
     create_calibration_record({variables: {
         "id": calibrationId,
         "user_id": user.id,
@@ -226,7 +225,7 @@ const DosimeterDataForm = (props) => {
     }else {
       setFinalPass(false);
       // setFinalPassDate(null);
-      setCertificateNumber(null);
+      setCertificateNumber('');
     };
   };
 
