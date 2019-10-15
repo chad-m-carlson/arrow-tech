@@ -14,7 +14,6 @@ class Mutations::CreateCustomer < Mutations::BaseMutation
   def resolve(id:, name:, street_address1:, street_address2:, city:, state:, zip:, country:, email:)
     if id
       customer = Customer.find(id)
-      binding.pry
       customer.update(name: name,
                       street_address_1: street_address1,
                       street_address_2: street_address2,
