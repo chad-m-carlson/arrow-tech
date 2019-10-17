@@ -69,6 +69,9 @@ query($batch:Int!, $id:ID){
       serialNumber
       range
       isR
+      isMr
+      isSv
+      isMsv
       id
     }
   	previousCalibration(batch:$batch, id:$id){
@@ -156,6 +159,8 @@ export const CALIBRATIONS_BY_BATCH = gql`
     finalDate
     certificateNumber
     batch
+    accRead
+    elRead
     vacPass
     vipPass
     accPass
@@ -168,6 +173,11 @@ export const CALIBRATIONS_BY_BATCH = gql`
     dosimeter{
       modelNumber
       serialNumber
+      range
+      isMr
+      isMsv
+      isR
+      isSv
       customer{
         id
         name
@@ -204,6 +214,9 @@ export const CALIBRATION = gql `
         serialNumber
         range
         isR
+        isMr
+        isSv
+        isMsv
         id
       }
     }

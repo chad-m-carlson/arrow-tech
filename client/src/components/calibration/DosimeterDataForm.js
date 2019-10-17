@@ -8,7 +8,8 @@ import {CREATE_CALIBRATION_RECORD, } from '../graphql/mutations';
 import { Query } from 'react-apollo';
 import { useQuery, useMutation } from '@apollo/react-hooks';
 import {Link, } from 'react-router-dom';
-import {toast, } from 'react-toastify';
+import {determineCalculatedDosimeterRange, convertValueReadToMr} from '../HelperFunctions';
+// import {toast, } from 'react-toastify';
 
 const DosimeterDataForm = (props) => {
   const [batch, setBatch] = useState('')
@@ -142,8 +143,7 @@ const DosimeterDataForm = (props) => {
     setAccRead(valueRead);
     let lowestAcceptable = midRange - (!customTolerance ? dosimeterRange * 0.05 : dosimeterRange * ((tolerance / 100))/ 2)
     let highestAcceptable = midRange + (!customTolerance ? dosimeterRange * 0.05 : dosimeterRange * ((tolerance / 100))/ 2)
-    debugger
-    if(convertValueReadToMr(valueRead) >= lowestAcceptable && convertValueReadToMr(valueRead) <= highestAcceptable){
+    if(convertValueReadToMr(valueRead, isR,  isMr, isSv, isMsv) >= lowestAcceptable && convertValueReadToMr(valueRead, isR,  isMr, isSv, isMsv) <= highestAcceptable){
       setAccPass(true)
     }else setAccPass(false)
   }
@@ -153,7 +153,7 @@ const DosimeterDataForm = (props) => {
     if(elDateIn && elDateOut){
       const testDuration = elDateOut.getDate() - elDateIn.getDate()
       const perDayLeakageAllowed = 0.025 * dosimeterRange
-      if(testDuration * perDayLeakageAllowed >= convertValueReadToMr(valueRead)){
+      if(testDuration * perDayLeakageAllowed >= convertValueReadToMr(valueRead, isR,  isMr, isSv, isMsv)){
         setElPass(true);
       }else setElPass(false);
     }
@@ -187,7 +187,7 @@ const DosimeterDataForm = (props) => {
         "vac_reading": parseFloat(vacRead), 
         "vac_ref_reading": parseFloat(vacRefRead), 
         "certificate_number": certificateNumber,
-        "batch": batch,
+        "batch": parseInt(batch),
         "customer_id": parseInt(props.customerId),
         "model_number": dosimeterModelSelected,
         "serial_number": dosimeterSerialNumber,
@@ -200,6 +200,7 @@ const DosimeterDataForm = (props) => {
     if(editing){
       setCalibrationId(null);
       setEditing(false);
+      props.backToBatch('/batchreport', {batch: batch})
     }
   };
   
@@ -225,50 +226,26 @@ const DosimeterDataForm = (props) => {
     }else {
       setFinalPass(false);
       // setFinalPassDate(null);
-      setCertificateNumber('');
+      // setCertificateNumber('');
     };
   };
 
   const customKeyBindings = (e) => {
     let currentField = parseInt(e.currentTarget.attributes.id.nodeValue)
-    if (e.keyCode === 13 && currentField === 4) {
+    if (e.charCode === 13 && currentField === 4) {
       handleDosimeterCalibrationSubmission(e)
     };
-    if (e.keyCode === 13 && currentField !== 4) {
+    if (e.charCode === 13 && currentField !== 4) {
       currentField ++
       document.getElementById(currentField.toString()).focus()
-    } else if (e.keyCode ===38) {
+    } else if (e.charCode ===38) {
       currentField --
       document.getElementById(currentField.toString()).focus()
-    } 
-  }
-
-  const determineCalculatedDosimeterRange = (dosimeterRange) => {
-    if(isR){
-      return `${dosimeterRange/1000} R`
-    }else if (isMr){
-      return `${dosimeterRange} mR`
-    }else if (isSv){
-      return `${dosimeterRange/10000} sV`
-    }else if (isMsv) {
-      return `${dosimeterRange/100} mSv`
-    };
-  };
-
-  const convertValueReadToMr = (valueRead) => {
-    if(isR){
-      valueRead = valueRead * 1000
-    }else if (isMsv){
-      valueRead = valueRead * 100
-    }else if (isSv){
-      valueRead = valueRead * 10000
-    }else valueRead = valueRead
-    return valueRead
+    }; 
   };
 
   return ( 
     <div>
-      <div style={{display: "flex", justifyContent: "space-between"}}>
         {/* <h1>Dosimeter Data</h1>
         <div>
           <Icon 
@@ -280,10 +257,20 @@ const DosimeterDataForm = (props) => {
             name="arrow right"
             onClick={() => getNextRecord()}/>
         </div> */}
-        {batch && 
+        <Form size="mini">
+          <Form.Group inline>
+
+          <Form.Input 
+            label="Batch"
+            value={batch}
+            onChange={(e) => setBatch(e.target.value)}
+            />
+            </Form.Group>
+        </Form>
+        {/* {batch && 
           <h4 style={{margin: "auto 0"}}>Batch {batch}</h4>
-        }
-      </div>
+        } */}
+      <br />
       <Form size="mini">
       <Form.Group inline >
         <Form.Input label="Date Received">
@@ -306,7 +293,7 @@ const DosimeterDataForm = (props) => {
             id="1"
             tabIndex='1'
             value={(props.batchNumber || props.customerID || props.calibration) ? dosimeterSerialNumber : ''}
-            onKeyDown={(e) => customKeyBindings(e)}
+            onKeyPress={(e) => customKeyBindings(e)}
             onChange={(e) => setDosimeterSerialNumber(e.target.value)}
             />
           :
@@ -315,7 +302,7 @@ const DosimeterDataForm = (props) => {
             id="1"
             tabIndex='1'
             value={(props.batchNumber || props.customerID || props.calibration) ? dosimeterSerialNumber : ''}
-            onKeyDown={(e) => customKeyBindings(e)}
+            onKeyPress={(e) => customKeyBindings(e)}
             onChange={(e) => setDosimeterSerialNumber(e.target.value)}>
                 <Label 
                   basic 
@@ -327,7 +314,7 @@ const DosimeterDataForm = (props) => {
         }
       </Form.Group>
       {dosimeterRange > 1 &&
-      <p><b>Range:</b> {determineCalculatedDosimeterRange(dosimeterRange)}</p>
+      <p><b>Range:</b> {determineCalculatedDosimeterRange(dosimeterRange, isR, isMr, isSv, isMsv)}</p>
       }
       <Divider style={{margin: "1.5rem"}}/>
       <Form.Group widths='equal' inline>
@@ -349,7 +336,7 @@ const DosimeterDataForm = (props) => {
           tabIndex='2'
           value={elRead}
           disabled={elDateIn && elDateOut ? false : true}
-          onKeyDown={(e) => customKeyBindings(e)}
+          onKeyPress={(e) => customKeyBindings(e)}
           onChange={(e) => {handleElReading(e.target.value)}}
         />
       </Form.Group>
@@ -390,7 +377,7 @@ const DosimeterDataForm = (props) => {
           id='3'
           tabIndex='3'
           value={accRead}
-          onKeyDown={(e) => customKeyBindings(e)}
+          onKeyPress={(e) => customKeyBindings(e)}
           onChange={(e) => handleAccReading(e.target.value)}
         />
       </Form.Group>
@@ -456,7 +443,7 @@ const DosimeterDataForm = (props) => {
       <Button 
         id='4' 
         tabIndex='4' 
-        onKeyDown={(e) => customKeyBindings(e)}
+        onKeyPress={(e) => customKeyBindings(e)}
         onClick={(e) => handleDosimeterCalibrationSubmission(e)}
         >{!editing ? "Submit Dosimeter Calibration" : "Update Dosimeter Calibration" }
       </Button>

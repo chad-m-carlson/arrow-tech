@@ -45,6 +45,7 @@ const CalibrationForm = (props) => {
             customerId={customerId}
             batchNumber={props.location.state ? props.location.state.batch : batchNumber}
             calibration={data}
+            backToBatch={props.history.push}
           />
         </Grid.Column>
       </Grid.Row>

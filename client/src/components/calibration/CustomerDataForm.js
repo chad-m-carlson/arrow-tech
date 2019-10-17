@@ -13,11 +13,15 @@ const CustomerDataForm = ({sendCustomerIdToDosimeterForm, selectedBatch, custome
   const [searchActive, setSearchActive] = useState(false);
   const [filteredCustomerList, setFilteredCustomerList] = useState([]);
   const [selectedCustomer, setSelectedCustomer] = useState(blankCustomer);
-  const [editingCustomerInfo, setEditingCustomerInfo] = useState(true);
   const [batchNumber, setBatchNumber] = useState(null)
 
   const {data, loading, error} = useQuery(GET_ALL_CUSTOMERS_QUERY, {variables: {batch: selectedBatch ? selectedBatch : null}})
-  const [create_customer, {error: mutationError}] = useMutation(CREATE_CUSTOMER, { onCompleted(data){( setSelectedCustomer({...selectedCustomer, id: data.createCustomer.customer.id}))}})
+  const [create_customer, {error: mutationError}] = useMutation(CREATE_CUSTOMER, { 
+    onCompleted(data){
+      (setSelectedCustomer({...selectedCustomer, id: data.createCustomer.customer.id}))
+      alert("Customer information saved")
+    }
+  })
 
   useEffect( () => {
     if(loading) setDataLoading(true)
@@ -32,10 +36,8 @@ const CustomerDataForm = ({sendCustomerIdToDosimeterForm, selectedBatch, custome
         sendCustomerIdToDosimeterForm();
       };
       if(customerId){
-        // debugger
         setSelectedCustomer(...data.customers.filter( c => c.id === customerId));
       };
-      // setBatchNumber(data.lastBatch)
     }
   }, [data, loading]);
 
@@ -48,18 +50,12 @@ const CustomerDataForm = ({sendCustomerIdToDosimeterForm, selectedBatch, custome
 
   const handleCustomerSelection = (e, {value}) => {
     setSelectedCustomer(...customerList.filter( c => c.id == value));
-    value !== '' ? setEditingCustomerInfo(false) : setEditingCustomerInfo(true);
     setBatchNumber(data.lastBatch + 1);
   };
 
-  // const updateBatchNumber = () => {
-  //   setBatchNumber(data.lastBatch + 1)
-  // };
-
-  sendCustomerIdToDosimeterForm(() => selectedCustomer.id, batchNumber)
+  sendCustomerIdToDosimeterForm &&  sendCustomerIdToDosimeterForm(() => selectedCustomer.id, batchNumber)
 
   const handleSubmit = () => {
-    setEditingCustomerInfo(false)
     create_customer({variables: {
       "id": selectedCustomer.id ? selectedCustomer.id : null,
       "name": selectedCustomer.name,
@@ -96,14 +92,12 @@ const CustomerDataForm = ({sendCustomerIdToDosimeterForm, selectedBatch, custome
           loading={dataLoading}
           onChange={handleCustomerSelection}
         />
-
       </Form.Group>
         {/* <p>Clicking the button below will generate a batch number and allow you to start entering THIS CUSTOMERS calibration data</p>
         <Button inverted color='green' onClick={updateBatchNumber}>Enter Calibration data for batch</Button> */}
         <Divider style={{margin: "1.5rem"}}/>
 
         <Form.Input
-          disabled={!editingCustomerInfo}
           fluid
           style={{margin: ".5rem"}}
           value={selectedCustomer.name}
@@ -111,7 +105,6 @@ const CustomerDataForm = ({sendCustomerIdToDosimeterForm, selectedBatch, custome
           label="Customer Name"
         />
         <Form.Input
-          disabled={!editingCustomerInfo}
           fluid
           style={{margin: ".5rem"}}
           value={selectedCustomer.email}
@@ -119,7 +112,6 @@ const CustomerDataForm = ({sendCustomerIdToDosimeterForm, selectedBatch, custome
           label="Email"
         />
         <Form.Input
-          disabled={!editingCustomerInfo}
           fluid
           style={{margin: ".5rem"}}
           value={selectedCustomer.streetAddress1}
@@ -127,7 +119,6 @@ const CustomerDataForm = ({sendCustomerIdToDosimeterForm, selectedBatch, custome
           label="Street Address 1"
         />
         <Form.Input
-          disabled={!editingCustomerInfo}
           fluid
           style={{margin: ".5rem"}}
           value={selectedCustomer.streetAddress2}
@@ -135,7 +126,6 @@ const CustomerDataForm = ({sendCustomerIdToDosimeterForm, selectedBatch, custome
           label="Street Address 2"
         />
         <Form.Input
-          disabled={!editingCustomerInfo}
           fluid
           style={{margin: ".5rem"}}
           value={selectedCustomer.city}
@@ -143,7 +133,6 @@ const CustomerDataForm = ({sendCustomerIdToDosimeterForm, selectedBatch, custome
           label="City"
         />
         <Form.Input
-          disabled={!editingCustomerInfo}
           fluid
           style={{margin: ".5rem"}}
           value={selectedCustomer.state}
@@ -151,7 +140,6 @@ const CustomerDataForm = ({sendCustomerIdToDosimeterForm, selectedBatch, custome
           label="State"
         />
         <Form.Input
-          disabled={!editingCustomerInfo}
           fluid
           style={{margin: ".5rem"}}
           value={selectedCustomer.zip}
@@ -159,7 +147,6 @@ const CustomerDataForm = ({sendCustomerIdToDosimeterForm, selectedBatch, custome
           label="Zip"
         />
         <Form.Input
-          disabled={!editingCustomerInfo}
           fluid
           style={{margin: ".5rem"}}
           value={selectedCustomer.country}

@@ -9,7 +9,9 @@ const Home = () => {
   const [otherBatchNumber, setOtherBatchNumber] =useState('');
 
   return ( 
+    <>
     <Container>
+      <>
       <div style={{width: "10rem"}}>
         <NavLink to='/customers'>
           <Card>
@@ -74,6 +76,7 @@ const Home = () => {
           </Card>
         </NavLink>
       </div>
+      </>
       <div style={{width: "10rem"}}>
         <NavLink to='/batchreport'>
           <Card>
@@ -81,7 +84,38 @@ const Home = () => {
           </Card>
         </NavLink>
       </div>
+      </Container>
+      <Container>
+      <div style={{width: "10rem"}}>
+        <NavLink to='/customerform'>
+          <Card>
+            <h3 >Add New Customer</h3>
+          </Card>
+        </NavLink>
+      </div>
+      <div style={{width: "10rem"}}>
+        <NavLink to='/dosimetertemplate'>
+          <Card>
+            <h3 >Add New Dosimeter Template</h3>
+          </Card>
+        </NavLink>
+      </div>
+      <div style={{width: "10rem"}}>
+        <NavLink to='/'>
+          <Card>
+            <h3 >Other stuff</h3>
+          </Card>
+        </NavLink>
+      </div>
+      <div style={{width: "10rem"}}>
+        <NavLink to='/'>
+          <Card>
+            <h3 >Other Stuff</h3>
+          </Card>
+        </NavLink>
+      </div>
     </Container>
+    </>
    );
 }
 
