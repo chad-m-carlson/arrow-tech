@@ -50,7 +50,7 @@ class Mutations::CreateCalibrationRecord < Mutations::BaseMutation
       )
     end
     
-    if tolerance == 0.0
+    if tolerance == 0.0 || nil
       tolerance = 0.1
     end
 

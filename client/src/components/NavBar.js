@@ -18,7 +18,7 @@ const NavBar = (props) => {
 
   return (  
     <>
-    <Menu fixed="top" style={{madWidth: "{dimensions.width}"}}>
+    <Menu id='navbar' fixed="top" style={{maxWidth: "{dimensions.width}"}}>
       {/* <Link to="/">
         <img src="https://static.wixstatic.com/media/b52571_71db7fe581844a49bed79066aabd7481~mv2.png" alt="logo" style={{height: "3rem", padding: ".3rem"}}/>
       </Link> */}

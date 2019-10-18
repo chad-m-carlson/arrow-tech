@@ -3,7 +3,7 @@ module Types
     field :id, ID, null: true
     field :user_id, Int, null: true
     field :dosimeter_id, Int, null: true
-    field :tolerance, Int, null: true
+    field :tolerance, Float, null: true
     field :date_received, String, null: true
     field :el_date_in, String, null: true
     field :el_date_out, String, null: true

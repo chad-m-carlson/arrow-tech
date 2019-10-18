@@ -42,3 +42,13 @@ export const DELETE_CALIBRATION_RECORD = gql`
     }
   }	
 `;
+
+export const CREATE_CUSTOMER = gql `
+  mutation CreateCustomer($id: ID, $name: String!, $street_address1: String!, $street_address2: String, $city: String!, $state: String!, $zip: String!, $country: String!, $email: String) {
+    createCustomer(input: {id: $id, name: $name, streetAddress1: $street_address1, streetAddress2: $street_address2, city: $city, state: $state, zip: $zip, country: $country, email: $email}){
+      customer{
+        id
+      }
+    } 
+  }
+`;
