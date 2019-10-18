@@ -157,7 +157,9 @@ export const CALIBRATIONS_BY_BATCH = gql`
     dosimeterId
     dateReceived
     finalDate
+    dueDate
     certificateNumber
+    tolerance
     batch
     accRead
     elRead
@@ -181,6 +183,12 @@ export const CALIBRATIONS_BY_BATCH = gql`
       customer{
         id
         name
+        streetAddress1
+        streetAddress2
+        city
+        state
+        zip
+        country
       }
     }
   } 

@@ -11,7 +11,6 @@ import CalibrationForm from './components/calibration/CalibrationForm';
 import CalibrationReports from './components/calibration/CalibrationReports';
 import NoMatch from './components/NoMatch';
 import BatchReport from './components/BatchReport';
-import CertificateOfCalibration from './components/Pdf_rendering/CertificateOfCalibration';
 import CustomerDataForm from './components/calibration/CustomerDataForm';
 import DosimeterTemplateForm from './components/DosimeterTemplateForm';
 import { ToastContainer, toast } from 'react-toastify';
@@ -30,7 +29,7 @@ function App() {
     <ApolloProvider>
     <NavBar />
     <ToastContainer />
-    <div style={{margin: "4rem"}}>
+    <div id='page-container' style={{margin: "4rem"}}>
       <FetchUser>
           <Switch>
             {/* <ProtectedRoute exact path='/' component={Home} /> */}

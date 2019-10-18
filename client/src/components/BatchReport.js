@@ -36,7 +36,7 @@ const BatchReport = (props) => {
         />
         {/* <Button>Set Batch </Button> */}
       </Form>
-      <Query query={CALIBRATIONS_BY_BATCH} variables={{"batch": parseInt(batch)}} fetchPolicy='no-cache'>
+      <Query query={CALIBRATIONS_BY_BATCH} variables={{"batch": parseInt(batch)}} fetchPolicy='no-cache' pollInterval='3000'>
         {({ loading, error, data }) => {
           if (loading) return <div>Fetching..</div>
           if (error) return <div>Error!</div>
