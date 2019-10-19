@@ -5,7 +5,8 @@ module Types
     field :customers, [Types::CustomerType], null: false
     field :dosimeters, [Types::DosimeterType], null: false
     field :users, [Types::UserType], null: false
-    
+    field :calibrators, [Types::CalibratorType], null: false
+
     field :calibration, Types::CalibrationType, null: false do
       argument :id, ID, required: true
     end
@@ -40,7 +41,11 @@ module Types
     field :customer, Types::CustomerType, null: false do
       argument :id, ID, required: true
     end
-    
+
+    field :calibrator, Types::CalibratorType, null: false do
+      argument :id, ID, required: true
+    end
+
     field :dosimeter, Types::DosimeterType, null: false do
       argument :id, ID, required: true
     end
@@ -108,6 +113,10 @@ module Types
       User.all
     end
 
+    def calibrators
+      Calibrator.all
+    end
+
     def calibration(id:)
       Calibration.find(id)
     end
@@ -115,7 +124,11 @@ module Types
     def customer(id:)
       Customer.find(id)
     end
-    
+
+    def calibrator(id:)
+      Calibrator.find(id)
+    end
+
     def dosimeter(id:)
       Dosimeter.find(id)
     end

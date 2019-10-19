@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_10_12_213616) do
+ActiveRecord::Schema.define(version: 2019_10_19_183112) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -42,8 +42,20 @@ ActiveRecord::Schema.define(version: 2019_10_12_213616) do
     t.integer "batch"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.bigint "calibrator_id"
+    t.index ["calibrator_id"], name: "index_calibrations_on_calibrator_id"
     t.index ["dosimeter_id"], name: "index_calibrations_on_dosimeter_id"
     t.index ["user_id"], name: "index_calibrations_on_user_id"
+  end
+
+  create_table "calibrators", force: :cascade do |t|
+    t.string "model"
+    t.string "serial_number"
+    t.string "exposure_rate"
+    t.string "tfn"
+    t.string "date"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
   end
 
   create_table "customers", force: :cascade do |t|

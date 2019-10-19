@@ -1,12 +1,11 @@
 import React from 'react';
-import Doc from './DocService';
-import PdfContainer from './PdfContainer';
 import {determineCalculatedDosimeterRange, convertValueReadToMr, } from '../HelperFunctions';
 // import {Icon} from 'semantic-ui-react';
 import styled from 'styled-components';
 
-const CertificateOfCalibration = ({calData}) => {
-  const createPdf = (html) => Doc.createPdf(html);
+const CertificateOfCalibration = ({calData, calibratorData}) => {
+
+  const {range, isR, isMr, isSv, isMsv, customer} = calData[0].dosimeter
 
   const midScaleAccuracy = (accRead, isR, isMr, isSv, isMsv, range) => {
     let calculatedExposure = determineCalculatedDosimeterRange(range, isR, isMr, isMsv, isSv).replace(/\D/gm,"") / 2
@@ -27,7 +26,6 @@ const CertificateOfCalibration = ({calData}) => {
   };
 
   return ( 
-    // <PdfContainer createPdf={createPdf}>
     <div>
       <div style={{maxWidth: "7.5in", fontSize: "10pt"}}>
         <div style={{display: "flex", justifyContent: "space-between"}}>
@@ -43,29 +41,29 @@ const CertificateOfCalibration = ({calData}) => {
         </div>
         <h1 style={{textAlign: "center", fontWeight: "900"}}>Certificate of Calibration</h1>
         <p>Certificate Number: <span style={{paddingLeft: "15px"}}>{calData[0].certificateNumber}</span></p>
-        <p>Customer: <span style={{paddingLeft: "15px"}}>{calData[0].dosimeter.customer.name}</span></p>
+        <p>Customer: <span style={{paddingLeft: "15px"}}>{customer.name}</span></p>
         <p>
-          <span style={{paddingLeft: "80px"}}>{calData[0].dosimeter.customer.streetAddress1}</span><br />
-          {calData[0].dosimeter.customer.streetAddress2 &&
+          <span style={{paddingLeft: "80px"}}>{customer.streetAddress1}</span><br />
+          {customer.streetAddress2 &&
           <>
-          <span style={{paddingLeft: "80px"}}>{calData[0].dosimeter.customer.streetAddress2}</span><br />
+          <span style={{paddingLeft: "80px"}}>{customer.streetAddress2}</span><br />
           </>
           }
-          <span style={{paddingLeft: "80px"}}>{calData[0].dosimeter.customer.city},</span>
-          <span style={{paddingLeft: "3px"}}>{calData[0].dosimeter.customer.state}</span>
-          <span style={{paddingLeft: "3px"}}>{calData[0].dosimeter.customer.zip}</span><br />
-          <span style={{paddingLeft: "80px"}}>{calData[0].dosimeter.customer.country}</span>
+          <span style={{paddingLeft: "80px"}}>{customer.city},</span>
+          <span style={{paddingLeft: "3px"}}>{customer.state}</span>
+          <span style={{paddingLeft: "3px"}}>{customer.zip}</span><br />
+          <span style={{paddingLeft: "80px"}}>{customer.country}</span>
         </p>
         <div style={{display: "flex", justifyContent: "space-between"}}>
           <p>Instrument: <BaseCalDetails>_PLACEHOLDER_</BaseCalDetails></p>
           <p>Model: <BaseCalDetails>{calData[0].dosimeter.modelNumber}</BaseCalDetails></p>
-          <p>Range: <BaseCalDetails>{determineCalculatedDosimeterRange(calData[0].dosimeter.range, calData[0].dosimeter.isR,  calData[0].dosimeter.isMr, calData[0].dosimeter.isSv, calData[0].dosimeter.isMsv,)}</BaseCalDetails></p>
+          <p>Range: <BaseCalDetails>{determineCalculatedDosimeterRange(range, isR,  isMr, isSv, isMsv,)}</BaseCalDetails></p>
         </div>
         <p>The referenced Direct-Reading Dosimeters have been tested for response in accordance with applicable American National Standard Institute (ANSI) Standards N13.5 and N322. Arrow-Tech, Inc. Radioactive Material License #33-16216.
         </p>
-        <p>All instruments were tested on a J.L. Shepherd, _PLACEHOLDER_ Curie, Cesium 137, Carousel Calibrator, Serial Number _PLACEHOLDER_, using an exposure rate of _PLACEHOLDER_  mR/hr. All referenced Direct-Reading Dosimeters indicated exposure are within the {calData[0].tolerance !== 0.1 ? "customer defined limits" : "allowable limits"} of +/- {(calData[0].tolerance) * 100}% of true exposure.
+        <p>All instruments were tested on a {calibratorData.model ? calibratorData.model : <span style={{backgroundColor: "yellow"}}>____________________</span>} Carousel Calibrator, Serial Number {calibratorData.serialNumber ? calibratorData.serialNumber : <span style={{backgroundColor: "yellow"}}>____________________</span>}, using an exposure rate of {calibratorData.exposureRate ? calibratorData.exposureRate : <span style={{backgroundColor: "yellow"}}>____________________</span>}. All referenced Direct-Reading Dosimeters indicated exposure are within the {calData[0].tolerance !== 0.1 ? "customer defined limits" : "allowable limits"} of +/- {(calData[0].tolerance) * 100}% of true exposure.
         </p>
-        <p>The above referenced Gamma Source is calibrated by utilizing Direct-Reading Dosimeter "Transfer Standards" certified for accuracy and with traceability to the National Institute of Standards and Technology by Battelle National Laboratories. TFN: _PLACEHOLDER_ dated _PLACEHOLDER_
+        <p>The above referenced Gamma Source is calibrated by utilizing Direct-Reading Dosimeter "Transfer Standards" certified for accuracy and with traceability to the National Institute of Standards and Technology by Battelle National Laboratories. <br />TFN: {calibratorData ? calibratorData.tfn : <span style={{backgroundColor: "yellow"}}>____________________</span>} dated {calibratorData ? calibratorData.date : <span style={{backgroundColor: "yellow"}}>____________________</span>}
         </p>
         <div style={{display: "flex", justifyContent: "space-between", padding: "0px 30px 0px 30px"}}>
           <p>Calibration Performed By: <BaseCalDetails>{calData[0].user.firstName} {calData[0].user.lastName}</BaseCalDetails></p>
@@ -84,7 +82,7 @@ const CertificateOfCalibration = ({calData}) => {
         <div style={{display: "flex", justifyContent: "space-around"}}>
           <table style={{maxWidth: "7in", fontSize: "8px", borderCollapse: "collapse"}}>
             <thead>
-              <tr textAlign='center'>
+              <tr>
                 <TableHeader><span>Serial</span><br /><span> Number</span></TableHeader>
                 <TableHeader><span>Exposed</span><br /><span>to:</span></TableHeader>
                 <TableHeader>As Found Reading</TableHeader>
@@ -96,36 +94,38 @@ const CertificateOfCalibration = ({calData}) => {
                 <TableHeader><span>Final</span><br /><span>Pass/Fail</span></TableHeader>
               </tr>
             </thead>
+            <tbody>
               {calData.filter( c => c.finalPass === true).map( c => {
                 const {serialNumber, range, isR, isMr, isMsv, isSv} = c.dosimeter
                 return(
                 <tr key={c.id} style={{textAlign: "center"}}>
-                <TableData>{serialNumber}</TableData>
-                <TableData>{determineCalculatedDosimeterRange(range, isR, isMr, isMsv, isSv).replace(/\D/gm,"") / 2} {printUnit(isR, isMr, isSv, isMsv)} </TableData>
-                <TableData>{c.accRead} {printUnit(isR, isMr, isSv, isMsv)}</TableData>
-                <TableData>{midScaleAccuracy(c.accRead, isR, isMr, isSv, isMsv, range)}% </TableData>
-                <TableData>
-                  {/* <Icon name={c.accPass ? 'checkmark' : 'close'} color={c.accPass ? 'green' : 'red'}/> */}
-                  <p>{c.accPass ? "Pass" : "Fail"}</p>
-                </TableData>
-                <TableData>
-                  {/* <Icon name={c.vipPass ? 'checkmark' : 'close'} color={c.vipPass ? 'green' : 'red'}/> */}
-                  <p>{c.vipPass ? "Pass" : "Fail"}</p>
-                </TableData>
-                <TableData>
-                  {/* <Icon name={c.elPass ? 'checkmark' : 'close'} color={c.elPass ? 'green' : 'red'}/> */}
-                  <p>{c.elPass ? "Pass" : "Fail"}</p>
-                </TableData>
-                <TableData>
-                  {/* <Icon name={c.vacPass ? 'checkmark' : 'close'} color={c.vacPass ? 'green' : 'red'}/> */}
-                  <p>{c.vacPass ? "Pass" : "Fail"}</p>
-                </TableData>
-                <TableData>
-                  {/* <Icon name={c.finalPass ? 'checkmark' : 'close'} color={c.finalPass ? 'green' : 'red'}/> */}
-                  <p>{c.finalPass ? "Pass" : "Fail"}</p>
-                </TableData>
-              </tr>
-            )})}
+                  <TableData>{serialNumber}</TableData>
+                  <TableData>{determineCalculatedDosimeterRange(range, isR, isMr, isMsv, isSv).replace(/\D/gm,"") / 2} {printUnit(isR, isMr, isSv, isMsv)} </TableData>
+                  <TableData>{c.accRead} {printUnit(isR, isMr, isSv, isMsv)}</TableData>
+                  <TableData>{midScaleAccuracy(c.accRead, isR, isMr, isSv, isMsv, range)}% </TableData>
+                  <TableData>
+                    {/* <Icon name={c.accPass ? 'checkmark' : 'close'} color={c.accPass ? 'green' : 'red'}/> */}
+                    <p>{c.accPass ? "Pass" : "Fail"}</p>
+                  </TableData>
+                  <TableData>
+                    {/* <Icon name={c.vipPass ? 'checkmark' : 'close'} color={c.vipPass ? 'green' : 'red'}/> */}
+                    <p>{c.vipPass ? "Pass" : "Fail"}</p>
+                  </TableData>
+                  <TableData>
+                    {/* <Icon name={c.elPass ? 'checkmark' : 'close'} color={c.elPass ? 'green' : 'red'}/> */}
+                    <p>{c.elPass ? "Pass" : "Fail"}</p>
+                  </TableData>
+                  <TableData>
+                    {/* <Icon name={c.vacPass ? 'checkmark' : 'close'} color={c.vacPass ? 'green' : 'red'}/> */}
+                    <p>{c.vacPass ? "Pass" : "Fail"}</p>
+                  </TableData>
+                  <TableData>
+                    {/* <Icon name={c.finalPass ? 'checkmark' : 'close'} color={c.finalPass ? 'green' : 'red'}/> */}
+                    <p>{c.finalPass ? "Pass" : "Fail"}</p>
+                  </TableData>
+                </tr>
+              )})}
+            </tbody>
           </table>
         </div>
     </div>

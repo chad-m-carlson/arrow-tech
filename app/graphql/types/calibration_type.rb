@@ -3,6 +3,7 @@ module Types
     field :id, ID, null: true
     field :user_id, Int, null: true
     field :dosimeter_id, Int, null: true
+    field :calibrator_id, Int, null: true
     field :tolerance, Float, null: true
     field :date_received, String, null: true
     field :el_date_in, String, null: true
@@ -26,8 +27,13 @@ module Types
     field :certificate_number, String, null: true
     field :batch, Int, null: true
 
+    field :calibrator, Types::CalibratorType, null: true
     field :dosimeter, Types::DosimeterType, null: false
     field :user, Types::UserType, null: false
+
+    def calibrator
+      object.calibrator
+    end
 
     def dosimeter
       object.dosimeter
@@ -36,7 +42,7 @@ module Types
     def user
       object.user
     end
-    
+
     # field :dosimeter, Types::DosimeterType, null: false do
     #   argument :id, ID, required: true
     # end
