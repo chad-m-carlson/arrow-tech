@@ -6,5 +6,6 @@ module Types
     field :destroy_customer, mutation: Mutations::DestroyCustomer
     field :create_calibration_record, mutation: Mutations::CreateCalibrationRecord
     field :delete_calibration_record, mutation: Mutations::DeleteCalibrationRecord
+    field :create_calibrator_record, mutation: Mutations::CreateCalibratorRecord
   end
 end

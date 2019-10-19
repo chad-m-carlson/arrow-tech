@@ -150,11 +150,12 @@ export const GET_PREVIOUS_CALIBRATION = gql `
 `;
 
 export const CALIBRATIONS_BY_BATCH = gql`
-  query($batch: Int!){
+  query($batch:Int!){
   calibrationsByBatch(batch: $batch) {
     id
     userId
     dosimeterId
+    calibratorId
     dateReceived
     finalDate
     dueDate
@@ -168,6 +169,13 @@ export const CALIBRATIONS_BY_BATCH = gql`
     accPass
     elPass
     finalPass
+    calibrator{
+      model
+      serialNumber
+      tfn
+      exposureRate
+      date
+    }
     user{
       firstName
       lastName
