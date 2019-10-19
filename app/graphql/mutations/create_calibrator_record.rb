@@ -23,14 +23,15 @@ class Mutations::CreateCalibratorRecord < Mutations::BaseMutation
         }
       else
         {
-
+          errors: calibrator.errors.full_messages
         }
       end
-    else calibrator = Calibrator.new(model: model,
-                                    serial_number: serial_number,
-                                    tfn: tfn,
-                                    date: date,
-                                    exposure_rate: exposure_rate)
+    else 
+      calibrator = Calibrator.new(model: model,
+                                  serial_number: serial_number,
+                                  tfn: tfn,
+                                  date: date,
+                                  exposure_rate: exposure_rate)
       if calibrator.save!
         Calibration.where(batch: batch).update(calibrator_id: calibrator.id)
         {
@@ -38,7 +39,7 @@ class Mutations::CreateCalibratorRecord < Mutations::BaseMutation
         }
       else
         {
-
+          errors: calibrator.errors.full_messages
         }
       end
     end
