@@ -175,6 +175,7 @@ export const CALIBRATIONS_BY_BATCH = gql`
       tfn
       exposureRate
       date
+      id
     }
     user{
       firstName

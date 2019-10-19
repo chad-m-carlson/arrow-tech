@@ -21,8 +21,7 @@ class Mutations::CreateCustomer < Mutations::BaseMutation
                       state: state,
                       zip: zip,
                       country: country,
-                      email: email
-                    )
+                      email: email)
       if customer.save!
         {
           customer: customer
@@ -33,14 +32,13 @@ class Mutations::CreateCustomer < Mutations::BaseMutation
         }
       end
     else customer = Customer.new(name: name,
-                                street_address_1: street_address1,
-                                street_address_2: street_address2,
-                                city: city,
-                                state: state,
-                                zip: zip,
-                                country: country,
-                                email: email
-    )
+                                 street_address_1: street_address1,
+                                 street_address_2: street_address2,
+                                 city: city,
+                                 state: state,
+                                 zip: zip,
+                                 country: country,
+                                 email: email)
       if customer.save!
         {
           customer: customer

@@ -57,7 +57,7 @@ class Mutations::CreateCalibrationRecord < Mutations::BaseMutation
     if id
       #! IF WE ARE UPDATING A CALIBRATION RECORD
       calibration = Calibration.find(id)
-      calibration.update(user_id: user_id, 
+      calibration.update!(user_id: user_id, 
                         dosimeter_id: dosimeter.id,
                         tolerance: tolerance, 
                         date_received: date_received, 

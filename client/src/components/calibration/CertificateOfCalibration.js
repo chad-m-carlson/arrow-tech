@@ -55,15 +55,15 @@ const CertificateOfCalibration = ({calData, calibratorData}) => {
           <span style={{paddingLeft: "80px"}}>{customer.country}</span>
         </p>
         <div style={{display: "flex", justifyContent: "space-between"}}>
-          <p>Instrument: <BaseCalDetails>_PLACEHOLDER_</BaseCalDetails></p>
+          <p>Instrument: <BaseCalDetails>Direct Reading Dosimeter</BaseCalDetails></p>
           <p>Model: <BaseCalDetails>{calData[0].dosimeter.modelNumber}</BaseCalDetails></p>
           <p>Range: <BaseCalDetails>{determineCalculatedDosimeterRange(range, isR,  isMr, isSv, isMsv,)}</BaseCalDetails></p>
         </div>
         <p>The referenced Direct-Reading Dosimeters have been tested for response in accordance with applicable American National Standard Institute (ANSI) Standards N13.5 and N322. Arrow-Tech, Inc. Radioactive Material License #33-16216.
         </p>
-        <p>All instruments were tested on a {calibratorData.model ? calibratorData.model : <span style={{backgroundColor: "yellow"}}>____________________</span>} Carousel Calibrator, Serial Number {calibratorData.serialNumber ? calibratorData.serialNumber : <span style={{backgroundColor: "yellow"}}>____________________</span>}, using an exposure rate of {calibratorData.exposureRate ? calibratorData.exposureRate : <span style={{backgroundColor: "yellow"}}>____________________</span>}. All referenced Direct-Reading Dosimeters indicated exposure are within the {calData[0].tolerance !== 0.1 ? "customer defined limits" : "allowable limits"} of +/- {(calData[0].tolerance) * 100}% of true exposure.
+        <p>All instruments were tested on a {calibratorData.id ? calibratorData.model : <span style={{backgroundColor: "yellow"}}>____________________</span>}Curie, Cesium 137 Carousel Calibrator, Serial Number {calibratorData.id ? calibratorData.serialNumber : <span style={{backgroundColor: "yellow"}}>____________________</span>}, using an exposure rate of {calibratorData.id ? calibratorData.exposureRate : <span style={{backgroundColor: "yellow"}}>____________________</span>}. All referenced Direct-Reading Dosimeters indicated exposure are within the {calData[0].tolerance !== 0.1 ? "customer defined limits" : "allowable limits"} of +/- {(calData[0].tolerance) * 100}% of true exposure.
         </p>
-        <p>The above referenced Gamma Source is calibrated by utilizing Direct-Reading Dosimeter "Transfer Standards" certified for accuracy and with traceability to the National Institute of Standards and Technology by Battelle National Laboratories. <br />TFN: {calibratorData ? calibratorData.tfn : <span style={{backgroundColor: "yellow"}}>____________________</span>} dated {calibratorData ? calibratorData.date : <span style={{backgroundColor: "yellow"}}>____________________</span>}
+        <p>The above referenced Gamma Source is calibrated by utilizing Direct-Reading Dosimeter "Transfer Standards" certified for accuracy and with traceability to the National Institute of Standards and Technology by Battelle National Laboratories. <br />TFN: {calibratorData.id ? calibratorData.tfn : <span style={{backgroundColor: "yellow"}}>____________________</span>} dated {calibratorData.id ? calibratorData.date : <span style={{backgroundColor: "yellow"}}>____________________</span>}
         </p>
         <div style={{display: "flex", justifyContent: "space-between", padding: "0px 30px 0px 30px"}}>
           <p>Calibration Performed By: <BaseCalDetails>{calData[0].user.firstName} {calData[0].user.lastName}</BaseCalDetails></p>
