@@ -29,14 +29,17 @@ const BatchReport = (props) => {
   return ( 
     <>
       <Form>
-        <Form.Input
-          autoFocus
-          value={batch}
-          onChange={(e) => setBatch(e.target.value)}
-        />
-        {/* <Button>Set Batch </Button> */}
+        <Form.Group>
+          <Form.Input
+            label="Enter a batch number"
+            autoFocus
+            value={batch}
+            onChange={(e) => setBatch(e.target.value)}
+          />
+          {/* <Button>Set Batch </Button> */}
+        </Form.Group>
       </Form>
-      <Query query={CALIBRATIONS_BY_BATCH} variables={{"batch": parseInt(batch)}} fetchPolicy='no-cache' pollInterval='3000'>
+      <Query query={CALIBRATIONS_BY_BATCH} variables={{"batch": parseInt(batch)}} fetchPolicy='no-cache'>
         {({ loading, error, data }) => {
           if (loading) return <div>Fetching..</div>
           if (error) return <div>Error!</div>
@@ -47,7 +50,10 @@ const BatchReport = (props) => {
             return(
               <>
               <h1>Batch Report for {data.calibrationsByBatch[0].dosimeter.customer.name}</h1>
-              <h2> Batch Number: {batch}</h2>
+              <div style={{display: "flex", justifyContent: "space-between"}}>
+                <h2> Batch Number: {batch}</h2>
+                <Button as={Link} to={{pathname: '/calreports', state: {calData: calData}}}>View Calibration Report</Button>
+              </div>
               <BatchReportTable
                 calData={calData}
                 handleDelete={handleDelete}
@@ -56,7 +62,6 @@ const BatchReport = (props) => {
             )}else return null
         }}
       </Query>
-      <Button as={Link} to={{pathname: '/calreports', state: {calData: calData}}}>View Calibration Report</Button>
     </>
   );
 }

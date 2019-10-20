@@ -118,7 +118,7 @@ const DosimeterDataForm = (props) => {
     setFinalPassDate(finalDate === null ? '' : new Date (finalDate))
     setFinalPass(finalPass)
     // setId(id)
-    setTolerance(tolerance)
+    setTolerance(tolerance * 100)
     // setUserId(userId)
     setVacPass(vacPass)
     setVipPass(vipPass)
@@ -200,7 +200,9 @@ const DosimeterDataForm = (props) => {
     if(editing){
       setCalibrationId(null);
       setEditing(false);
-      props.backToBatch('/batchreport', {batch: batch})
+      setTimeout(() => {
+        props.backToBatch('/batchreport', {batch: batch})
+      }, 500);
     }
   };
   
