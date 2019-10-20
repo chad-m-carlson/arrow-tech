@@ -49,7 +49,7 @@ const CustomerDataForm = ({sendCustomerIdToDosimeterForm, selectedBatch, custome
   };
 
   const handleCustomerSelection = (e, {value}) => {
-    setSelectedCustomer(...customerList.filter( c => c.id == value));
+    setSelectedCustomer(...customerList.filter( c => c.id === value));
     setBatchNumber(data.lastBatch + 1);
   };
 

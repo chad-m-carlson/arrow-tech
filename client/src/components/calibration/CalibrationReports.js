@@ -9,7 +9,7 @@ const CalibrationReports = (props) => {
   const [calibrator, setCalibrator] = useState({id: null, model: '', serialNumber: '', tfn: '265623-01', exposureRate: '', date: '6/6/2019'});
   const [addCalibrator, setAddCalibrator] = useState(false);
 
-  const calibratorModelList = [{key: 1, text: "J.L. Shepherd, 20", value: "J.L. Shepherd, 20"}, {key: 2, text: "TEMCO, 100", value: "TEMCO, 100"}]
+  const calibratorModelList = [{key: 1, text: "J.L. Shepherd 20", value: "J.L. Shepherd 20"}, {key: 2, text: "TEMCO 100", value: "TEMCO 100"}]
 
   const calibratorExposureRateList = [{key: 1, text: "520 mR/hr", value: "520 mR/hr"}, 
                                       {key: 2, text: "4R/hr", value: "4R/hr"}, 
@@ -17,7 +17,10 @@ const CalibrationReports = (props) => {
                                       {key: 4, text: "588.2 R/hr", value: "588.2 R/hr"}, 
                                       {key: 5, text: "43 mR/hr", value: "43 mR/hr"},]
 
-  const [createCalibratorRecord] = useMutation(CREATE_CALIBRATOR_RECORD, {onCompleted(data){setAddCalibrator(false)
+  const [createCalibratorRecord] = useMutation(CREATE_CALIBRATOR_RECORD, {onCompleted(data){
+    debugger
+    setCalibrator({...calibrator ,id: data.createCalibratorRecord.calibrator.id})
+    setAddCalibrator(false)
   }})
 
   useEffect( () => {
@@ -33,10 +36,10 @@ const CalibrationReports = (props) => {
 
   const setCalibratorModel = (e, {value}) => {
     switch (value) {
-      case "J.L. Shepherd, 20":
+      case "J.L. Shepherd 20":
         setCalibrator({...calibrator, serialNumber: "6046", model: value})
         break;
-      case "TEMCO, 100":
+      case "TEMCO 100":
         setCalibrator({...calibrator, serialNumber: "186", model: value})
         break;
     }
@@ -75,7 +78,7 @@ const CalibrationReports = (props) => {
         <Grid.Column style={{width: "60%"}} id='pdf-container'>
           <CertificateOfCalibration 
             calData={props.location.state.calData}
-            calibratorData={props.location.state.calData[0].calibrator === null ? calibrator : props.location.state.calData[0].calibrator}
+            calibratorData={calibrator}
           />
         </Grid.Column>
         <Grid.Column style={{width: "40%"}} id='hide-to-print'>
