@@ -5,7 +5,7 @@ Customer.delete_all
 puts "All calibrations, dosimeters and customers deleted"
 
 c = Customer.create!(name: "Test", street_address_1: "test street", city: "Rolla" )
-d = Dosimeter.create!(customer_id: c.id)
+d = Dosimeter.create!(customer_id: c.id, model_number: "asdf", serial_number: ";alksf", range: 23)
 Calibration.create!(dosimeter_id: d.id, batch: 0, user_id: 1)
 
 models = [['AT 138', 200, 'is_mr'],
