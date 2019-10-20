@@ -57,7 +57,7 @@ const DosimeterDataForm = (props) => {
   useEffect(() =>{
     // fills drop down menu with dosimeter model data
     if(data){
-      setCustomerDosimeterModels(data.uniqueDosimeterModels.map( o => ({key: o.id, text: o.modelNumber, value: o.modelNumber})))
+      setCustomerDosimeterModels(data.dosimeterTemplates.map( o => ({key: o.id, text: o.modelNumber, value: o.modelNumber})))
     } 
     if(props.calibration){
       const {accDate, accPass, accRead, certificateNumber, dateReceived, dueDate, elDateIn, elDateOut, elPass, elRead, finalDate, finalPass, id, tolerance, vacPass, vipPass, vipProblems, dosimeterId} = props.calibration.calibration
@@ -129,11 +129,11 @@ const DosimeterDataForm = (props) => {
 
   const handleDosimeterModelSelection = (e, {value}) => {
     setDosimeterModelSelected(value)
-    setDosimeterRange(data.uniqueDosimeterModels.filter( d => d.modelNumber === value)[0].range)
-    setIsR(data.uniqueDosimeterModels.filter( d => d.modelNumber === value)[0].isR)
-    setIsMr(data.uniqueDosimeterModels.filter( d => d.modelNumber === value)[0].isMr)
-    setIsMsv(data.uniqueDosimeterModels.filter( d => d.modelNumber === value)[0].isMsv)
-    setIsSv(data.uniqueDosimeterModels.filter( d => d.modelNumber === value)[0].isSv)
+    setDosimeterRange(data.dosimeterTemplates.filter( d => d.modelNumber === value)[0].range)
+    setIsR(data.dosimeterTemplates.filter( d => d.modelNumber === value)[0].isR)
+    setIsMr(data.dosimeterTemplates.filter( d => d.modelNumber === value)[0].isMr)
+    setIsMsv(data.dosimeterTemplates.filter( d => d.modelNumber === value)[0].isMsv)
+    setIsSv(data.dosimeterTemplates.filter( d => d.modelNumber === value)[0].isSv)
     handleAccReading(accRead)
     handleElReading(elRead)
   };
@@ -268,7 +268,6 @@ const DosimeterDataForm = (props) => {
             onChange={(e) => setBatch(e.target.value)}
             />
             </Form.Group>
-            <p>This is what this does</p>
         </Form>
         {/* {batch && 
           <h4 style={{margin: "auto 0"}}>Batch {batch}</h4>

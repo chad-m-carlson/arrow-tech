@@ -62,3 +62,13 @@ export const CREATE_CALIBRATOR_RECORD = gql `
     }
   }
 `;
+
+export const CREATE_DOSIMETER_TEMPLATE = gql `
+  mutation CreateDosimeterTemplate($model_number: String!, $unit: String!, $range: Int!) {
+  createDosimeterTemplate(input: {modelNumber: $model_number, unit: $unit, range: $range}) {
+    dosimeterTemplate {
+      id
+    }
+  }
+}
+`;
