@@ -2,13 +2,13 @@ import gql from 'graphql-tag';
 
 export const GET_UNIQUE_DOSIMETER_MODELS = gql`
 query{
-  uniqueDosimeterModels {
+  dosimeterTemplates{
     id
     modelNumber
     range
     isR
     isMr
-    isSv
+		isSv
     isMsv
   }
 }

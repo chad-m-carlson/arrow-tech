@@ -43,9 +43,15 @@ class Mutations::CreateCalibrationRecord < Mutations::BaseMutation
     dosimeter = Customer.find(customer_id).dosimeters.where("model_number = ? AND serial_number =  ?", model_number, serial_number ).first
     
     if dosimeter == nil
-      dosimeter = Dosimeter.where("model_number = ?", model_number).first.dup
-      dosimeter.update(
+      dosimeter = DosimeterTemplate.where("model_number = ?", model_number).dup
+      dosimeter = Dosimeter.create!(
+        model_number: dosimeter.first.model_number,
         serial_number: serial_number,
+        range: dosimeter.first.range,
+        is_r: dosimeter.first.is_r,
+        is_mr: dosimeter.first.is_mr,
+        is_sv: dosimeter.first.is_sv,
+        is_msv: dosimeter.first.is_msv,
         customer_id: customer_id
       )
     end
