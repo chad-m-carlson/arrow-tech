@@ -234,13 +234,13 @@ const DosimeterDataForm = (props) => {
 
   const customKeyBindings = (e) => {
     let currentField = parseInt(e.currentTarget.attributes.id.nodeValue)
-    if (e.charCode === 13 && currentField === 4) {
+    if (e.keyCode === 13 && currentField === 4) {
       handleDosimeterCalibrationSubmission(e)
     };
-    if (e.charCode === 13 && currentField !== 4) {
+    if (e.keyCode === 13 && currentField !== 4) {
       currentField ++
       document.getElementById(currentField.toString()).focus()
-    } else if (e.charCode ===38) {
+    } else if (e.keyCode ===38) {
       currentField --
       document.getElementById(currentField.toString()).focus()
     }; 
@@ -273,7 +273,7 @@ const DosimeterDataForm = (props) => {
           <h4 style={{margin: "auto 0"}}>Batch {batch}</h4>
         } */}
       <br />
-      <Form size="mini">
+      <Form size="mini" autoComplete='off'>
       <Form.Group inline >
         <Form.Input label="Date Received">
           <DatePicker 
@@ -295,7 +295,7 @@ const DosimeterDataForm = (props) => {
             id="1"
             tabIndex='1'
             value={(props.batchNumber || props.customerID || props.calibration) ? dosimeterSerialNumber : ''}
-            onKeyPress={(e) => customKeyBindings(e)}
+            onKeyDown={(e) => customKeyBindings(e)}
             onChange={(e) => setDosimeterSerialNumber(e.target.value)}
             />
           :
@@ -304,7 +304,7 @@ const DosimeterDataForm = (props) => {
             id="1"
             tabIndex='1'
             value={(props.batchNumber || props.customerID || props.calibration) ? dosimeterSerialNumber : ''}
-            onKeyPress={(e) => customKeyBindings(e)}
+            onKeyDown={(e) => customKeyBindings(e)}
             onChange={(e) => setDosimeterSerialNumber(e.target.value)}>
                 <Label 
                   basic 
@@ -338,7 +338,7 @@ const DosimeterDataForm = (props) => {
           tabIndex='2'
           value={elRead}
           disabled={elDateIn && elDateOut ? false : true}
-          onKeyPress={(e) => customKeyBindings(e)}
+          onKeyDown={(e) => customKeyBindings(e)}
           onChange={(e) => {handleElReading(e.target.value)}}
         />
       </Form.Group>
@@ -379,7 +379,7 @@ const DosimeterDataForm = (props) => {
           id='3'
           tabIndex='3'
           value={accRead}
-          onKeyPress={(e) => customKeyBindings(e)}
+          onKeyDown={(e) => customKeyBindings(e)}
           onChange={(e) => handleAccReading(e.target.value)}
         />
       </Form.Group>
@@ -445,7 +445,7 @@ const DosimeterDataForm = (props) => {
       <Button 
         id='4' 
         tabIndex='4' 
-        onKeyPress={(e) => customKeyBindings(e)}
+        onKeyDown={(e) => customKeyBindings(e)}
         onClick={(e) => handleDosimeterCalibrationSubmission(e)}
         >{!editing ? "Submit Dosimeter Calibration" : "Update Dosimeter Calibration" }
       </Button>

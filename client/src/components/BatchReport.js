@@ -46,7 +46,12 @@ const BatchReport = (props) => {
           if (data.calibrationsByBatch.length > 0){
             if(dataDeleted){
               // ?CAN'T FIGURE OUT HOW TO DISABLE THE CACHE FROM AUTO SETTING STATE WITH ORIGINAL ARRAY INSTEAD OF NEW FILTERED ARRAY
-            }else{setCalData(data.calibrationsByBatch)}
+            }else{
+              // let sortedData = data.calibrationsByBatch.sort((a, b) => {
+                // return a.dosimeter.serialNumber - b.dosimeter.serialNumber})
+              setCalData(data.calibrationsByBatch.sort((a, b) => {
+                return a.dosimeter.serialNumber - b.dosimeter.serialNumber}))
+            }
             return(
               <>
               <h1>Batch Report for {data.calibrationsByBatch[0].dosimeter.customer.name}</h1>
