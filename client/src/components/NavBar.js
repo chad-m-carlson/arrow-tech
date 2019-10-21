@@ -60,12 +60,12 @@ const NavBar = (props) => {
           </Menu.Item>
         </>
         }
-        {admin &&
+        {/* {admin &&
           <Menu.Item>
             <br />
             {adminControls()}
           </Menu.Item>
-        }
+        } */}
         <Menu.Item>
           <br />
           <NavLink

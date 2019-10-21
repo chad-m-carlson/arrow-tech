@@ -12,10 +12,10 @@ const Home = () => {
     <>
     <Container>
       <>
-      <div style={{width: "10rem"}}>
-        <NavLink to='/customers'>
+      <div style={{ opacity: "0.1"}}>
+        <NavLink to='/customers' style={{cursor: "not-allowed"}}>
           <Card>
-            <h3 >View All Customers</h3>
+            <h3>All Customers</h3>
           </Card>
         </NavLink>
       </div>
@@ -25,13 +25,15 @@ const Home = () => {
             if (error) return <div>Error!</div>
             if (data)
             return(
+              <div style={{}}>
               <NavLink to='/calform'>
                 <Card>
                   <h3>Calibration Form</h3>
                 </Card>
               </NavLink>
+              </div>
               // <Popup trigger={ 
-              //   <div style={{width: "10rem"}}>
+              //   <div style={{}}>
               //     {/* <NavLink to='/calform'> */}
               //       <Card>
               //         <h3 >Calibration Form</h3>
@@ -69,48 +71,48 @@ const Home = () => {
               // </Popup>
               )}}
         </Query>
-      <div style={{width: "10rem"}}>
-        <NavLink to='/calreports'>
+      <div style={{ opacity: "0.1"}}>
+        <NavLink to='/calreports' style={{cursor: "not-allowed"}}>
           <Card>
-            <h3 >Calibration Reports</h3>
+            <h3>Calibration Reports</h3>
           </Card>
         </NavLink>
       </div>
       </>
-      <div style={{width: "10rem"}}>
+      <div style={{}}>
         <NavLink to='/batchreport'>
           <Card>
-            <h3 >Batch Reports</h3>
+            <h3>Batch Reports</h3>
           </Card>
         </NavLink>
       </div>
       </Container>
       <Container>
-      <div style={{width: "10rem"}}>
+      <div style={{}}>
         <NavLink to='/customerform'>
           <Card>
-            <h3 >Add New Customer</h3>
+            <h3>New Customer</h3>
           </Card>
         </NavLink>
       </div>
-      <div style={{width: "10rem"}}>
+      <div style={{}}>
         <NavLink to='/dosimetertemplate'>
           <Card>
-            <h3 >Add New Dosimeter Template</h3>
+            <h3>New Dosimeter Model</h3>
           </Card>
         </NavLink>
       </div>
-      <div style={{width: "10rem"}}>
-        <NavLink to='/'>
+      <div style={{ opacity: "0.1"}}>
+        <NavLink to='/' style={{cursor: "not-allowed"}}>
           <Card>
-            <h3 >Other stuff</h3>
+            <h3>Other stuff</h3>
           </Card>
         </NavLink>
       </div>
-      <div style={{width: "10rem"}}>
-        <NavLink to='/'>
+      <div style={{ opacity: "0.1"}}>
+        <NavLink to='/' style={{cursor: "not-allowed"}}>
           <Card>
-            <h3 >Other Stuff</h3>
+            <h3>Other Stuff</h3>
           </Card>
         </NavLink>
       </div>
@@ -123,15 +125,15 @@ const Container = styled.div `
   display: flex;
   flex-direction: row;
   justify-content: space-between;
-  margin-top: 10rem;
+  margin-top: 7rem;
 `;
 
 const Card = styled.div `
   display: flex;
-  text-align: center;
+  justify-content: space-evenly;
   align-items: center;
-  width: 10rem;
-  height: 10rem;
+  width: 15rem;
+  height: 15rem;
   border: 1px solid #b9babd;
   border-radius: 3px;
   text-decoration: none;

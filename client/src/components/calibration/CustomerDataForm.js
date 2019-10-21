@@ -1,5 +1,5 @@
 import React, {useState, useEffect } from 'react';
-import Search from '../Search';
+// import Search from '../Search';
 import {Form, Button, Divider} from 'semantic-ui-react';
 import {GET_ALL_CUSTOMERS_QUERY, } from '../graphql/queries';
 import {CREATE_CUSTOMER} from '../graphql/mutations';
@@ -8,7 +8,7 @@ import { useQuery, useMutation} from '@apollo/react-hooks';
 const CustomerDataForm = ({sendCustomerIdToDosimeterForm, selectedBatch, customerId}, props) => {
   const blankCustomer = {id: '', name: '', streetAddress1: '', streetAddress2: '', city: '', state: '', zip: '', country: '', email: ''};
   const [customerList, setCustomerList] = useState([blankCustomer]);
-  const [customerSelection, setCustomerSelection] = useState([{key: '', text: "Add a new customer", value: ''}]);
+  const [customerSelection, setCustomerSelection] = useState([{key: '', text: '', value: ''}]);
   const [dataLoading, setDataLoading] = useState(false);
   const [searchActive, setSearchActive] = useState(false);
   const [filteredCustomerList, setFilteredCustomerList] = useState([]);
@@ -18,8 +18,9 @@ const CustomerDataForm = ({sendCustomerIdToDosimeterForm, selectedBatch, custome
   const {data, loading, error} = useQuery(GET_ALL_CUSTOMERS_QUERY, {variables: {batch: selectedBatch ? selectedBatch : null}})
   const [create_customer, {error: mutationError}] = useMutation(CREATE_CUSTOMER, { 
     onCompleted(data){
-      (setSelectedCustomer({...selectedCustomer, id: data.createCustomer.customer.id}))
-      alert("Customer information saved")
+      setCustomerList([...customerList, data.createCustomer.customer])
+      setSelectedCustomer({...selectedCustomer, id: data.createCustomer.customer.id});
+      alert("Customer information saved");
     }
   })
 
@@ -39,18 +40,18 @@ const CustomerDataForm = ({sendCustomerIdToDosimeterForm, selectedBatch, custome
         setSelectedCustomer(...data.customers.filter( c => c.id === customerId));
       };
     }
-  }, [data, loading]);
+  }, [data, loading,]);
 
-  const returnFilteredList = (results, active) => {
-    if(active){
-      setFilteredCustomerList(results);
-      setSearchActive(true);
-    }else setSearchActive(false);
-  };
+  // const returnFilteredList = (results, active) => {
+  //   if(active){
+  //     setFilteredCustomerList(results);
+  //     setSearchActive(true);
+  //   }else setSearchActive(false);
+  // };
 
   const handleCustomerSelection = (e, {value}) => {
     setSelectedCustomer(...customerList.filter( c => c.id === value));
-    setBatchNumber(data.lastBatch + 1);
+    value !== '' && setBatchNumber(data.lastBatch + 1);
   };
 
   sendCustomerIdToDosimeterForm &&  sendCustomerIdToDosimeterForm(() => selectedCustomer.id, batchNumber)
@@ -66,25 +67,29 @@ const CustomerDataForm = ({sendCustomerIdToDosimeterForm, selectedBatch, custome
       "zip": selectedCustomer.zip,
       "country": selectedCustomer.country,
       "email":selectedCustomer.email
-    }})
-
+    }});
+    setBatchNumber(data.lastBatch + 1);
   };
 
   return ( 
     <div>
-      <h1>Customer Data</h1>
+      <h1>Customer</h1>
       <Form>
       <Form.Group style={{display: "flex", flexDirection: "row"}}>
-        <Search
+        {/* <Search
           data={customerSelection}
           onChange={returnFilteredList}
           searchActive={searchActive}
           searchOn='text'
           placeholder="Filter Customers"
           styles={{input:{background: "white", width: "10rem"}}}
-          />
+          /> */}
         <Form.Select
-          disabled={selectedBatch ? true : false}
+          search
+          // openOnFocus={false}
+          // autoComplete='off'
+          // clearable
+          minCharacters='3'
           style={{margin: "1rem"}}
           placeholder="Add new or select existing customer"
           defaultValue={customerId ? customerId : null}
