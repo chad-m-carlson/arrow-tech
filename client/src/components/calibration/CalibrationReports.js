@@ -64,9 +64,13 @@ const CalibrationReports = (props) => {
   const printCoc = () => {
     document.getElementById('navbar').style.display = 'none'
     document.getElementById('hide-to-print').style.display = 'none'
+    document.getElementById('header').style.display = 'block'
+    document.getElementById('footer').style.display = 'block'
     document.getElementById('page-container').style.margin = '0'
     document.getElementById('pdf-container').style.width = '100%'
     window.print()
+    document.getElementById('header').style.display = 'none'
+    document.getElementById('footer').style.display = 'none'
     document.getElementById('navbar').style.display = 'inline-flex'
     document.getElementById('hide-to-print').style.display = 'inline'
     document.getElementById('page-container').style.margin = '4rem'
@@ -75,56 +79,60 @@ const CalibrationReports = (props) => {
 
   return ( 
     <Grid columns={2}>
-        <Grid.Column style={{width: "60%"}} id='pdf-container'>
-          <CertificateOfCalibration 
-            calData={props.location.state.calData}
-            calibratorData={calibrator}
-          />
-        </Grid.Column>
-        <Grid.Column style={{width: "40%"}} id='hide-to-print'>
-          <Button
-            style={{marginBottom: "10px"}}
-            onClick={printCoc}
-            color='green'>
-              Print this certificate
-          </Button>
-          <br />
-          <Button
-            style={{marginBottom: "10px"}}
-            onClick={() => setAddCalibrator(true)}
-            >Edit Calibration Equipment
-          </Button>
-          <br />
-          <Button
-            style={{marginBottom: "10px"}}
-            as={Link}
-            to={{pathname: '/batchreport', state: {batch: props.location.state.calData[0].batch}}}
-            >
-            Back to Batch #{props.location.state.calData[0].batch} Report
-          </Button>
-          {addCalibrator && 
-            <div style={{display: "flex", flexDirection: "column", justifyContent: "center"}}>
-              <Form onSubmit={handleSubmit}>
-                <Form.Group style={{display: "flex", flexDirection: "column", width: "fit-content"}}>
-                  <Form.Select 
-                    label="Calibration Unit"
-                    options={calibratorModelList}
-                    onChange={setCalibratorModel}
-                  />
-                  <Form.Select
-                    label="Exposure Rate"
-                    options={calibratorExposureRateList}
-                    onChange={setCalibratorExposureRate}
-                  />
-                </Form.Group>
-                <Button>
-                  Save
-                </Button>
-              </Form>
-            </div>
-          }
-        </Grid.Column>
-      </Grid>
+      <Grid.Column style={{width: "60%"}} id='pdf-container'>
+        <CertificateOfCalibration 
+          calData={props.location.state.calData}
+          calibratorData={calibrator}
+        />
+      </Grid.Column>
+      <Grid.Column style={{width: "40%", position: "fixed", left: "65%"}} id='hide-to-print'>
+        {calibrator.id &&
+          <>
+            <Button
+              style={{marginBottom: "10px"}}
+              onClick={printCoc}
+              color='green'>
+                Print this certificate
+            </Button>
+            <br />
+            <Button
+              style={{marginBottom: "10px"}}
+              onClick={() => setAddCalibrator(true)}
+              >Edit Calibration Equipment
+            </Button>
+          </>
+        }
+        <br />
+        <Button
+          style={{marginBottom: "10px"}}
+          as={Link}
+          to={{pathname: '/batchreport', state: {batch: props.location.state.calData[0].batch}}}
+          >
+          Back to Batch #{props.location.state.calData[0].batch} Report
+        </Button>
+        {addCalibrator && 
+          <div style={{display: "flex", flexDirection: "column", justifyContent: "center"}}>
+            <Form onSubmit={handleSubmit}>
+              <Form.Group style={{display: "flex", flexDirection: "column", width: "fit-content"}}>
+                <Form.Select 
+                  label="Calibration Unit"
+                  options={calibratorModelList}
+                  onChange={setCalibratorModel}
+                />
+                <Form.Select
+                  label="Exposure Rate"
+                  options={calibratorExposureRateList}
+                  onChange={setCalibratorExposureRate}
+                />
+              </Form.Group>
+              <Button>
+                Save
+              </Button>
+            </Form>
+          </div>
+        }
+      </Grid.Column>
+    </Grid>
    );
 }
  

@@ -248,6 +248,7 @@ const DosimeterDataForm = (props) => {
 
   return ( 
     <div>
+      <h1>Calibration</h1>
         {/* <h1>Dosimeter Data</h1>
         <div>
           <Icon 
@@ -273,7 +274,7 @@ const DosimeterDataForm = (props) => {
           <h4 style={{margin: "auto 0"}}>Batch {batch}</h4>
         } */}
       <br />
-      <Form size="mini" autoComplete='off'>
+      <Form size="mini">
       <Form.Group inline >
         <Form.Input label="Date Received">
           <DatePicker 
