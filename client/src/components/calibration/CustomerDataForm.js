@@ -4,24 +4,31 @@ import {Form, Button, Divider} from 'semantic-ui-react';
 import {GET_ALL_CUSTOMERS_QUERY, } from '../graphql/queries';
 import {CREATE_CUSTOMER} from '../graphql/mutations';
 import { useQuery, useMutation} from '@apollo/react-hooks';
+import {toast, } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
 
 const CustomerDataForm = ({sendCustomerIdToDosimeterForm, selectedBatch, customerId}, props) => {
   const blankCustomer = {id: '', name: '', streetAddress1: '', streetAddress2: '', city: '', state: '', zip: '', country: '', email: ''};
   const [customerList, setCustomerList] = useState([blankCustomer]);
   const [customerSelection, setCustomerSelection] = useState([{key: '', text: '', value: ''}]);
   const [dataLoading, setDataLoading] = useState(false);
-  const [searchActive, setSearchActive] = useState(false);
-  const [filteredCustomerList, setFilteredCustomerList] = useState([]);
+  // const [searchActive, setSearchActive] = useState(false);
+  // const [filteredCustomerList, setFilteredCustomerList] = useState([]);
   const [selectedCustomer, setSelectedCustomer] = useState(blankCustomer);
   const [batchNumber, setBatchNumber] = useState(null)
 
-  const {data, loading, error} = useQuery(GET_ALL_CUSTOMERS_QUERY, {variables: {batch: selectedBatch ? selectedBatch : null}})
-  const [create_customer, {error: mutationError}] = useMutation(CREATE_CUSTOMER, { 
+  const {data, loading, error,} = useQuery(GET_ALL_CUSTOMERS_QUERY, {variables: {batch: selectedBatch ? selectedBatch : null}, fetchPolicy: 'network-only'})
+  const [create_customer,] = useMutation(CREATE_CUSTOMER, { 
     onCompleted(data){
       setCustomerList([...customerList, data.createCustomer.customer])
       setSelectedCustomer({...selectedCustomer, id: data.createCustomer.customer.id});
       alert("Customer information saved");
+    },
+    onError(error){
+      errorMessage(error.networkError.result.error.message)
     }
+
   })
 
   useEffect( () => {
@@ -71,6 +78,12 @@ const CustomerDataForm = ({sendCustomerIdToDosimeterForm, selectedBatch, custome
     setBatchNumber(data.lastBatch + 1);
   };
 
+  const errorMessage = (message) => {
+    toast(message,{
+      type: 'error',
+      autoClose: false
+    })
+  }
   return ( 
     <div>
       <h1>Customer</h1>
@@ -93,7 +106,8 @@ const CustomerDataForm = ({sendCustomerIdToDosimeterForm, selectedBatch, custome
           style={{margin: "1rem"}}
           placeholder="Add new or select existing customer"
           defaultValue={customerId ? customerId : null}
-          options={searchActive ? filteredCustomerList : customerSelection}
+          // options={searchActive ? filteredCustomerList : customerSelection}
+          options={customerSelection}
           loading={dataLoading}
           onChange={handleCustomerSelection}
         />
@@ -106,6 +120,7 @@ const CustomerDataForm = ({sendCustomerIdToDosimeterForm, selectedBatch, custome
           fluid
           style={{margin: ".5rem"}}
           value={selectedCustomer.name}
+          error={selectedCustomer.name == ''}
           onChange={(e) => setSelectedCustomer({...selectedCustomer, name: e.target.value})}
           label="Customer Name"
         />

@@ -9,7 +9,8 @@ import { Query } from 'react-apollo';
 import { useQuery, useMutation } from '@apollo/react-hooks';
 import {Link, } from 'react-router-dom';
 import {determineCalculatedDosimeterRange, convertValueReadToMr} from '../HelperFunctions';
-// import {toast, } from 'react-toastify';
+import {toast, } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const DosimeterDataForm = (props) => {
   const [batch, setBatch] = useState('')
@@ -65,34 +66,12 @@ const DosimeterDataForm = (props) => {
 
       setCurrentRecordToState(accDate, accPass, accRead, certificateNumber, dateReceived, dueDate, elDateIn, elDateOut, elPass, elRead, finalDate, finalPass, id, tolerance, vacPass, vipPass, vipProblems, dosimeterId, modelNumber, serialNumber, range, isR, isMr, isSv, isMsv);
     }
-    // if(props.lastCalibration){
-      // if(props.lastCalibration.previousCalibration && back){
-      //   const {accDate, accPass, accRead, certificateNumber, dateReceived, dueDate, elDateIn, elDateOut, elPass, elRead, finalDate, finalPass, id, tolerance, vacPass, vipPass, vipProblems, dosimeterId} = props.lastCalibration.previousCalibration
-      //   setCurrentRecordToState(accDate, accPass, accRead, certificateNumber, dateReceived, dueDate, elDateIn, elDateOut, elPass, elRead, finalDate, finalPass, id, tolerance, vacPass, vipPass, vipProblems, dosimeterId);
-      // }else if(props.lastCalibration.nextCalibration && forward){
-      //   const {accDate, accPass, accRead, certificateNumber, dateReceived, dueDate, elDateIn, elDateOut, elPass, elRead, finalDate, finalPass, id, tolerance, vacPass, vipPass, vipProblems, dosimeterId} = props.lastCalibration.nextCalibration
-      //   setCurrentRecordToState(accDate, accPass, accRead, certificateNumber, dateReceived, dueDate, elDateIn, elDateOut, elPass, elRead, finalDate, finalPass, id, tolerance, vacPass, vipPass, vipProblems, dosimeterId)
-      // }else alert("This is the last record for this batch")
-    // }
-
     setBatch(props.batchNumber)
   },[data, props.batchNumber, props.calibration]);
 
   useEffect( () => {
     handleFinalPass()
   }, [elPass, accPass, vacPass, vipPass]);
-
-  // const getNextRecord = () => {
-  //   setForward(true)
-  //   setBack(false)
-  //   props.refetch({"batch": props.batchNumber, "id": calibrationId})    
-  // };
-
-  // const getPreviousRecord = () => {
-  //   setForward(false)
-  //   setBack(true)
-  //   props.refetch({"batch": props.batchNumber, "id": calibrationId})
-  // };
 
   const setCurrentRecordToState = (accDate, accPass, accRead, certificateNumber, dateReceived, dueDate, elDateIn, elDateOut, elPass, elRead, finalDate, finalPass, id, tolerance, vacPass, vipPass, vipProblems, dosimeterId,modelNumber, serialNumber, range, isR, isMr, isSv, isMsv) => {
     setEditing(true)
@@ -119,7 +98,6 @@ const DosimeterDataForm = (props) => {
     setFinalPass(finalPass)
     // setId(id)
     setTolerance(tolerance * 100)
-    // setUserId(userId)
     setVacPass(vacPass)
     setVipPass(vipPass)
     setVipProblems(vipProblems)
