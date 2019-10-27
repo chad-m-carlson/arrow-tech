@@ -37,7 +37,7 @@ class Mutations::CreateCalibrationRecord < Mutations::BaseMutation
     if final_pass == false
       final_date = nil
       certificate_number = nil
-      due_date = nil
+      # due_date = nil
     end
 
     dosimeter = Customer.find(customer_id).dosimeters.where("model_number = ? AND serial_number =  ?", model_number, serial_number ).first
