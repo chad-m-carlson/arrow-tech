@@ -20,3 +20,15 @@ export const convertValueReadToMr = (valueRead, isR,  isMr, isSv, isMsv) => {
   }else valueRead = valueRead
   return valueRead
 };
+
+export const printUnit = (isR, isMr, isSv, isMsv) => {
+  if(isR) return "R"
+  else if (isMr) return "mR"
+  else if (isSv) return "sV"
+  else return "mSv"
+};
+
+export const printDate = (dateToBePrinted) => {
+  let date = new Date(dateToBePrinted)
+  return `${date.getMonth() + 1}/${date.getDate()}/${date.getFullYear()}`
+};
