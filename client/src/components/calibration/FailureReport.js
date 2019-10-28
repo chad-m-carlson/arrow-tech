@@ -89,7 +89,7 @@ const FailureReport = ({calData, calibratorData, dateTested}) => {
                         <TableData>{serialNumber}</TableData>
                         <TableData>{determineCalculatedDosimeterRange(range, isR,  isMr, isSv, isMsv,)}</TableData>
                         <TableData>{determineCalculatedDosimeterRange(range, isR, isMr, isMsv, isSv).replace(/\D/gm,"") / 2} {printUnit(isR, isMr, isSv, isMsv)} </TableData>
-                        <TableData> {printUnit(isR, isMr, isSv, isMsv)}</TableData>
+                        <TableData> {c.accRead} {printUnit(isR, isMr, isSv, isMsv)}</TableData>
                         {/* <TableData disabled={!c.vipPass}>{midScaleAccuracy(c.accRead, isR, isMr, isSv, isMsv, range)}% </TableData> */}
                         <TableData disabled={!c.accPass}>
                           <p>{c.accPass ? "Pass" : "Fail"}</p>
