@@ -2,9 +2,9 @@ import styled from 'styled-components';
 
 export const TableData = styled.td `
   border: .1px solid black;
-  color: ${props => props.disabled ? "red" : "black"};
-  font-weight: ${props => props.disabled ? "900" : "300"};
-  text-transform: ${props => props.disabled ? "uppercase" : "none"}
+  color: ${props => props.failed ? "red" : "black"};
+  font-weight: ${props => props.failed ? "900" : "300"};
+  text-transform: ${props => props.failed ? "uppercase" : "none"}
 `;
 
 export const TableHeader = styled.th `

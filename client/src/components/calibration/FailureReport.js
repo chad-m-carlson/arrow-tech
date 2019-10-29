@@ -5,7 +5,7 @@ import {printUnit, printDate, } from '../HelperFunctions';
 
 
 const FailureReport = ({calData, calibratorData, dateTested}) => {
-  const {range, isR, isMr, isSv, isMsv, customer} = calData[0].dosimeter
+  const {customer} = calData[0].dosimeter
 
   //   const midScaleAccuracy = (accRead, isR, isMr, isSv, isMsv, range) => {
   //   let calculatedExposure = determineCalculatedDosimeterRange(range, isR, isMr, isMsv, isSv).replace(/\D/gm,"") / 2
@@ -13,7 +13,7 @@ const FailureReport = ({calData, calibratorData, dateTested}) => {
   //   return (((calculatedExposure - difference) / calculatedExposure) * 100).toFixed(2)
   // };
   return ( 
-<table>
+    <table>
       <div style={{maxWidth: "7.5in", fontSize: "10pt"}}>
         <thead>
           <tr>
@@ -91,19 +91,19 @@ const FailureReport = ({calData, calibratorData, dateTested}) => {
                         <TableData>{determineCalculatedDosimeterRange(range, isR, isMr, isMsv, isSv).replace(/\D/gm,"") / 2} {printUnit(isR, isMr, isSv, isMsv)} </TableData>
                         <TableData> {c.accRead} {printUnit(isR, isMr, isSv, isMsv)}</TableData>
                         {/* <TableData disabled={!c.vipPass}>{midScaleAccuracy(c.accRead, isR, isMr, isSv, isMsv, range)}% </TableData> */}
-                        <TableData disabled={!c.accPass}>
+                        <TableData failed={!c.accPass}>
                           <p>{c.accPass ? "Pass" : "Fail"}</p>
                         </TableData>
-                        <TableData disabled={!c.vipPass}>
+                        <TableData failed={!c.vipPass}>
                           <p>{c.vipPass ? "Pass" : "Fail"}</p>
                         </TableData>
-                        <TableData disabled={!c.elPass}>
+                        <TableData failed={!c.elPass}>
                           <p>{c.elRead}  ({c.elPass ? "Pass" : "Fail"})</p>
                         </TableData>
-                        <TableData disabled={!c.vacPass}>
+                        <TableData failed={!c.vacPass}>
                           <p>{c.vacPass ? "Pass" : "Fail"}</p>
                         </TableData>
-                        <TableData disabled={!c.finalPass}>
+                        <TableData failed={!c.finalPass}>
                           <p>{c.finalPass ? "Pass" : "Fail"}</p>
                         </TableData>
                       </tr>
@@ -141,7 +141,7 @@ const FailureReport = ({calData, calibratorData, dateTested}) => {
       </tfoot>
     </div>
   </table>
-   );
+  );
 }
  
 export default FailureReport;
