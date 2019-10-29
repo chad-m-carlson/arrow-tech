@@ -3,10 +3,15 @@ import {determineCalculatedDosimeterRange, } from '../HelperFunctions';
 import {TableData, TableHeader, BaseCalDetails, Header, PageHeader, Footer, PageFooter, Page, } from '../../Styles/CalibrationCertificateStyles';
 import {printUnit, printDate, } from '../HelperFunctions';
 
-const CertificateOfCalibration = ({calData, calibratorData}) => {
 
-  const {range, isR, isMr, isSv, isMsv, customer} = calData[0].dosimeter
+const FailureReport = ({calData, calibratorData, dateTested}) => {
+  const {customer} = calData[0].dosimeter
 
+  //   const midScaleAccuracy = (accRead, isR, isMr, isSv, isMsv, range) => {
+  //   let calculatedExposure = determineCalculatedDosimeterRange(range, isR, isMr, isMsv, isSv).replace(/\D/gm,"") / 2
+  //   let difference =  Math.abs(accRead - calculatedExposure)
+  //   return (((calculatedExposure - difference) / calculatedExposure) * 100).toFixed(2)
+  // };
   return ( 
     <table>
       <div style={{maxWidth: "7.5in", fontSize: "10pt"}}>
@@ -27,8 +32,7 @@ const CertificateOfCalibration = ({calData, calibratorData}) => {
           <tr>
             <td>
               <Page>
-                <h1 style={{textAlign: "center", fontWeight: "900"}}>Certificate of Calibration</h1>
-                <p>Certificate Number: <span style={{paddingLeft: "15px"}}>{calData[0].certificateNumber}</span></p>
+                <h1 style={{textAlign: "center", fontWeight: "900"}}>Failure Report</h1>
                 <p>Customer: <span style={{paddingLeft: "15px"}}>{customer.name}</span></p>
                 <p>
                   <span style={{paddingLeft: "80px"}}>{customer.streetAddress1}</span><br />
@@ -43,33 +47,29 @@ const CertificateOfCalibration = ({calData, calibratorData}) => {
                   <span style={{paddingLeft: "80px"}}>{customer.country}</span>
                 </p>
                 <div style={{display: "flex", justifyContent: "space-between"}}>
-                  <p>Instrument: <BaseCalDetails>Direct Reading Dosimeter</BaseCalDetails></p>
-                  <p>Model: <BaseCalDetails>{calData[0].dosimeter.modelNumber}</BaseCalDetails></p>
-                  <p>Range: <BaseCalDetails>{determineCalculatedDosimeterRange(range, isR,  isMr, isSv, isMsv,)}</BaseCalDetails></p>
+                  {/* <p>Instrument: <BaseCalDetails>Direct Reading Dosimeter</BaseCalDetails></p> */}
+                  {/* <p>Model: <BaseCalDetails>{calData[0].dosimeter.modelNumber}</BaseCalDetails></p> */}
+                  {/* <p>Range: <BaseCalDetails>{determineCalculatedDosimeterRange(range, isR,  isMr, isSv, isMsv,)}</BaseCalDetails></p> */}
                 </div>
                 <p>The referenced Direct-Reading Dosimeters have been tested for response in accordance with applicable American National Standard Institute (ANSI) Standards N13.5 and N322. Arrow-Tech, Inc. Radioactive Material License #33-16216.</p>
-                <p>All instruments were tested on a {calibratorData.id ? calibratorData.model : <span style={{backgroundColor: "yellow"}}>____________________</span>} Curie, Cesium 137 Carousel Calibrator, Serial Number {calibratorData.id ? calibratorData.serialNumber : <span style={{backgroundColor: "yellow"}}>____________________</span>}, using an exposure rate of {calibratorData.id ? calibratorData.exposureRate : <span style={{backgroundColor: "yellow"}}>____________________</span>}. All referenced Direct-Reading Dosimeters indicated exposure are within the {calData[0].tolerance !== 0.1 ? "customer defined limits" : "allowable limits"} of +/- {(calData[0].tolerance) * 100}% of true exposure.
-                </p>
                 <p>The above referenced Gamma Source is calibrated by utilizing Direct-Reading Dosimeter "Transfer Standards" certified for accuracy and with traceability to the National Institute of Standards and Technology by Battelle National Laboratories. <br />TFN: {calibratorData.id ? calibratorData.tfn : <span style={{backgroundColor: "yellow"}}>____________________</span>} dated {calibratorData.id ? calibratorData.date : <span style={{backgroundColor: "yellow"}}>____________________</span>}
                 </p>
+                <p>All instruments were tested on a J.L. Shepherd 20 Curie, Cesium 137 Carousel Calibrator, Serial Number 6046.</p>
                 <div style={{display: "flex", justifyContent: "space-between", padding: "0px 30px 0px 30px"}}>
                 <div style={{margin: "0px 30px 30px 30px"}}>
-                  <p>Calibration Performed By: <BaseCalDetails>{calData[0].user.firstName} {calData[0].user.lastName}</BaseCalDetails></p>
-                  <p style={{marginBottom: "0px"}}>Approved By: <BaseCalDetails>____________________________________________</BaseCalDetails></p>
-                  <p style={{fontSize: "8px", marginLeft: "160px"}}>Radiation Safety Officer</p>
+                  <p>Tests Performed By: <BaseCalDetails>{calData[0].user.firstName} {calData[0].user.lastName}</BaseCalDetails></p>
+                  <p>Date Tested: <BaseCalDetails>{printDate(dateTested)}</BaseCalDetails></p>
                 </div>
                   <div>
-                    <p>Calibration Date: <BaseCalDetails>{printDate(calData[0].finalDate)}</BaseCalDetails></p>
-                    <p>Calibration Due Date: <BaseCalDetails>{printDate(calData[0].dueDate)}</BaseCalDetails> </p>
                   </div>
                 </div>
-                <p>In accordance with Good Health Physics practices, Arrow-Tech, Inc. recommends an annual calibration check on the listed instruments. More frequent calibration maybe necessary should the User’s license require a shorter calibration interval.
-                </p>
                 <div style={{display: "flex", justifyContent: "space-around"}}>
                 <table style={{maxWidth: "7.5in", fontSize: "8px", borderCollapse: "collapse"}}>
                   <thead>
                     <tr>
+                      <TableHeader><span>Model</span><br /><span> Number</span></TableHeader>
                       <TableHeader><span>Serial</span><br /><span> Number</span></TableHeader>
+                      <TableHeader><span>Range</span></TableHeader>
                       <TableHeader><span>Exposed</span><br /><span>to:</span></TableHeader>
                       <TableHeader>As Found Reading</TableHeader>
                       <TableHeader><span>Mid-Scale</span><br /><span>Accuracy</span></TableHeader>
@@ -81,33 +81,29 @@ const CertificateOfCalibration = ({calData, calibratorData}) => {
                     </tr>
                   </thead>
                   <tbody>
-                    {/* {calData.filter( c => c.finalPass === true).map( c => { */}
                       {calData.map( c => {
-                      const {serialNumber, range, isR, isMr, isMsv, isSv} = c.dosimeter
+                      const {serialNumber, modelNumber, range, isR, isMr, isMsv, isSv} = c.dosimeter
                       return(
                       <tr key={c.id} style={{textAlign: "center"}}>
+                        <TableData>{modelNumber}</TableData>
                         <TableData>{serialNumber}</TableData>
+                        <TableData>{determineCalculatedDosimeterRange(range, isR,  isMr, isSv, isMsv,)}</TableData>
                         <TableData>{determineCalculatedDosimeterRange(range, isR, isMr, isMsv, isSv).replace(/\D/gm,"") / 2} {printUnit(isR, isMr, isSv, isMsv)} </TableData>
-                        <TableData>{c.accRead} {printUnit(isR, isMr, isSv, isMsv)}</TableData>
-                        {/* <TableData>{midScaleAccuracy(c.accRead, isR, isMr, isSv, isMsv, range)}% </TableData> */}
-                        <TableData>
-                          {/* <Icon name={c.accPass ? 'checkmark' : 'close'} color={c.accPass ? 'green' : 'red'}/> */}
+                        <TableData> {c.accRead} {printUnit(isR, isMr, isSv, isMsv)}</TableData>
+                        {/* <TableData disabled={!c.vipPass}>{midScaleAccuracy(c.accRead, isR, isMr, isSv, isMsv, range)}% </TableData> */}
+                        <TableData failed={!c.accPass}>
                           <p>{c.accPass ? "Pass" : "Fail"}</p>
                         </TableData>
-                        <TableData>
-                          {/* <Icon name={c.vipPass ? 'checkmark' : 'close'} color={c.vipPass ? 'green' : 'red'}/> */}
+                        <TableData failed={!c.vipPass}>
                           <p>{c.vipPass ? "Pass" : "Fail"}</p>
                         </TableData>
-                        <TableData>
-                          {/* <Icon name={c.elPass ? 'checkmark' : 'close'} color={c.elPass ? 'green' : 'red'}/> */}
-                          <p>{c.elPass ? "Pass" : "Fail"}</p>
+                        <TableData failed={!c.elPass}>
+                          <p>{c.elRead}  ({c.elPass ? "Pass" : "Fail"})</p>
                         </TableData>
-                        <TableData>
-                          {/* <Icon name={c.vacPass ? 'checkmark' : 'close'} color={c.vacPass ? 'green' : 'red'}/> */}
+                        <TableData failed={!c.vacPass}>
                           <p>{c.vacPass ? "Pass" : "Fail"}</p>
                         </TableData>
-                        <TableData>
-                          {/* <Icon name={c.finalPass ? 'checkmark' : 'close'} color={c.finalPass ? 'green' : 'red'}/> */}
+                        <TableData failed={!c.finalPass}>
                           <p>{c.finalPass ? "Pass" : "Fail"}</p>
                         </TableData>
                       </tr>
@@ -116,7 +112,7 @@ const CertificateOfCalibration = ({calData, calibratorData}) => {
                       <td><br /></td>
                     </tr>
                     <tr style={{textAlign: "center", fontSize: "14px", paddingTop: "15px"}}>
-                      <td colspan='8'>***********************END***********************</td>
+                      <td colspan='10'>***********************END***********************</td>
                     </tr>
                     </tbody>
                   </table>
@@ -145,9 +141,7 @@ const CertificateOfCalibration = ({calData, calibratorData}) => {
       </tfoot>
     </div>
   </table>
-   );
+  );
 }
-
-
  
-export default CertificateOfCalibration;
+export default FailureReport;

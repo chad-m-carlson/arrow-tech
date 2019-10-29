@@ -1,13 +1,21 @@
 import React, {useState, useEffect} from 'react';
 import CertificateOfCalibration from './CertificateOfCalibration';
+import FailureReport from './FailureReport';
 import {Form, Button, Grid } from 'semantic-ui-react';
 import {Link, } from 'react-router-dom';
 import {CREATE_CALIBRATOR_RECORD} from '../graphql/mutations';
 import {useMutation} from '@apollo/react-hooks';
+import CalibrationSummary from './CalibrationSummary';
 
 const CalibrationReports = (props) => {
   const [calibrator, setCalibrator] = useState({id: null, model: '', serialNumber: '', tfn: '265623-01', exposureRate: '', date: '6/6/2019'});
   const [addCalibrator, setAddCalibrator] = useState(false);
+  const [viewFailureReport, setViewFailureReport] = useState(false);
+  const [viewCalibrationSummary, setViewCalibrationSummary] = useState(true);
+  const [viewCalibrationReport, setViewCalibrationReport] = useState(false);
+  const [cocCounter, setCocCounter] = useState(0);
+  const [allCalibrationData, setAllCalibrationData] = useState([]);
+  const [currentCalibrationData, setCurrentCalibrationData] = useState([]);
 
   const calibratorModelList = [{key: 1, text: "J.L. Shepherd 20", value: "J.L. Shepherd 20"}, {key: 2, text: "TEMCO 100", value: "TEMCO 100"}]
 
@@ -18,21 +26,44 @@ const CalibrationReports = (props) => {
                                       {key: 5, text: "43 mR/hr", value: "43 mR/hr"},]
 
   const [createCalibratorRecord] = useMutation(CREATE_CALIBRATOR_RECORD, {onCompleted(data){
-    debugger
-    setCalibrator({...calibrator ,id: data.createCalibratorRecord.calibrator.id})
-    setAddCalibrator(false)
+    setCalibrator({...calibrator ,id: data.createCalibratorRecord.calibrator.id});
+    let x = allCalibrationData.filter( c => c.dosimeter.modelNumber === props.location.state.uniqueDosimeterModels[cocCounter])
+    x.forEach( c => {
+      {c.calibrator = data.createCalibratorRecord.calibrator} 
+      {c.calibratorId = data.createCalibratorRecord.calibrator.id}
+    })
+    setAllCalibrationData([...allCalibrationData.filter( c => c.dosimeter.modelNumber !== props.location.state.uniqueDosimeterModels[cocCounter]), ...x])
   }})
 
   useEffect( () => {
-    if(props.location.state.calData[0].calibrator === null){
-      alert("Calibration Equipment has not been set")
+    setAllCalibrationData(props.location.state.calData)
+  },[]);
+
+  useEffect( () => {
+    calibratorSet()
+    // if(props.location.state.calData[0].calibrator === null){
+    //   alert("Calibration Equipment has not been set")
+    //   setAddCalibrator(true)
+    // }else{
+    //   const {id, model, serialNumber, tfn, exposureRate, date} = props.location.state.calData[0].calibrator
+    //   setCalibrator({id, model, serialNumber, tfn, exposureRate, date})
+    //   setAddCalibrator(false)
+    // }
+  }, [cocCounter]);
+  
+  const calibratorSet = () => {
+    // ?calData filtered by dosimeter model
+    let x = props.location.state.calData.filter( c => c.finalPass === true && c.dosimeter.modelNumber === props.location.state.uniqueDosimeterModels[cocCounter])
+    if(x[0].calibrator === null){
       setAddCalibrator(true)
-     }else{
-       const {id, model, serialNumber, tfn, exposureRate, date} = props.location.state.calData[0].calibrator
-       setCalibrator({id, model, serialNumber, tfn, exposureRate, date})
-       setAddCalibrator(false)
-     }
-  }, []);
+      setCalibrator({id: null, model: '', serialNumber: '', tfn: '265623-01', exposureRate: '', date: '6/6/2019'})
+    }else{
+      const {id, model, serialNumber, tfn, exposureRate, date} = x[0].calibrator
+      setCalibrator({id, model, serialNumber, tfn, exposureRate, date})
+      setAddCalibrator(false)
+      setCurrentCalibrationData(x)
+    }
+  };
 
   const setCalibratorModel = (e, {value}) => {
     switch (value) {
@@ -50,6 +81,7 @@ const CalibrationReports = (props) => {
   };
 
   const handleSubmit = () => {
+
     createCalibratorRecord({variables:{
       "id": calibrator.id,
       "model": calibrator.model,
@@ -57,8 +89,16 @@ const CalibrationReports = (props) => {
       "exposure_rate": calibrator.exposureRate,
       "tfn": calibrator.tfn,
       "date": calibrator.date,
-      "batch": props.location.state.calData[0].batch
+      "batch": props.location.state.calData[0].batch,
+      "dosimeter_model": props.location.state.uniqueDosimeterModels[cocCounter]
     }})
+  };
+
+  const handleCocNavigation = (direction) => {
+    if(direction === 'next'){
+      setCocCounter(cocCounter + 1)
+    }else setCocCounter(cocCounter -1)
+    calibratorSet()
   };
 
   const printCoc = () => {
@@ -77,18 +117,53 @@ const CalibrationReports = (props) => {
     document.getElementById('pdf-container').style.width = '60%'
   };
 
+  const switchCerts = (certToView) => {
+    if(certToView === 'calibration'){
+      setViewCalibrationReport(true)
+      setViewFailureReport(false)
+      setViewCalibrationSummary(false)
+    }else if (certToView === 'failure'){
+      setViewCalibrationReport(false)
+      setViewFailureReport(true)
+      setViewCalibrationSummary(false)
+    }else{
+      setViewCalibrationReport(false)
+      setViewFailureReport(false)
+      setViewCalibrationSummary(true)
+    }
+  };
+
   return ( 
     <Grid columns={2}>
       <Grid.Column style={{width: "60%"}} id='pdf-container'>
-        <CertificateOfCalibration 
-          calData={props.location.state.calData}
-          calibratorData={calibrator}
-        />
+        {viewCalibrationReport &&
+          <CertificateOfCalibration 
+            calData={currentCalibrationData.length > 0 ? currentCalibrationData : props.location.state.calData.filter( c => c.finalPass === true && c.dosimeter.modelNumber === props.location.state.uniqueDosimeterModels[cocCounter])}
+            calibratorData={calibrator}
+          />
+        }
+        {viewFailureReport &&
+          <FailureReport
+            calData={allCalibrationData.filter( c => c.finalPass === false)}
+            calibratorData={calibrator}
+            dateTested={props.location.state.calData.find(( {finalDate} ) => finalDate !== null).finalDate}
+          />
+        }
+        {viewCalibrationSummary &&
+          <CalibrationSummary
+            calData={allCalibrationData.length > 0 ? allCalibrationData : props.location.state.calData}
+            dateTested={props.location.state.calData.find(( {finalDate} ) => finalDate !== null).finalDate}
+            uniqueDosimeterModels={props.location.state.uniqueDosimeterModels}
+          />
+        }
       </Grid.Column>
       <Grid.Column style={{width: "40%", position: "fixed", left: "65%"}} id='hide-to-print'>
-        {calibrator.id &&
+        <h2>Batch# {props.location.state.calData[0].batch}</h2>
+        <h3>Dosimeter Models: {props.location.state.uniqueDosimeterModels.length}</h3>
+        <h4>Total Dosimeters: {props.location.state.calData.length}</h4>
           <>
             <Button
+              disabled={!calibrator.id}
               style={{marginBottom: "10px"}}
               onClick={printCoc}
               color='green'>
@@ -97,11 +172,46 @@ const CalibrationReports = (props) => {
             <br />
             <Button
               style={{marginBottom: "10px"}}
-              onClick={() => setAddCalibrator(true)}
-              >Edit Calibration Equipment
+              onClick={() => switchCerts('summary')}
+              >View Calibration Summary
             </Button>
+            <br />
+            <Button
+              style={{marginBottom: "10px"}}
+              onClick={() => switchCerts('calibration')}
+              >View Calibration Report
+            </Button>
+            <br />
+            {props.location.state.uniqueDosimeterModels.length > 1 && !viewFailureReport &&!viewCalibrationSummary &&
+              <>
+                <Button
+                  disabled={cocCounter === 0}
+                  style={{marginBottom: "10px"}}
+                  onClick={() =>  handleCocNavigation('prev')}
+                >Previous Model CoC
+                </Button>
+                <Button
+                  disabled={cocCounter === props.location.state.uniqueDosimeterModels.length - 1 ||
+                            props.location.state.calData.filter( c => c.finalPass === true && c.dosimeter.modelNumber === props.location.state.uniqueDosimeterModels[cocCounter + 1]).length === 0}
+                  style={{marginBottom: "10px"}}
+                  onClick={() => handleCocNavigation('next')}
+                >Next Model CoC
+                </Button>
+              <br />
+            </>
+            }
+            <Button
+              style={{marginBottom: "10px"}}
+              onClick={() => switchCerts('failure')}
+              >View Failure Report
+            </Button>
+            <br />
           </>
-        }
+        <Button
+          style={{marginBottom: "10px"}}
+          onClick={() => setAddCalibrator(true)}
+          >Edit Calibration Equipment
+        </Button>
         <br />
         <Button
           style={{marginBottom: "10px"}}

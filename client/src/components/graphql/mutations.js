@@ -54,10 +54,15 @@ export const CREATE_CUSTOMER = gql `
 `;
 
 export const CREATE_CALIBRATOR_RECORD = gql `
-  mutation CreateCalibratorRecord($id: ID, $model: String!, $serial_number: String!, $tfn: String!, $date: String!, $exposure_rate: String!, $batch: Int!) {
-    createCalibratorRecord(input: {id: $id, model: $model, serialNumber: $serial_number, tfn: $tfn, date: $date, exposureRate: $exposure_rate, batch: $batch}) {
+  mutation CreateCalibratorRecord($id: ID, $model: String!, $serial_number: String!, $tfn: String!, $date: String!, $exposure_rate: String!, $batch: Int!, $dosimeter_model: String!) {
+    createCalibratorRecord(input: {id: $id, model: $model, serialNumber: $serial_number, tfn: $tfn, date: $date, exposureRate: $exposure_rate, batch: $batch, dosimeterModel: $dosimeter_model}) {
       calibrator{
         id
+        model
+        serialNumber
+        tfn
+        exposureRate
+        date
       }
     }
   }

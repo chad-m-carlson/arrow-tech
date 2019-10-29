@@ -102,7 +102,6 @@ const CustomerDataForm = ({sendCustomerIdToDosimeterForm, selectedBatch, custome
           // openOnFocus={false}
           // autoComplete='off'
           // clearable
-          minCharacters='3'
           style={{margin: "1rem"}}
           placeholder="Add new or select existing customer"
           defaultValue={customerId ? customerId : null}

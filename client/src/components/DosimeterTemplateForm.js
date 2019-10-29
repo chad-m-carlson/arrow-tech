@@ -33,6 +33,9 @@ const DosimeterTemplateForm = (props) => {
       "range": rangeInMr,
       "unit": unit
     }})
+    setModelNumber('');
+    setRange('');
+    setUnit('')
   };
 
   return ( 

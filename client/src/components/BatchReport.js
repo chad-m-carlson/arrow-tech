@@ -12,6 +12,7 @@ const BatchReport = (props) => {
   const [calData, setCalData] = useState([]);
   const [dataDeleted, setDataDeleted] = useState(false);
 
+
   const [delete_calibration_record] = useMutation(DELETE_CALIBRATION_RECORD)
 
   useEffect( () => {
@@ -47,17 +48,16 @@ const BatchReport = (props) => {
             if(dataDeleted){
               // ?CAN'T FIGURE OUT HOW TO DISABLE THE CACHE FROM AUTO SETTING STATE WITH ORIGINAL ARRAY INSTEAD OF NEW FILTERED ARRAY
             }else{
-              // let sortedData = data.calibrationsByBatch.sort((a, b) => {
-                // return a.dosimeter.serialNumber - b.dosimeter.serialNumber})
               setCalData(data.calibrationsByBatch.sort((a, b) => {
-                return a.dosimeter.serialNumber - b.dosimeter.serialNumber}))
+                return a.dosimeter.serialNumber - b.dosimeter.serialNumber}));
             }
+
             return(
               <>
               <h1>Batch Report for {data.calibrationsByBatch[0].dosimeter.customer.name}</h1>
               <div style={{display: "flex", justifyContent: "space-between"}}>
                 <h2> Batch Number: {batch}</h2>
-                <Button as={Link} to={{pathname: '/calreports', state: {calData: calData}}}>View Calibration Report</Button>
+                <Button as={Link} to={{pathname: '/calreports', state: {calData: calData, uniqueDosimeterModels: [...new Set(data.calibrationsByBatch.map( c => c.dosimeter.modelNumber))]}}}>View Reports</Button>
               </div>
               <BatchReportTable
                 calData={calData}
