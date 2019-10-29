@@ -5,7 +5,7 @@ import Login from './components/Login';
 import Register from './components/Register';
 import FetchUser from './components/FetchUser';
 import ProtectedRoute from './components/ProtectedRoute';
-import AdminRoute from './components/AdminRoute';
+// import AdminRoute from './components/AdminRoute';
 import Home from './components/Home';
 import CalibrationForm from './components/calibration/CalibrationForm';
 import CalibrationReports from './components/calibration/CalibrationReports';
@@ -13,7 +13,7 @@ import NoMatch from './components/NoMatch';
 import BatchReport from './components/BatchReport';
 import CustomerDataForm from './components/calibration/CustomerDataForm';
 import DosimeterTemplateForm from './components/DosimeterTemplateForm';
-import { ToastContainer, toast } from 'react-toastify';
+import { ToastContainer} from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import {Switch, Route, } from 'react-router-dom';
 // import {Container, } from 'semantic-ui-react';
@@ -21,7 +21,6 @@ import { ApolloProvider } from '@apollo/react-hooks';
 
 // import Home from './components/User/Home';
 // import NoMatch from './components/NoMatch';
-
 
 function App() {
   return (
