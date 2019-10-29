@@ -5,11 +5,14 @@ import {Form, Button, Grid } from 'semantic-ui-react';
 import {Link, } from 'react-router-dom';
 import {CREATE_CALIBRATOR_RECORD} from '../graphql/mutations';
 import {useMutation} from '@apollo/react-hooks';
+import CalibrationSummary from './CalibrationSummary';
 
 const CalibrationReports = (props) => {
   const [calibrator, setCalibrator] = useState({id: null, model: '', serialNumber: '', tfn: '265623-01', exposureRate: '', date: '6/6/2019'});
   const [addCalibrator, setAddCalibrator] = useState(false);
   const [viewFailureReport, setViewFailureReport] = useState(false);
+  const [viewCalibrationSummary, setViewCalibrationSummary] = useState(true);
+  const [viewCalibrationReport, setViewCalibrationReport] = useState(false);
   const [cocCounter, setCocCounter] = useState(0);
   const [allCalibrationData, setAllCalibrationData] = useState([]);
   const [currentCalibrationData, setCurrentCalibrationData] = useState([]);
@@ -114,22 +117,43 @@ const CalibrationReports = (props) => {
     document.getElementById('pdf-container').style.width = '60%'
   };
 
+  const switchCerts = (certToView) => {
+    if(certToView === 'calibration'){
+      setViewCalibrationReport(true)
+      setViewFailureReport(false)
+      setViewCalibrationSummary(false)
+    }else if (certToView === 'failure'){
+      setViewCalibrationReport(false)
+      setViewFailureReport(true)
+      setViewCalibrationSummary(false)
+    }else{
+      setViewCalibrationReport(false)
+      setViewFailureReport(false)
+      setViewCalibrationSummary(true)
+    }
+  };
+
   return ( 
     <Grid columns={2}>
       <Grid.Column style={{width: "60%"}} id='pdf-container'>
-        {!viewFailureReport &&
+        {viewCalibrationReport &&
           <CertificateOfCalibration 
-            // calData={props.location.state.calData.filter( c => c.finalPass === true && c.dosimeter.modelNumber === props.location.state.uniqueDosimeterModels[cocCounter])}
             calData={currentCalibrationData.length > 0 ? currentCalibrationData : props.location.state.calData.filter( c => c.finalPass === true && c.dosimeter.modelNumber === props.location.state.uniqueDosimeterModels[cocCounter])}
             calibratorData={calibrator}
           />
         }
         {viewFailureReport &&
           <FailureReport
-            // calData={props.location.state.calData.filter( c=> c.finalPass === false)}
             calData={allCalibrationData.filter( c => c.finalPass === false)}
             calibratorData={calibrator}
             dateTested={props.location.state.calData.find(( {finalDate} ) => finalDate !== null).finalDate}
+          />
+        }
+        {viewCalibrationSummary &&
+          <CalibrationSummary
+            calData={allCalibrationData.length > 0 ? allCalibrationData : props.location.state.calData}
+            dateTested={props.location.state.calData.find(( {finalDate} ) => finalDate !== null).finalDate}
+            uniqueDosimeterModels={props.location.state.uniqueDosimeterModels}
           />
         }
       </Grid.Column>
@@ -147,37 +171,47 @@ const CalibrationReports = (props) => {
             </Button>
             <br />
             <Button
-            style={{marginBottom: "10px"}}
-            onClick={() => setViewFailureReport(!viewFailureReport)}>
-              {viewFailureReport ? "View Calibration Report" : "View Failure Report"}
+              style={{marginBottom: "10px"}}
+              onClick={() => switchCerts('summary')}
+              >View Calibration Summary
             </Button>
-            <br />
-          </>
-          {props.location.state.uniqueDosimeterModels.length > 1 && !viewFailureReport &&
-            <>
-              <Button
-                disabled={cocCounter === 0}
-                style={{marginBottom: "10px"}}
-                // onClick={() => setCocCounter(cocCounter - 1)}
-                onClick={() =>  handleCocNavigation('prev')}
-              >Previous Model CoC
-              </Button>
-              <Button
-                disabled={cocCounter === props.location.state.uniqueDosimeterModels.length - 1 ||
-                          props.location.state.calData.filter( c => c.finalPass === true && c.dosimeter.modelNumber === props.location.state.uniqueDosimeterModels[cocCounter + 1]).length === 0}
-                style={{marginBottom: "10px"}}
-                // onClick={() => setCocCounter(cocCounter + 1)}
-                onClick={() => handleCocNavigation('next')}
-              >Next Model CoC
-              </Button>
             <br />
             <Button
               style={{marginBottom: "10px"}}
-              onClick={() => setAddCalibrator(true)}
-              >Edit Calibration Equipment
+              onClick={() => switchCerts('calibration')}
+              >View Calibration Report
             </Button>
+            <br />
+            {props.location.state.uniqueDosimeterModels.length > 1 && !viewFailureReport &&!viewCalibrationSummary &&
+              <>
+                <Button
+                  disabled={cocCounter === 0}
+                  style={{marginBottom: "10px"}}
+                  onClick={() =>  handleCocNavigation('prev')}
+                >Previous Model CoC
+                </Button>
+                <Button
+                  disabled={cocCounter === props.location.state.uniqueDosimeterModels.length - 1 ||
+                            props.location.state.calData.filter( c => c.finalPass === true && c.dosimeter.modelNumber === props.location.state.uniqueDosimeterModels[cocCounter + 1]).length === 0}
+                  style={{marginBottom: "10px"}}
+                  onClick={() => handleCocNavigation('next')}
+                >Next Model CoC
+                </Button>
+              <br />
+            </>
+            }
+            <Button
+              style={{marginBottom: "10px"}}
+              onClick={() => switchCerts('failure')}
+              >View Failure Report
+            </Button>
+            <br />
           </>
-        }
+        <Button
+          style={{marginBottom: "10px"}}
+          onClick={() => setAddCalibrator(true)}
+          >Edit Calibration Equipment
+        </Button>
         <br />
         <Button
           style={{marginBottom: "10px"}}
