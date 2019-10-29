@@ -4,4 +4,5 @@ class Dosimeter < ApplicationRecord
 
   validates :model_number, :serial_number, :range, presence: true
   validates :serial_number, uniqueness: { case_sensitive: false, scope: :model_number }
+  validates :customer_id, presence: {message: "Must Select a customer"}
 end

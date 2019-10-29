@@ -30,11 +30,11 @@ class Mutations::CreateCalibratorRecord < Mutations::BaseMutation
       end
     else 
       # ?This creates a new calibrator based on calibration and dosimeter model
-      calibrator = Calibrator.create(model: model,
-                                  serial_number: serial_number,
-                                  tfn: tfn,
-                                  date: date,
-                                  exposure_rate: exposure_rate)
+        calibrator = Calibrator.create(model: model,
+                                    serial_number: serial_number,
+                                    tfn: tfn,
+                                    date: date,
+                                    exposure_rate: exposure_rate)
       if calibrator.save!
         calibrations = Calibration.where(batch: batch)#.update(calibrator_id: calibrator.id)
         calibrations.each do |c|

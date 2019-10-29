@@ -100,40 +100,44 @@ class Mutations::CreateCalibrationRecord < Mutations::BaseMutation
 
     else
       #! IF WE ARE CREATING A NEW CALIBRATION RECORD
-      calibration = Calibration.new(user_id: user_id, 
-                                    dosimeter_id: dosimeter.id,
-                                    tolerance: tolerance, 
-                                    date_received: date_received, 
-                                    el_date_in: el_date_in, 
-                                    el_date_out: el_date_out, 
-                                    acc_date: acc_date, 
-                                    acc_pass: acc_pass, 
-                                    vac_date_in: vac_date_in, 
-                                    vac_date_out: vac_date_out, 
-                                    final_date: final_date, 
-                                    # ship_back_date: ship_back_date, 
-                                    due_date: due_date, 
-                                    el_pass: el_pass, 
-                                    vip_pass: vip_pass, 
-                                    vac_pass: vac_pass, 
-                                    final_pass: final_pass, 
-                                    el_read: el_read, 
-                                    acc_read: acc_read, 
-                                    vip_problems: vip_problems, 
-                                    vac_reading: vac_reading, 
-                                    vac_ref_reading: vac_ref_reading, 
-                                    batch: batch,
-                                    certificate_number: certificate_number
-        )
-        if calibration.save!
-          {
-
-          }
-        else
-          {
-            # todo get flash messages working
-          }
+      begin
+        calibration = Calibration.create!(user_id: user_id, 
+                                          dosimeter_id: dosimeter.id,
+                                          tolerance: tolerance, 
+                                          date_received: date_received, 
+                                          el_date_in: el_date_in, 
+                                          el_date_out: el_date_out, 
+                                          acc_date: acc_date, 
+                                          acc_pass: acc_pass, 
+                                          vac_date_in: vac_date_in, 
+                                          vac_date_out: vac_date_out, 
+                                          final_date: final_date, 
+                                          # ship_back_date: ship_back_date, 
+                                          due_date: due_date, 
+                                          el_pass: el_pass, 
+                                          vip_pass: vip_pass, 
+                                          vac_pass: vac_pass, 
+                                          final_pass: final_pass, 
+                                          el_read: el_read, 
+                                          acc_read: acc_read, 
+                                          vip_problems: vip_problems, 
+                                          vac_reading: vac_reading, 
+                                          vac_ref_reading: vac_ref_reading, 
+                                          batch: batch,
+                                          certificate_number: certificate_number)
+          {calibration: calibration}
+      rescue ActiveRecord::RecordInvalid => e
+        GraphQL::ExecutionError.new("#{e.record.errors.full_messages.join(', ')}") 
       end
+      #   if calibration.save!
+      #     {
+
+      #     }
+      #   else
+      #     {
+      #       # todo get flash messages working
+      #     }
+      # end
     end
   end
 end

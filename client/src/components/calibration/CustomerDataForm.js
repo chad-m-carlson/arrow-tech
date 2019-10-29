@@ -23,12 +23,11 @@ const CustomerDataForm = ({sendCustomerIdToDosimeterForm, selectedBatch, custome
     onCompleted(data){
       setCustomerList([...customerList, data.createCustomer.customer])
       setSelectedCustomer({...selectedCustomer, id: data.createCustomer.customer.id});
-      alert("Customer information saved");
+      toastMessage('Customer Saved Successfully', 'success')
     },
     onError(error){
-      errorMessage(error.networkError.result.error.message)
+      toastMessage(error.graphQLErrors[0].message, 'error')
     }
-
   })
 
   useEffect( () => {
@@ -78,10 +77,10 @@ const CustomerDataForm = ({sendCustomerIdToDosimeterForm, selectedBatch, custome
     setBatchNumber(data.lastBatch + 1);
   };
 
-  const errorMessage = (message) => {
+  const toastMessage = (message, type) => {
     toast(message,{
-      type: 'error',
-      autoClose: false
+      type: type,
+      autoClose: 10000
     })
   }
   return ( 

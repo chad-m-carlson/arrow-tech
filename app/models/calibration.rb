@@ -4,6 +4,8 @@ class Calibration < ApplicationRecord
   belongs_to :user
   belongs_to :calibrator, optional: true
 
+  validates :el_date_in, :el_date_out, :acc_date, :batch,  presence: {message: "is required"}
+
   def self.prev(batch, cal_id)
     Calibration.where("batch =  ? and id < ?", batch, cal_id).last
   end

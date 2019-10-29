@@ -15,7 +15,7 @@ class Mutations::CreateCustomer < Mutations::BaseMutation
     if id
       customer = Customer.find(id)
       begin
-        customer.update!(name: name,
+        customer.update(name: name,
                         street_address_1: street_address1,
                         street_address_2: street_address2,
                         city: city,
@@ -23,41 +23,43 @@ class Mutations::CreateCustomer < Mutations::BaseMutation
                         zip: zip,
                         country: country,
                         email: email)
+        { customer: customer }
       rescue ActiveRecord::RecordInvalid => e
-        GraphQL::ExecutionError.new("Invalid input: #{e.record.errors.full_messages.join(', ')}") 
+        GraphQL::ExecutionError.new("#{e.record.errors.full_messages.join(', ')}") 
       end
-      if customer.save!
-        {
-          customer: customer
-        }
-      else 
-        {
+    #   if Customer.save
+    #     {
+    #       customer: customer
+    #     }
+    #   else 
+    #     {
 
-        }
-      end
+    #     }
+    #   end
     else 
       begin
         customer = Customer.create!(name: name,
-                                 street_address_1: street_address1,
-                                 street_address_2: street_address2,
-                                 city: city,
-                                 state: state,
-                                 zip: zip,
-                                 country: country,
-                                 email: email)
+                                    street_address_1: street_address1,
+                                    street_address_2: street_address2,
+                                    city: city,
+                                    state: state,
+                                    zip: zip,
+                                    country: country,
+                                    email: email)
+          { customer: customer }
         rescue ActiveRecord::RecordInvalid => e
-          GraphQL::ExecutionError.new("Invalid input: #{e.record.errors.full_messages.join(', ')}") 
+          GraphQL::ExecutionError.new("#{e.record.errors.full_messages.join(', ')}") 
         end
-      if customer.save
-        {
-          customer: customer
-        }
-      else
-        binding.pry
-        {
-          error: customer.errors
-        }
-      end
+      # if Customer.save
+      #   {
+      #     customer: customer
+      #   }
+      # else
+      #   binding.pry
+      #   {
+      #     error: customer.errors
+      #   }
+      # end
     end
   end
 end
