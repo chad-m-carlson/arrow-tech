@@ -14,42 +14,53 @@ class Mutations::CreateCalibratorRecord < Mutations::BaseMutation
     if id
       # ?This updates the calibrator record
       calibrator = Calibrator.find(id)
-      calibrator.update(model: model,
-                        serial_number: serial_number,
-                        tfn: tfn,
-                        date: date,
-                        exposure_rate: exposure_rate)
-      if calibrator.save!
-        {
-          calibrator: calibrator
-        }
-      else
-        {
-          errors: calibrator.errors.full_messages
-        }
+      begin
+        calibrator.update!(model: model,
+                          serial_number: serial_number,
+                          tfn: tfn,
+                          date: date,
+                          exposure_rate: exposure_rate)
+        { calibrator: calibrator }
+      rescue ActiveRecord::RecordInvalid => e
+        GraphQL::ExecutionError.new("#{e.record.errors.full_messages.join(', ')}") 
       end
+      # if calibrator.save!
+      #   {
+      #     calibrator: calibrator
+      #   }
+      # else
+      #   {
+      #     errors: calibrator.errors.full_messages
+      #   }
+      # end
     else 
       # ?This creates a new calibrator based on calibration and dosimeter model
-        calibrator = Calibrator.create(model: model,
+      begin
+        calibrator = Calibrator.create!(model: model,
                                     serial_number: serial_number,
                                     tfn: tfn,
                                     date: date,
                                     exposure_rate: exposure_rate)
-      if calibrator.save!
-        calibrations = Calibration.where(batch: batch)#.update(calibrator_id: calibrator.id)
-        calibrations.each do |c|
-          if c.dosimeter.model_number == dosimeter_model
-            c.update(calibrator_id: calibrator.id)
+        # { calibrator: calibrator }
+        if calibrator.save
+          calibrations = Calibration.where(batch: batch)#.update(calibrator_id: calibrator.id)
+          calibrations.each do |c|
+            if c.dosimeter.model_number == dosimeter_model
+              c.update(calibrator_id: calibrator.id)
+            end
           end
         end
-        {
-          calibrator: calibrator
-        }
-      else
-        {
-          errors: calibrator.errors.full_messages
-        }
+        {calibrator: calibrator}
+      rescue ActiveRecord::RecordInvalid => e
+        GraphQL::ExecutionError.new("#{e.record.errors.full_messages.join(', ')}") 
       end
+      #   {
+      #     calibrator: calibrator
+      #   }
+      # else
+      #   {
+      #     errors: calibrator.errors.full_messages
+      #   }
     end
   end
 end
