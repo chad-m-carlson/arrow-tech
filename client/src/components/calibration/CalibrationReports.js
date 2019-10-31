@@ -1,11 +1,13 @@
 import React, {useState, useEffect} from 'react';
 import CertificateOfCalibration from './CertificateOfCalibration';
 import FailureReport from './FailureReport';
+import CalibrationSummary from './CalibrationSummary';
 import {Form, Button, Grid } from 'semantic-ui-react';
 import {Link, } from 'react-router-dom';
 import {CREATE_CALIBRATOR_RECORD} from '../graphql/mutations';
 import {useMutation} from '@apollo/react-hooks';
-import CalibrationSummary from './CalibrationSummary';
+import {toast, } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const CalibrationReports = (props) => {
   const [calibrator, setCalibrator] = useState({id: null, model: '', serialNumber: '', tfn: '265623-01', exposureRate: '', date: '6/6/2019'});
@@ -25,15 +27,21 @@ const CalibrationReports = (props) => {
                                       {key: 4, text: "588.2 R/hr", value: "588.2 R/hr"}, 
                                       {key: 5, text: "43 mR/hr", value: "43 mR/hr"},]
 
-  const [createCalibratorRecord] = useMutation(CREATE_CALIBRATOR_RECORD, {onCompleted(data){
-    setCalibrator({...calibrator ,id: data.createCalibratorRecord.calibrator.id});
-    let x = allCalibrationData.filter( c => c.dosimeter.modelNumber === props.location.state.uniqueDosimeterModels[cocCounter])
-    x.forEach( c => {
-      {c.calibrator = data.createCalibratorRecord.calibrator} 
-      {c.calibratorId = data.createCalibratorRecord.calibrator.id}
-    })
-    setAllCalibrationData([...allCalibrationData.filter( c => c.dosimeter.modelNumber !== props.location.state.uniqueDosimeterModels[cocCounter]), ...x])
-  }})
+  const [createCalibratorRecord] = useMutation(CREATE_CALIBRATOR_RECORD, {
+      onCompleted(data){
+      setCalibrator({...calibrator ,id: data.createCalibratorRecord.calibrator.id});
+      let x = allCalibrationData.filter( c => c.dosimeter.modelNumber === props.location.state.uniqueDosimeterModels[cocCounter])
+      x.forEach( c => {
+        {c.calibrator = data.createCalibratorRecord.calibrator} 
+        {c.calibratorId = data.createCalibratorRecord.calibrator.id}
+      })
+      setAllCalibrationData([...allCalibrationData.filter( c => c.dosimeter.modelNumber !== props.location.state.uniqueDosimeterModels[cocCounter]), ...x])
+      toastMessage('Calibration equipment saved', 'success')
+    },
+    onError(error){
+      toastMessage(error.graphQLErrors[0].message, 'error')
+    }
+  })
 
   useEffect( () => {
     setAllCalibrationData(props.location.state.calData)
@@ -133,6 +141,13 @@ const CalibrationReports = (props) => {
     }
   };
 
+  const toastMessage = (message, type) => {
+    toast(message,{
+      type: type,
+      autoClose: 4000,
+    })
+  }
+
   return ( 
     <Grid columns={2}>
       <Grid.Column style={{width: "60%"}} id='pdf-container'>
@@ -182,7 +197,7 @@ const CalibrationReports = (props) => {
               >View Calibration Report
             </Button>
             <br />
-            {props.location.state.uniqueDosimeterModels.length > 1 && !viewFailureReport &&!viewCalibrationSummary &&
+            {props.location.state.uniqueDosimeterModels.length > 1 && !viewFailureReport && !viewCalibrationSummary &&
               <>
                 <Button
                   disabled={cocCounter === 0}
@@ -207,11 +222,13 @@ const CalibrationReports = (props) => {
             </Button>
             <br />
           </>
-        <Button
-          style={{marginBottom: "10px"}}
-          onClick={() => setAddCalibrator(true)}
-          >Edit Calibration Equipment
-        </Button>
+        {viewCalibrationReport &&
+          <Button
+            style={{marginBottom: "10px"}}
+            onClick={() => setAddCalibrator(true)}
+            >Edit Calibration Equipment
+          </Button>
+        }
         <br />
         <Button
           style={{marginBottom: "10px"}}

@@ -52,6 +52,16 @@ const DosimeterDataForm = (props) => {
   const {user} = useContext(AuthContext);
   const {data} = useQuery(GET_UNIQUE_DOSIMETER_MODELS)
   const [create_calibration_record,] = useMutation(CREATE_CALIBRATION_RECORD, {
+    onCompleted(data){
+      resetForm()
+      if(editing){
+        setCalibrationId(null);
+        setEditing(false);
+        setTimeout(() => {
+          props.backToBatch('/batchreport', {batch: batch})
+        }, 500);
+      }
+    },
     onError(error){
       toastMessage(error.graphQLErrors[0].message, 'error')
     }
@@ -175,15 +185,7 @@ const DosimeterDataForm = (props) => {
         "tolerance": tolerance/100,
       }
     })
-    // !if everything is successful, reset form
-    resetForm()
-    if(editing){
-      setCalibrationId(null);
-      setEditing(false);
-      setTimeout(() => {
-        props.backToBatch('/batchreport', {batch: batch})
-      }, 500);
-    }
+
   };
   
   const resetForm = () => {
@@ -279,7 +281,7 @@ const DosimeterDataForm = (props) => {
             value={dosimeterModelSelected}
             error={dosimeterModelSelected === ''}
           />
-        {(props.batchNumber || props.customerId || props.calibration) ?
+        {/* {(props.batchNumber || props.customerId || props.calibration) ? */}
           <Form.Input
           label="Dosimeter Serial Number"
             id="1"
@@ -289,8 +291,8 @@ const DosimeterDataForm = (props) => {
             onKeyDown={(e) => customKeyBindings(e)}
             onChange={(e) => setDosimeterSerialNumber(e.target.value)}
             />
-          :
-            <Form.Input
+          {/* : */}
+            {/* <Form.Input
             label="Dosimeter Serial Number"
             id="1"
             tabIndex='1'
@@ -304,7 +306,7 @@ const DosimeterDataForm = (props) => {
                   Please select a customer before entering dosimeter data
                 </Label>
             </Form.Input>
-        }
+        } */}
       </Form.Group>
       {dosimeterRange > 1 &&
       <p><b>Range:</b> {determineCalculatedDosimeterRange(dosimeterRange, isR, isMr, isSv, isMsv)}</p>
