@@ -10,6 +10,7 @@ module Types
     field :country, String, null: true
     field :email, String, null: true
 
+
     field :dosimeter_count, Integer, null: true
 
     field :dosimeters, [Types::DosimeterType], null: true do
@@ -20,8 +21,8 @@ module Types
       argument :id, ID, required: true
     end
 
-    # field :unique_dosimeters_by_customer, [Types::DosimeterType], null: false do
-    #   argument :id, ID, required: true
+    # field :batch_by_customer, Array, null: false do
+    #   argument :customer_id, ID, required: true
     # end
 
     def dosimeters(id:)
@@ -35,6 +36,10 @@ module Types
     def calibrations(id:)
       Customer.find(id).calibrations
     end
+
+    # def batch_by_customer(customer_id:)
+    #   Customer.find(customer_id).calibrations.pluck(:batch).uniq
+    # end
 
     # def unique_dosimeters_by_customer(id:)
     #   Dosimeter.find_by_sql(["
