@@ -43,6 +43,17 @@ export const DELETE_CALIBRATION_RECORD = gql`
   }	
 `;
 
+export const DELETE_DOSIMETER_TEMPLATE = gql`
+  mutation DeleteDosimeterTemplate($id: Int!){
+    deleteDosimeterTemplate(input: {id: $id}) {
+      clientMutationId
+      dosimeterTemplate{
+        modelNumber
+      }
+    }
+  }	
+`;
+
 export const CREATE_CUSTOMER = gql `
   mutation CreateCustomer($id: ID, $name: String!, $street_address1: String!, $street_address2: String, $city: String!, $state: String!, $zip: String!, $country: String!, $email: String) {
     createCustomer(input: {id: $id, name: $name, streetAddress1: $street_address1, streetAddress2: $street_address2, city: $city, state: $state, zip: $zip, country: $country, email: $email}){
@@ -69,7 +80,7 @@ export const CREATE_CALIBRATOR_RECORD = gql `
 `;
 
 export const CREATE_DOSIMETER_TEMPLATE = gql `
-  mutation CreateDosimeterTemplate($model_number: String!, $unit: String!, $range: Int!) {
+  mutation CreateDosimeterTemplate($model_number: String, $unit: String, $range: Int) {
   createDosimeterTemplate(input: {modelNumber: $model_number, unit: $unit, range: $range}) {
     dosimeterTemplate {
       id

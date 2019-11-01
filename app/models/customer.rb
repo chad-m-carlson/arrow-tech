@@ -4,7 +4,5 @@ class Customer < ApplicationRecord
 
   validates :name, :street_address_1, :city, presence: {message: "is required"}
   validates :name, uniqueness: true
-  # validates :street_address_1, presence: {message: "Must have street address"}
-  # validates :city, presence: {message: "Must have city"}
 
 end

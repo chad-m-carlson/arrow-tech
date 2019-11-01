@@ -96,9 +96,9 @@ const Home = () => {
         </NavLink>
       </div>
       <div style={{}}>
-        <NavLink to='/dosimetertemplate'>
+        <NavLink to='/dosimetermanagement'>
           <Card>
-            <h3>New Dosimeter Model</h3>
+            <h3>Manage Dosimeters</h3>
           </Card>
         </NavLink>
       </div>
