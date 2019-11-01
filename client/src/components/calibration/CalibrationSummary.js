@@ -83,22 +83,14 @@ const CalibrationSummary = ({calData, dateTested, uniqueDosimeterModels}) => {
                       )}
                     )}
                   <tr style={{textAlign: "center"}}>
-                    <TableData style={{textAlign: "right", paddingRight: "5px"}}>Grand Total</TableData>
-                    <TableData>{calData.filter( c => c.accPass === false).length}</TableData>
-                    <TableData>{calData.filter( c => c.vipPass === false).length}</TableData>
-                    <TableData>{calData.filter( c => c.vacPass === false).length}</TableData>
-                    <TableData>{calData.filter( c => c.elPass === false).length}</TableData>
-                    <TableData>{calData.filter( c => c.finalPass === false).length}</TableData>
-                    <TableData>{calData.filter( c => c.finalPass === true).length}</TableData>
-                    <TableData>{calData.length}</TableData>
-                    {/* <td style={{borderBottom: ".1px solid black", borderLeft: ".1px solid black"}}></td>
+                    <td style={{borderBottom: ".1px solid black", borderLeft: ".1px solid black"}}></td>
                     <td style={{borderBottom: ".1px solid black"}}></td>
                     <td style={{borderBottom: ".1px solid black"}}></td>
                     <td style={{borderBottom: ".1px solid black"}}></td>
                     <td style={{borderBottom: ".1px solid black"}}></td>
                     <td style={{borderBottom: ".1px solid black"}}></td>
                     <td style={{borderBottom: ".1px solid black", borderRight: ".1px solid black", textAlign: "right", paddingRight: "5px"}}>Grand Total</td>
-                    <td style={{borderBottom: ".1px solid black", borderRight: ".1px solid black", textAlign: "center"}}>{calData.length}</td> */}
+                    <td style={{borderBottom: ".1px solid black", borderRight: ".1px solid black", textAlign: "center"}}>{calData.length}</td> 
                   </tr>
                   <tr>
                     <td><br /></td>
