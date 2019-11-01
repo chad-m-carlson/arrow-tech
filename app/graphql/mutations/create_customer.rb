@@ -27,15 +27,6 @@ class Mutations::CreateCustomer < Mutations::BaseMutation
       rescue ActiveRecord::RecordInvalid => e
         GraphQL::ExecutionError.new("#{e.record.errors.full_messages.join(', ')}") 
       end
-    #   if Customer.save
-    #     {
-    #       customer: customer
-    #     }
-    #   else 
-    #     {
-
-    #     }
-    #   end
     else 
       begin
         customer = Customer.create!(name: name,
@@ -50,16 +41,6 @@ class Mutations::CreateCustomer < Mutations::BaseMutation
         rescue ActiveRecord::RecordInvalid => e
           GraphQL::ExecutionError.new("#{e.record.errors.full_messages.join(', ')}") 
         end
-      # if Customer.save
-      #   {
-      #     customer: customer
-      #   }
-      # else
-      #   binding.pry
-      #   {
-      #     error: customer.errors
-      #   }
-      # end
     end
   end
 end

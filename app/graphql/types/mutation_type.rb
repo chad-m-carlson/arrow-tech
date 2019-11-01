@@ -8,5 +8,6 @@ module Types
     field :delete_calibration_record, mutation: Mutations::DeleteCalibrationRecord
     field :create_calibrator_record, mutation: Mutations::CreateCalibratorRecord
     field :create_dosimeter_template, mutation: Mutations::CreateDosimeterTemplate
+    field :delete_dosimeter_template, mutation: Mutations::DeleteDosimeterTemplate
   end
 end

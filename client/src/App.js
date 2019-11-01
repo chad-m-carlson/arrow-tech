@@ -12,7 +12,7 @@ import CalibrationReports from './components/calibration/CalibrationReports';
 import NoMatch from './components/NoMatch';
 import BatchReport from './components/BatchReport';
 import CustomerDataForm from './components/calibration/CustomerDataForm';
-import DosimeterTemplateForm from './components/DosimeterTemplateForm';
+import ManageDosimeters from './components/dosimeters/ManageDosimeters';
 import { ToastContainer} from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import {Switch, Route, } from 'react-router-dom';
@@ -39,7 +39,7 @@ function App() {
             <ProtectedRoute exact path='/calform' component={CalibrationForm} />
             <ProtectedRoute exact path='/calreports' component={CalibrationReports} />
             <ProtectedRoute exact path='/batchreport' component={BatchReport} />
-            <ProtectedRoute exact path='/dosimetertemplate' component={DosimeterTemplateForm} />
+            <ProtectedRoute exact path='/dosimetermanagement' component={ManageDosimeters} />
             <Route exact path='/register' component={Register} />
             <Route exact path='/login' component={Login} />
             <Route component={NoMatch} />

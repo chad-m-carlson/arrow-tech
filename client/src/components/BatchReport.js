@@ -13,11 +13,11 @@ const BatchReport = (props) => {
   const [dataDeleted, setDataDeleted] = useState(false);
 
 
-  const [delete_calibration_record] = useMutation(DELETE_CALIBRATION_RECORD)
+  const [delete_calibration_record] = useMutation(DELETE_CALIBRATION_RECORD);
 
   useEffect( () => {
     if(props.location.state) setBatch(props.location.state.batch)
-  },[props.location.state])
+  },[props.location.state]);
 
 
   const handleDelete = (id) => {
