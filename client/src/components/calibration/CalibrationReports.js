@@ -69,8 +69,8 @@ const CalibrationReports = (props) => {
       const {id, model, serialNumber, tfn, exposureRate, date} = x[0].calibrator
       setCalibrator({id, model, serialNumber, tfn, exposureRate, date})
       setAddCalibrator(false)
-      setCurrentCalibrationData(x)
     }
+    setCurrentCalibrationData(x)
   };
 
   const setCalibratorModel = (e, {value}) => {
