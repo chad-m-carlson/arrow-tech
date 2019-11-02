@@ -88,23 +88,11 @@ const CustomerDataForm = ({sendCustomerIdToDosimeterForm, selectedBatch, custome
       <h1>Customer</h1>
       <Form>
       <Form.Group style={{display: "flex", flexDirection: "row"}}>
-        {/* <Search
-          data={customerSelection}
-          onChange={returnFilteredList}
-          searchActive={searchActive}
-          searchOn='text'
-          placeholder="Filter Customers"
-          styles={{input:{background: "white", width: "10rem"}}}
-          /> */}
         <Form.Select
           search
-          // openOnFocus={false}
-          // autoComplete='off'
-          // clearable
           style={{margin: "1rem"}}
           placeholder="Add new or select existing customer"
           defaultValue={customerId ? customerId : null}
-          // options={searchActive ? filteredCustomerList : customerSelection}
           options={customerSelection}
           loading={dataLoading}
           onChange={handleCustomerSelection}

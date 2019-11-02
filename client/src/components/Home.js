@@ -12,10 +12,10 @@ const Home = () => {
     <>
     <Container>
       <>
-      <div style={{ opacity: "0.1"}}>
-        <NavLink to='/customers' style={{cursor: "not-allowed"}}>
+      <div>
+        <NavLink to='/customers'>
           <Card>
-            <h3>All Customers</h3>
+            <h3>Customer Batches</h3>
           </Card>
         </NavLink>
       </div>

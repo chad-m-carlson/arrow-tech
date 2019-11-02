@@ -8,6 +8,14 @@ module Types
     field :users, [Types::UserType], null: false
     field :calibrators, [Types::CalibratorType], null: false
 
+    field :batch_by_customer, [Types::CalibrationType], null: false do
+      argument :customer_id, Int, required: true
+    end
+
+    def batch_by_customer(customer_id:)
+      Customer.find(customer_id).calibrations.uniq(&:batch)
+    end
+
     field :calibration, Types::CalibrationType, null: false do
       argument :id, ID, required: true
     end

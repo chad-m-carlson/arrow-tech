@@ -40,6 +40,19 @@ query{
 }
 `;
 
+export const BATCHES_BY_CUSTOMER = gql `
+  query($customer_id: Int!){
+  batchByCustomer(customerId:$customer_id){
+    batch
+    finalDate
+    id
+    dosimeter{
+      customerId
+    }
+  }
+}
+`;
+
 
 export const CALIBRATION_BY_BATCH = gql`
 query($batch:Int!, $id:ID){
