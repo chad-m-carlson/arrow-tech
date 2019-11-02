@@ -32,7 +32,7 @@ const BatchReport = (props) => {
       <Form>
         <Form.Group>
           <Form.Input
-            label="Enter a batch number"
+            placeholder="Enter a batch number"
             autoFocus
             value={batch}
             onChange={(e) => setBatch(e.target.value)}
@@ -40,9 +40,10 @@ const BatchReport = (props) => {
           {/* <Button>Set Batch </Button> */}
         </Form.Group>
       </Form>
+      {batch &&
       <Query query={CALIBRATIONS_BY_BATCH} variables={{"batch": parseInt(batch)}} fetchPolicy='no-cache'>
         {({ loading, error, data }) => {
-          if (loading) return <div>Fetching..</div>
+          if (loading) return <div>Loading..</div>
           if (error) return <div>Error!</div>
           if (data.calibrationsByBatch.length > 0){
             if(dataDeleted){
@@ -54,19 +55,25 @@ const BatchReport = (props) => {
 
             return(
               <>
-              <h1>Batch Report for {data.calibrationsByBatch[0].dosimeter.customer.name}</h1>
               <div style={{display: "flex", justifyContent: "space-between"}}>
-                <h2> Batch Number: {batch}</h2>
-                <Button as={Link} to={{pathname: '/calreports', state: {calData: calData, uniqueDosimeterModels: [...new Set(data.calibrationsByBatch.map( c => c.dosimeter.modelNumber))]}}}>View Reports</Button>
+              <h1>Batch Report #{batch} for {data.calibrationsByBatch[0].dosimeter.customer.name}</h1>
+                <div>
+                  <h4>Total Fail: {calData.filter(c => !c.finalPass).length}
+                  </h4>
+                  <h4 style={{marginTop: "-10px"}}>Total Pass: {calData.filter(c => c.finalPass).length}
+                  </h4>
+                  <Button as={Link} to={{pathname: '/calreports', state: {calData: calData, uniqueDosimeterModels: [...new Set(data.calibrationsByBatch.map( c => c.dosimeter.modelNumber))]}}}>View Reports</Button>
+                </div>
               </div>
               <BatchReportTable
                 calData={calData}
                 handleDelete={handleDelete}
               />
               </>
-            )}else return null
+            )}else return <div>This Batch number does not exist</div>
         }}
       </Query>
+      }
     </>
   );
 }
