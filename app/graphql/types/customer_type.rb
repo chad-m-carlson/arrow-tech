@@ -21,10 +21,6 @@ module Types
       argument :id, ID, required: true
     end
 
-    # field :batch_by_customer, Array, null: false do
-    #   argument :customer_id, ID, required: true
-    # end
-
     def dosimeters(id:)
       Customer.find(id).dosimeters
     end
@@ -36,10 +32,6 @@ module Types
     def calibrations(id:)
       Customer.find(id).calibrations
     end
-
-    # def batch_by_customer(customer_id:)
-    #   Customer.find(customer_id).calibrations.pluck(:batch).uniq
-    # end
 
     # def unique_dosimeters_by_customer(id:)
     #   Dosimeter.find_by_sql(["
