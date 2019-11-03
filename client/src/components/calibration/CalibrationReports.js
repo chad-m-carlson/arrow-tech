@@ -111,7 +111,6 @@ const CalibrationReports = (props) => {
 
   const printCoc = () => {
     const toastContainer = document.querySelectorAll('.Toastify')
-    debugger
     document.getElementById('navbar').style.display = 'none'
     document.getElementById('hide-to-print').style.display = 'none'
     document.getElementById('header').style.display = 'block'
