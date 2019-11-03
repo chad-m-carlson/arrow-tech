@@ -27,7 +27,7 @@ function App() {
     <>
     <ApolloProvider>
     <NavBar />
-    <ToastContainer />
+    <ToastContainer style={{marginTop: "2.3rem"}} />
     <div id='page-container' style={{margin: "4rem"}}>
       <FetchUser>
           <Switch>
