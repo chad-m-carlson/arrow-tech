@@ -71,13 +71,6 @@ const Home = () => {
               // </Popup>
               )}}
         </Query>
-      <div style={{ opacity: "0.1"}}>
-        <NavLink to='/calreports' style={{cursor: "not-allowed"}}>
-          <Card>
-            <h3>Calibration Reports</h3>
-          </Card>
-        </NavLink>
-      </div>
       </>
       <div style={{}}>
         <NavLink to='/batchreport'>
@@ -91,7 +84,7 @@ const Home = () => {
       <div style={{}}>
         <NavLink to='/customerform'>
           <Card>
-            <h3>New Customer</h3>
+            <h3>Add/Edit Customer</h3>
           </Card>
         </NavLink>
       </div>
@@ -106,13 +99,6 @@ const Home = () => {
         <NavLink to='/' style={{cursor: "not-allowed"}}>
           <Card>
             <h3>Other stuff</h3>
-          </Card>
-        </NavLink>
-      </div>
-      <div style={{ opacity: "0.1"}}>
-        <NavLink to='/' style={{cursor: "not-allowed"}}>
-          <Card>
-            <h3>Other Stuff</h3>
           </Card>
         </NavLink>
       </div>
