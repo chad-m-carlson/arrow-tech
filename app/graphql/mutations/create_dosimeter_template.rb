@@ -6,6 +6,7 @@ class Mutations::CreateDosimeterTemplate < Mutations::BaseMutation
   field :dosimeter_template, Types::DosimeterTemplateType, null: false
 
   def resolve(model_number:, unit:, range:)
+    raise GraphQL::ExecutionError.new("Must select a unit") if unit === ''
     begin
       dosimeter_template = DosimeterTemplate.create!(
         model_number: model_number,

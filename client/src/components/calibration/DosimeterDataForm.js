@@ -50,7 +50,7 @@ const DosimeterDataForm = (props) => {
   // const [forward, setForward] = useState(false);
 
   const {user} = useContext(AuthContext);
-  const {data} = useQuery(GET_UNIQUE_DOSIMETER_MODELS)
+  const {data} = useQuery(GET_UNIQUE_DOSIMETER_MODELS, {fetchPolicy: 'no-cache'})
   const [create_calibration_record,] = useMutation(CREATE_CALIBRATION_RECORD, {
     onCompleted(data){
       resetForm()
