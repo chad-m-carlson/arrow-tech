@@ -54,6 +54,7 @@ const DosimeterDataForm = (props) => {
   const [create_calibration_record,] = useMutation(CREATE_CALIBRATION_RECORD, {
     onCompleted(data){
       resetForm()
+      data.createCalibrationRecord.messages && toastMessage(data.createCalibrationRecord.messages, 'info')
       if(editing){
         setCalibrationId(null);
         setEditing(false);
@@ -63,7 +64,8 @@ const DosimeterDataForm = (props) => {
       }
     },
     onError(error){
-      toastMessage(error.graphQLErrors[0].message, 'error')
+      error.graphQLErrors && toastMessage(error.graphQLErrors[0].message, 'error')
+      document.getElementById('1').focus();
     }
   })
 
@@ -231,7 +233,7 @@ const DosimeterDataForm = (props) => {
   const toastMessage = (message, type) => {
     toast(message,{
       type: type,
-      autoClose: 10000
+      autoClose: type == 'info' ? 1500 : 8000
     })
   }
 

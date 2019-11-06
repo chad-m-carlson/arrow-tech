@@ -24,15 +24,6 @@ class Mutations::CreateCalibratorRecord < Mutations::BaseMutation
       rescue ActiveRecord::RecordInvalid => e
         GraphQL::ExecutionError.new("#{e.record.errors.full_messages.join(', ')}") 
       end
-      # if calibrator.save!
-      #   {
-      #     calibrator: calibrator
-      #   }
-      # else
-      #   {
-      #     errors: calibrator.errors.full_messages
-      #   }
-      # end
     else 
       # ?This creates a new calibrator based on calibration and dosimeter model
       begin
@@ -41,7 +32,6 @@ class Mutations::CreateCalibratorRecord < Mutations::BaseMutation
                                     tfn: tfn,
                                     date: date,
                                     exposure_rate: exposure_rate)
-        # { calibrator: calibrator }
         if calibrator.save
           calibrations = Calibration.where(batch: batch)#.update(calibrator_id: calibrator.id)
           calibrations.each do |c|
@@ -54,13 +44,6 @@ class Mutations::CreateCalibratorRecord < Mutations::BaseMutation
       rescue ActiveRecord::RecordInvalid => e
         GraphQL::ExecutionError.new("#{e.record.errors.full_messages.join(', ')}") 
       end
-      #   {
-      #     calibrator: calibrator
-      #   }
-      # else
-      #   {
-      #     errors: calibrator.errors.full_messages
-      #   }
     end
   end
 end

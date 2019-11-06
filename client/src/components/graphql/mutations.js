@@ -28,6 +28,7 @@ export const CREATE_CALIBRATION_RECORD =  gql`
         accPass
         vacReading
       }
+      messages
     }
   }
 `;
