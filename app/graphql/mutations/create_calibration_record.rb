@@ -31,12 +31,12 @@ class Mutations::CreateCalibrationRecord < Mutations::BaseMutation
   argument :tolerance, Float, required: false
 
   field :calibration, Types::CalibrationType, null: false
-  field :errors, [String], null: true
+  field :messages, String, null: true
 
   def resolve( id:, user_id:, dosimeter_id:,  date_received:, el_date_in:, el_date_out:, acc_date:, vac_date_in:, vac_date_out:, final_date:, due_date:, el_pass: , vip_pass: , vac_pass: , acc_pass: , final_pass: ,el_read:, acc_read:, vip_problems:, vac_reading:, vac_ref_reading:, certificate_number:, batch:, customer_id:, model_number:, serial_number:, tolerance:)
 
     if model_number == '' || serial_number == ''
-      raise GraphQL::ExecutionError, "Dosimeter model and serial number must not be blank"
+      raise GraphQL::ExecutionError, "Dosimeter model and/or serial number must not be blank"
     end
 
     if final_pass == true && (certificate_number == nil || final_date == '')
@@ -50,9 +50,11 @@ class Mutations::CreateCalibrationRecord < Mutations::BaseMutation
     end
 
     dosimeter = Customer.find(customer_id).dosimeters.where("model_number = ? AND serial_number =  ?", model_number, serial_number ).first
-    
+
     if dosimeter == nil
+      @message = "New Dosimeter record created"
       dosimeter = DosimeterTemplate.where("model_number = ?", model_number).dup
+      begin
         dosimeter = Dosimeter.create!(
           model_number: dosimeter.first.model_number,
           serial_number: serial_number,
@@ -63,8 +65,12 @@ class Mutations::CreateCalibrationRecord < Mutations::BaseMutation
           is_msv: dosimeter.first.is_msv,
           customer_id: customer_id
         )
+
+      rescue ActiveRecord::RecordInvalid => e
+        GraphQL::ExecutionError.new("#{e.record.errors.full_messages.join(', ')}") 
+      end
     end
-    
+
     if tolerance == 0.0 || nil
       tolerance = 0.1
     end
@@ -73,37 +79,37 @@ class Mutations::CreateCalibrationRecord < Mutations::BaseMutation
       begin
         #! IF WE ARE UPDATING A CALIBRATION RECORD
         calibration = Calibration.find(id)
-        calibration.update!(user_id: user_id, 
-                          dosimeter_id: dosimeter.id,
-                          tolerance: tolerance, 
-                          date_received: date_received, 
-                          el_date_in: el_date_in, 
-                          el_date_out: el_date_out, 
-                          acc_date: acc_date, 
-                          acc_pass: acc_pass, 
-                          vac_date_in: vac_date_in, 
-                          vac_date_out: vac_date_out, 
-                          final_date: final_date, 
-                          # ship_back_date: ship_back_date, 
-                          due_date: due_date, 
-                          el_pass: el_pass, 
-                          vip_pass: vip_pass, 
-                          vac_pass: vac_pass, 
-                          final_pass: final_pass, 
-                          el_read: el_read, 
-                          acc_read: acc_read, 
-                          vip_problems: vip_problems, 
-                          vac_reading: vac_reading, 
-                          vac_ref_reading: vac_ref_reading, 
-                          batch: batch,
-                          certificate_number: certificate_number
-        )
-        { calibration: calibration }
+        calibration.update!(user_id: user_id,
+                            dosimeter_id: dosimeter.id,
+                            tolerance: tolerance,
+                            date_received: date_received,
+                            el_date_in: el_date_in,
+                            el_date_out: el_date_out,
+                            acc_date: acc_date,
+                            acc_pass: acc_pass,
+                            vac_date_in: vac_date_in,
+                            vac_date_out: vac_date_out,
+                            final_date: final_date,
+                            # ship_back_date: ship_back_date,
+                            due_date: due_date,
+                            el_pass: el_pass,
+                            vip_pass: vip_pass,
+                            vac_pass: vac_pass,
+                            final_pass: final_pass,
+                            el_read: el_read,
+                            acc_read: acc_read,
+                            vip_problems: vip_problems,
+                            vac_reading: vac_reading,
+                            vac_ref_reading: vac_ref_reading,
+                            batch: batch,
+                            certificate_number: certificate_number)
+        { calibration: calibration,
+          messages: @message }
       rescue ActiveRecord::RecordInvalid => e
         GraphQL::ExecutionError.new("#{e.record.errors.full_messages.join(', ')}") 
       end
     else
-      #! IF WE ARE CREATING A NEW CALIBRATION RECORD
+      # ! IF WE ARE CREATING A NEW CALIBRATION RECORD
       begin
         calibration = Calibration.create!(user_id: user_id, 
                                           dosimeter_id: dosimeter.id,
@@ -129,7 +135,8 @@ class Mutations::CreateCalibrationRecord < Mutations::BaseMutation
                                           vac_ref_reading: vac_ref_reading, 
                                           batch: batch,
                                           certificate_number: certificate_number)
-          {calibration: calibration}
+        { calibration: calibration,
+          messages: @message }
       rescue ActiveRecord::RecordInvalid => e
         GraphQL::ExecutionError.new("#{e.record.errors.full_messages.join(', ')}") 
       end
