@@ -95,7 +95,7 @@ const CalibrationSummary = ({calData, dateTested, uniqueDosimeterModels}) => {
                   <tr>
                     <td><br /></td>
                   </tr>
-                  <tr style={{textAlign: "center", fontSize: "14px", paddingTop: "15px"}}>
+                  <tr style={{textAlign: "center", fontSize: "8px"}}>
                     <td colspan='8'>***********************END***********************</td>
                   </tr>
               </tbody>

@@ -19,7 +19,8 @@ const CalibrationReports = (props) => {
   const [allCalibrationData, setAllCalibrationData] = useState([]);
   const [currentCalibrationData, setCurrentCalibrationData] = useState([]);
 
-  const calibratorModelList = [{key: 1, text: "J.L. Shepherd 20", value: "J.L. Shepherd 20"}, {key: 2, text: "TEMCO 100", value: "TEMCO 100"}]
+  const {calData, uniqueDosimeterModels} = props.location.state;
+  const calibratorModelList = [{key: 1, text: "J.L. Shepherd 20", value: "J.L. Shepherd 20"}, {key: 2, text: "TEMCO 100", value: "TEMCO 100"}];
 
   const calibratorExposureRateList = [{key: 1, text: "520 mR/hr", value: "520 mR/hr"}, 
                                       {key: 2, text: "4R/hr", value: "4R/hr"}, 
@@ -30,12 +31,12 @@ const CalibrationReports = (props) => {
   const [createCalibratorRecord] = useMutation(CREATE_CALIBRATOR_RECORD, {
       onCompleted(data){
       setCalibrator({...calibrator ,id: data.createCalibratorRecord.calibrator.id});
-      let x = allCalibrationData.filter( c => c.dosimeter.modelNumber === props.location.state.uniqueDosimeterModels[cocCounter])
+      let x = allCalibrationData.filter( c => c.dosimeter.modelNumber === uniqueDosimeterModels[cocCounter])
       x.forEach( c => {
         {c.calibrator = data.createCalibratorRecord.calibrator} 
         {c.calibratorId = data.createCalibratorRecord.calibrator.id}
       })
-      setAllCalibrationData([...allCalibrationData.filter( c => c.dosimeter.modelNumber !== props.location.state.uniqueDosimeterModels[cocCounter]), ...x])
+      setAllCalibrationData([...allCalibrationData.filter( c => c.dosimeter.modelNumber !== uniqueDosimeterModels[cocCounter]), ...x])
       toastMessage('Calibration equipment saved', 'success')
     },
     onError(error){
@@ -44,24 +45,16 @@ const CalibrationReports = (props) => {
   })
 
   useEffect( () => {
-    setAllCalibrationData(props.location.state.calData)
+    setAllCalibrationData(calData)
   },[]);
 
   useEffect( () => {
     calibratorSet()
-    // if(props.location.state.calData[0].calibrator === null){
-    //   alert("Calibration Equipment has not been set")
-    //   setAddCalibrator(true)
-    // }else{
-    //   const {id, model, serialNumber, tfn, exposureRate, date} = props.location.state.calData[0].calibrator
-    //   setCalibrator({id, model, serialNumber, tfn, exposureRate, date})
-    //   setAddCalibrator(false)
-    // }
   }, [cocCounter]);
   
   const calibratorSet = () => {
     // ?calData filtered by dosimeter model
-    let x = props.location.state.calData.filter( c => c.finalPass === true && c.dosimeter.modelNumber === props.location.state.uniqueDosimeterModels[cocCounter])
+    let x = calData.filter( c => c.dosimeter.modelNumber === uniqueDosimeterModels[cocCounter])
     if(x[0].calibrator === null){
       setAddCalibrator(true)
       setCalibrator({id: null, model: '', serialNumber: '', tfn: '265623-01', exposureRate: '', date: '6/6/2019'})
@@ -97,8 +90,8 @@ const CalibrationReports = (props) => {
       "exposure_rate": calibrator.exposureRate,
       "tfn": calibrator.tfn,
       "date": calibrator.date,
-      "batch": props.location.state.calData[0].batch,
-      "dosimeter_model": props.location.state.uniqueDosimeterModels[cocCounter]
+      "batch": calData[0].batch,
+      "dosimeter_model": uniqueDosimeterModels[cocCounter]
     }})
   };
 
@@ -156,29 +149,33 @@ const CalibrationReports = (props) => {
       <Grid.Column style={{width: "60%"}} id='pdf-container'>
         {viewCalibrationReport &&
           <CertificateOfCalibration 
-            calData={currentCalibrationData.length > 0 ? currentCalibrationData : props.location.state.calData.filter( c => c.finalPass === true && c.dosimeter.modelNumber === props.location.state.uniqueDosimeterModels[cocCounter])}
+            customer={allCalibrationData[0].dosimeter.customer}
+            user={allCalibrationData[0].user}
+            calData={currentCalibrationData}
             calibratorData={calibrator}
           />
         }
         {viewFailureReport &&
           <FailureReport
-            calData={allCalibrationData.filter( c => c.finalPass === false)}
+            customer={allCalibrationData[0].dosimeter.customer}
+            user={allCalibrationData[0].user}
+            calData={allCalibrationData}
             calibratorData={calibrator}
-            dateTested={props.location.state.calData.find(( {finalDate} ) => finalDate !== null).finalDate}
+            dateTested={calData.find(( {finalDate} ) => finalDate !== null) === undefined ? calData.find(( {accDate} ) => accDate !== null).accDate : calData.find(( {finalDate} ) => finalDate !== null).finalDate}
           />
         }
         {viewCalibrationSummary &&
           <CalibrationSummary
-            calData={allCalibrationData.length > 0 ? allCalibrationData : props.location.state.calData}
-            dateTested={props.location.state.calData.find(( {finalDate} ) => finalDate !== null).finalDate}
-            uniqueDosimeterModels={props.location.state.uniqueDosimeterModels}
+            calData={allCalibrationData.length > 0 ? allCalibrationData : calData}
+            dateTested={calData.find(( {finalDate} ) => finalDate !== null) === undefined ? calData.find(( {accDate} ) => accDate !== null ).accDate : calData.find(( {finalDate} ) => finalDate !== null).finalDate}
+            uniqueDosimeterModels={uniqueDosimeterModels}
           />
         }
       </Grid.Column>
       <Grid.Column style={{width: "40%", position: "fixed", left: "65%"}} id='hide-to-print'>
-        <h2>Batch# {props.location.state.calData[0].batch}</h2>
-        <h3>Dosimeter Models: {props.location.state.uniqueDosimeterModels.length}</h3>
-        <h4>Total Dosimeters: {props.location.state.calData.length}</h4>
+        <h2>Batch# {calData[0].batch}</h2>
+        <h3>Dosimeter Models: {uniqueDosimeterModels.length}</h3>
+        <h4>Total Dosimeters: {calData.length}</h4>
           <>
             <Button
               disabled={!calibrator.id}
@@ -200,7 +197,7 @@ const CalibrationReports = (props) => {
               >View Calibration Report
             </Button>
             <br />
-            {props.location.state.uniqueDosimeterModels.length > 1 && !viewFailureReport && !viewCalibrationSummary &&
+            {uniqueDosimeterModels.length > 1 && !viewFailureReport && !viewCalibrationSummary &&
               <>
                 <Button
                   disabled={cocCounter === 0}
@@ -209,8 +206,7 @@ const CalibrationReports = (props) => {
                 >Previous Model CoC
                 </Button>
                 <Button
-                  disabled={cocCounter === props.location.state.uniqueDosimeterModels.length - 1 ||
-                            props.location.state.calData.filter( c => c.finalPass === true && c.dosimeter.modelNumber === props.location.state.uniqueDosimeterModels[cocCounter + 1]).length === 0}
+                  disabled={cocCounter === uniqueDosimeterModels.length - 1 || calData.filter( c => c.finalPass === true && c.dosimeter.modelNumber === uniqueDosimeterModels[cocCounter + 1]).length === 0}
                   style={{marginBottom: "10px"}}
                   onClick={() => handleCocNavigation('next')}
                 >Next Model CoC
@@ -236,9 +232,9 @@ const CalibrationReports = (props) => {
         <Button
           style={{marginBottom: "10px"}}
           as={Link}
-          to={{pathname: '/batchreport', state: {batch: props.location.state.calData[0].batch}}}
+          to={{pathname: '/batchreport', state: {batch: calData[0].batch}}}
           >
-          Back to Batch #{props.location.state.calData[0].batch} Report
+          Back to Batch #{calData[0].batch} Report
         </Button>
         {addCalibrator && 
           <div style={{display: "flex", flexDirection: "column", justifyContent: "center"}}>

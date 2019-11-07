@@ -4,14 +4,8 @@ import {TableData, TableHeader, BaseCalDetails, Header, PageHeader, Footer, Page
 import {printUnit, printDate, } from '../HelperFunctions';
 
 
-const FailureReport = ({calData, calibratorData, dateTested}) => {
-  const {customer} = calData[0].dosimeter
+const FailureReport = ({calData, calibratorData, dateTested, customer, user}) => {
 
-  //   const midScaleAccuracy = (accRead, isR, isMr, isSv, isMsv, range) => {
-  //   let calculatedExposure = determineCalculatedDosimeterRange(range, isR, isMr, isMsv, isSv).replace(/\D/gm,"") / 2
-  //   let difference =  Math.abs(accRead - calculatedExposure)
-  //   return (((calculatedExposure - difference) / calculatedExposure) * 100).toFixed(2)
-  // };
   return ( 
     <table>
       <div style={{maxWidth: "7.5in", fontSize: "10pt"}}>
@@ -57,7 +51,7 @@ const FailureReport = ({calData, calibratorData, dateTested}) => {
                 <p>All instruments were tested on a J.L. Shepherd 20 Curie, Cesium 137 Carousel Calibrator, Serial Number 6046.</p>
                 <div style={{display: "flex", justifyContent: "space-between", padding: "0px 30px 0px 30px"}}>
                 <div style={{margin: "0px 30px 30px 30px"}}>
-                  <p>Tests Performed By: <BaseCalDetails>{calData[0].user.firstName} {calData[0].user.lastName}</BaseCalDetails></p>
+                  <p>Tests Performed By: <BaseCalDetails>{user.firstName} {user.lastName}</BaseCalDetails></p>
                   <p>Date Tested: <BaseCalDetails>{printDate(dateTested)}</BaseCalDetails></p>
                 </div>
                   <div>
@@ -81,7 +75,7 @@ const FailureReport = ({calData, calibratorData, dateTested}) => {
                     </tr>
                   </thead>
                   <tbody>
-                      {calData.map( c => {
+                      {calData.filter( c => c.finalPass === false).map( c => {
                       const {serialNumber, modelNumber, range, isR, isMr, isMsv, isSv} = c.dosimeter
                       return(
                       <tr key={c.id} style={{textAlign: "center"}}>
@@ -111,7 +105,7 @@ const FailureReport = ({calData, calibratorData, dateTested}) => {
                     <tr>
                       <td><br /></td>
                     </tr>
-                    <tr style={{textAlign: "center", fontSize: "14px", paddingTop: "15px"}}>
+                    <tr style={{textAlign: "center", fontSize: "8px"}}>
                       <td colspan='10'>***********************END***********************</td>
                     </tr>
                     </tbody>
