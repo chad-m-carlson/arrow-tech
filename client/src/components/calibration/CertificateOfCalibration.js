@@ -3,9 +3,9 @@ import {determineCalculatedDosimeterRange, } from '../HelperFunctions';
 import {TableData, TableHeader, BaseCalDetails, Header, PageHeader, Footer, PageFooter, Page, } from '../../Styles/CalibrationCertificateStyles';
 import {printUnit, printDate, } from '../HelperFunctions';
 
-const CertificateOfCalibration = ({calData, calibratorData}) => {
+const CertificateOfCalibration = ({customer, user, calData, calibratorData}) => {
 
-  const {range, isR, isMr, isSv, isMsv, customer} = calData[0].dosimeter
+  const {range, isR, isMr, isSv, isMsv} = calData[0].dosimeter
 
   return ( 
     <table>
@@ -54,7 +54,7 @@ const CertificateOfCalibration = ({calData, calibratorData}) => {
                 </p>
                 <div style={{display: "flex", justifyContent: "space-between", padding: "0px 30px 0px 30px"}}>
                 <div style={{margin: "0px 30px 30px 30px"}}>
-                  <p>Calibration Performed By: <BaseCalDetails>{calData[0].user.firstName} {calData[0].user.lastName}</BaseCalDetails></p>
+                  <p>Calibration Performed By: <BaseCalDetails>{user.firstName} {user.lastName}</BaseCalDetails></p>
                   <p style={{marginBottom: "0px"}}>Approved By: <BaseCalDetails>____________________________________________</BaseCalDetails></p>
                   <p style={{fontSize: "8px", marginLeft: "160px"}}>Radiation Safety Officer</p>
                 </div>
@@ -81,8 +81,7 @@ const CertificateOfCalibration = ({calData, calibratorData}) => {
                     </tr>
                   </thead>
                   <tbody>
-                    {/* {calData.filter( c => c.finalPass === true).map( c => { */}
-                      {calData.map( c => {
+                      {calData.filter( c => c.finalPass === true).map( c => {
                       const {serialNumber, range, isR, isMr, isMsv, isSv} = c.dosimeter
                       return(
                       <tr key={c.id} style={{textAlign: "center"}}>
@@ -115,7 +114,7 @@ const CertificateOfCalibration = ({calData, calibratorData}) => {
                     <tr>
                       <td><br /></td>
                     </tr>
-                    <tr style={{textAlign: "center", fontSize: "14px", paddingTop: "15px"}}>
+                    <tr style={{textAlign: "center", fontSize: "8px"}}>
                       <td colspan='8'>***********************END***********************</td>
                     </tr>
                     </tbody>

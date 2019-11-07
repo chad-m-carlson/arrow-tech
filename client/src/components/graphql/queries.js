@@ -180,6 +180,7 @@ export const CALIBRATIONS_BY_BATCH = gql`
     vacPass
     vipPass
     accPass
+    accDate
     elPass
     finalPass
     calibrator{
