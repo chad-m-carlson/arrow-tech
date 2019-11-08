@@ -18,6 +18,7 @@ const CalibrationForm = (props) => {
       setBatchNumber(props.location.state.batch)
       setCustomerId(props.location.state.customerId)
     }
+    window.scrollTo(0, 0)
   },[props.location.state])
 
   const getCustomerId = (id, batch) => {
