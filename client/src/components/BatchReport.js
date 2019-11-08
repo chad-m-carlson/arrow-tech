@@ -34,7 +34,7 @@ const BatchReport = (props) => {
         <Form.Group>
           <Form.Input
             placeholder="Enter a batch number"
-            // autoFocus
+            autoFocus
             value={batch}
             onChange={(e) => setBatch(e.target.value)}
           />
