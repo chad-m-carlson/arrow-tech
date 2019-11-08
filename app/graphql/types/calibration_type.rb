@@ -16,6 +16,7 @@ module Types
     field :due_date, String, null: true
     field :el_pass, Boolean, null: true
     field :vip_pass, Boolean, null: true
+    field :vac_required, Boolean, null: true
     field :vac_pass, Boolean, null: true
     field :final_pass, Boolean, null: true
     field :el_read, Float, null: true

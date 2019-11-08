@@ -76,7 +76,9 @@ const CertificateOfCalibration = ({customer, user, calData, calibratorData}) => 
                       {/* <TableHeader>ACC Pass</TableHeader> */}
                       <TableHeader><span>Visual</span><br /><span>Pass/Fail</span></TableHeader>
                       <TableHeader>Electrical Leakage</TableHeader>
-                      <TableHeader><span>Hermetic</span><br /><span>Sealed</span></TableHeader>
+                      {calData[0].vacRequired &&
+                        <TableHeader><span>Hermetic</span><br /><span>Sealed</span></TableHeader>
+                      }
                       <TableHeader><span>Final</span><br /><span>Pass/Fail</span></TableHeader>
                     </tr>
                   </thead>
@@ -88,25 +90,21 @@ const CertificateOfCalibration = ({customer, user, calData, calibratorData}) => 
                         <TableData>{serialNumber}</TableData>
                         <TableData>{determineCalculatedDosimeterRange(range, isR, isMr, isMsv, isSv).replace(/\D/gm,"") / 2} {printUnit(isR, isMr, isSv, isMsv)} </TableData>
                         <TableData>{c.accRead} {printUnit(isR, isMr, isSv, isMsv)}</TableData>
-                        {/* <TableData>{midScaleAccuracy(c.accRead, isR, isMr, isSv, isMsv, range)}% </TableData> */}
                         <TableData>
-                          {/* <Icon name={c.accPass ? 'checkmark' : 'close'} color={c.accPass ? 'green' : 'red'}/> */}
                           <p>{c.accPass ? "Pass" : "Fail"}</p>
                         </TableData>
                         <TableData>
-                          {/* <Icon name={c.vipPass ? 'checkmark' : 'close'} color={c.vipPass ? 'green' : 'red'}/> */}
                           <p>{c.vipPass ? "Pass" : "Fail"}</p>
                         </TableData>
                         <TableData>
-                          {/* <Icon name={c.elPass ? 'checkmark' : 'close'} color={c.elPass ? 'green' : 'red'}/> */}
                           <p>{c.elPass ? "Pass" : "Fail"}</p>
                         </TableData>
+                        {c.vacRequired &&
+                          <TableData>
+                            <p>{c.vacPass ? "Pass" : "Fail"}</p>
+                          </TableData>
+                        }
                         <TableData>
-                          {/* <Icon name={c.vacPass ? 'checkmark' : 'close'} color={c.vacPass ? 'green' : 'red'}/> */}
-                          <p>{c.vacPass ? "Pass" : "Fail"}</p>
-                        </TableData>
-                        <TableData>
-                          {/* <Icon name={c.finalPass ? 'checkmark' : 'close'} color={c.finalPass ? 'green' : 'red'}/> */}
                           <p>{c.finalPass ? "Pass" : "Fail"}</p>
                         </TableData>
                       </tr>

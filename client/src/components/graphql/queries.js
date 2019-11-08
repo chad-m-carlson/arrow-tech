@@ -177,6 +177,7 @@ export const CALIBRATIONS_BY_BATCH = gql`
     batch
     accRead
     elRead
+    vacRequired
     vacPass
     vipPass
     accPass

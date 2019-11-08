@@ -14,6 +14,7 @@ class Mutations::CreateCalibrationRecord < Mutations::BaseMutation
   argument :due_date, String, required: false
   argument :el_pass, Boolean, required: false
   argument :vip_pass, Boolean, required: false
+  argument :vac_required, Boolean, required: false
   argument :vac_pass, Boolean, required: false
   argument :final_pass, Boolean, required: false
   argument :el_read, Float, required: false
@@ -33,7 +34,7 @@ class Mutations::CreateCalibrationRecord < Mutations::BaseMutation
   field :calibration, Types::CalibrationType, null: false
   field :messages, String, null: true
 
-  def resolve( id:, user_id:, dosimeter_id:,  date_received:, el_date_in:, el_date_out:, acc_date:, vac_date_in:, vac_date_out:, final_date:, due_date:, el_pass: , vip_pass: , vac_pass: , acc_pass: , final_pass: ,el_read:, acc_read:, vip_problems:, vac_reading:, vac_ref_reading:, certificate_number:, batch:, customer_id:, model_number:, serial_number:, tolerance:)
+  def resolve( id:, user_id:, dosimeter_id:,  date_received:, el_date_in:, el_date_out:, acc_date:, vac_date_in:, vac_date_out:, final_date:, due_date:, el_pass: , vip_pass: , vac_required:,  vac_pass: , acc_pass: , final_pass: ,el_read:, acc_read:, vip_problems:, vac_reading:, vac_ref_reading:, certificate_number:, batch:, customer_id:, model_number:, serial_number:, tolerance:)
 
     if model_number == '' || serial_number == ''
       raise GraphQL::ExecutionError, "Dosimeter model and/or serial number must not be blank"
@@ -94,6 +95,7 @@ class Mutations::CreateCalibrationRecord < Mutations::BaseMutation
                             due_date: due_date,
                             el_pass: el_pass,
                             vip_pass: vip_pass,
+                            vac_required: vac_required,
                             vac_pass: vac_pass,
                             final_pass: final_pass,
                             el_read: el_read,
@@ -126,6 +128,7 @@ class Mutations::CreateCalibrationRecord < Mutations::BaseMutation
                                           due_date: due_date, 
                                           el_pass: el_pass, 
                                           vip_pass: vip_pass, 
+                                          vac_required: vac_required,
                                           vac_pass: vac_pass, 
                                           final_pass: final_pass, 
                                           el_read: el_read, 

@@ -17,6 +17,7 @@ const BatchReport = (props) => {
 
   useEffect( () => {
     if(props.location.state) setBatch(props.location.state.batch)
+    window.scrollTo(0, 0)
   },[props.location.state]);
 
 
@@ -33,7 +34,7 @@ const BatchReport = (props) => {
         <Form.Group>
           <Form.Input
             placeholder="Enter a batch number"
-            autoFocus
+            // autoFocus
             value={batch}
             onChange={(e) => setBatch(e.target.value)}
           />

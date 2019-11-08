@@ -94,9 +94,16 @@ const FailureReport = ({calData, calibratorData, dateTested, customer, user}) =>
                         <TableData failed={!c.elPass}>
                           <p>{c.elRead}  ({c.elPass ? "Pass" : "Fail"})</p>
                         </TableData>
-                        <TableData failed={!c.vacPass}>
-                          <p>{c.vacPass ? "Pass" : "Fail"}</p>
-                        </TableData>
+                        {c.vacRequired ?
+                          <TableData failed={!c.vacPass}>
+                            <p>{c.vacPass ? "Pass" : "Fail"}</p>
+                          </TableData>
+                          :
+                          <TableData>
+                            <p>N/A</p>
+                          </TableData>
+
+                        }
                         <TableData failed={!c.finalPass}>
                           <p>{c.finalPass ? "Pass" : "Fail"}</p>
                         </TableData>
