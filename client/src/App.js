@@ -1,23 +1,23 @@
-import React from 'react';
-import Customers from './components/Customers';
-import NavBar from './components/NavBar';
-import Login from './components/Login';
-import Register from './components/Register';
-import FetchUser from './components/FetchUser';
-import ProtectedRoute from './components/ProtectedRoute';
+import React from "react";
+import Customers from "./components/Customers";
+import NavBar from "./components/NavBar";
+import Login from "./components/Login";
+import Register from "./components/Register";
+import FetchUser from "./components/FetchUser";
+import ProtectedRoute from "./components/ProtectedRoute";
 // import AdminRoute from './components/AdminRoute';
-import Home from './components/Home';
-import CalibrationForm from './components/calibration/CalibrationForm';
-import CalibrationReports from './components/calibration/CalibrationReports';
-import NoMatch from './components/NoMatch';
-import BatchReport from './components/BatchReport';
-import CustomerDataForm from './components/calibration/CustomerDataForm';
-import ManageDosimeters from './components/dosimeters/ManageDosimeters';
-import { ToastContainer} from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
-import {Switch, Route, } from 'react-router-dom';
+import Home from "./components/Home";
+import CalibrationForm from "./components/calibration/CalibrationForm";
+import CalibrationReports from "./components/reports/CalibrationReports";
+import NoMatch from "./components/NoMatch";
+import BatchReport from "./components/BatchReport";
+import CustomerDataForm from "./components/calibration/CustomerDataForm";
+import ManageDosimeters from "./components/dosimeters/ManageDosimeters";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import { Switch, Route } from "react-router-dom";
 // import {Container, } from 'semantic-ui-react';
-import { ApolloProvider } from '@apollo/react-hooks';
+import { ApolloProvider } from "@apollo/react-hooks";
 
 // import Home from './components/User/Home';
 // import NoMatch from './components/NoMatch';
@@ -25,29 +25,49 @@ import { ApolloProvider } from '@apollo/react-hooks';
 function App() {
   return (
     <>
-    <ApolloProvider>
-    <NavBar />
-    <ToastContainer style={{marginTop: "2.3rem"}} />
-    <div id='page-container' style={{margin: "4rem"}}>
-      <FetchUser>
-          <Switch>
-            {/* <ProtectedRoute exact path='/' component={Home} /> */}
-            {/* <AdminRoute exact path='/admin' component={AdminTools} /> */}
-            <Route exact path='/' component={Home} />
-            <ProtectedRoute exact path='/customers' component={Customers} />
-            <ProtectedRoute exact path='/customerform' component={CustomerDataForm} />
-            <ProtectedRoute exact path='/calform' component={CalibrationForm} />
-            <ProtectedRoute exact path='/calreports' component={CalibrationReports} />
-            <ProtectedRoute exact path='/batchreport' component={BatchReport} />
-            <ProtectedRoute exact path='/dosimetermanagement' component={ManageDosimeters} />
-            <Route exact path='/register' component={Register} />
-            <Route exact path='/login' component={Login} />
-            <Route component={NoMatch} />
-          </Switch>
-      </FetchUser>
-    </div>
-    </ApolloProvider>
-  </>
+      <ApolloProvider>
+        <NavBar />
+        <ToastContainer style={{ marginTop: "2.3rem" }} />
+        <div id="page-container" style={{ margin: "4rem" }}>
+          <FetchUser>
+            <Switch>
+              {/* <ProtectedRoute exact path='/' component={Home} /> */}
+              {/* <AdminRoute exact path='/admin' component={AdminTools} /> */}
+              <Route exact path="/" component={Home} />
+              <ProtectedRoute exact path="/customers" component={Customers} />
+              <ProtectedRoute
+                exact
+                path="/customerform"
+                component={CustomerDataForm}
+              />
+              <ProtectedRoute
+                exact
+                path="/calform"
+                component={CalibrationForm}
+              />
+              <ProtectedRoute
+                exact
+                path="/calreports"
+                component={CalibrationReports}
+              />
+              <ProtectedRoute
+                exact
+                path="/batchreport"
+                component={BatchReport}
+              />
+              <ProtectedRoute
+                exact
+                path="/dosimetermanagement"
+                component={ManageDosimeters}
+              />
+              <Route exact path="/register" component={Register} />
+              <Route exact path="/login" component={Login} />
+              <Route component={NoMatch} />
+            </Switch>
+          </FetchUser>
+        </div>
+      </ApolloProvider>
+    </>
   );
 }
 
