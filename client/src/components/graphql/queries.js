@@ -193,10 +193,6 @@ export const CALIBRATIONS_BY_BATCH = gql`
         date
         id
       }
-      user {
-        firstName
-        lastName
-      }
       dosimeter {
         modelNumber
         serialNumber
