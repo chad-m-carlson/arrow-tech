@@ -27,6 +27,8 @@ module Types
     field :vac_ref_reading, Float, null: true
     field :certificate_number, String, null: true
     field :batch, Int, null: true
+    field :tech_first_name, String, null: false
+    field :tech_last_name, String, null: false
 
     field :calibrator, Types::CalibratorType, null: true
     field :dosimeter, Types::DosimeterType, null: false

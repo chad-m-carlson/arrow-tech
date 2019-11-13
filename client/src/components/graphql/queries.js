@@ -1,61 +1,60 @@
-import gql from 'graphql-tag';
+import gql from "graphql-tag";
 
 export const GET_UNIQUE_DOSIMETER_MODELS = gql`
-query{
-  dosimeterTemplates{
-    id
-    modelNumber
-    range
-    isR
-    isMr
-		isSv
-    isMsv
+  query {
+    dosimeterTemplates {
+      id
+      modelNumber
+      range
+      isR
+      isMr
+      isSv
+      isMsv
+    }
   }
-}
 `;
 
 export const GET_ALL_CUSTOMERS_QUERY = gql`
-query($batch:Int){
-  customers{
-    id
-    name
-    streetAddress1
-    streetAddress2
-    city
-    state
-    zip
-    country
-    email
+  query($batch: Int) {
+    customers {
+      id
+      name
+      streetAddress1
+      streetAddress2
+      city
+      state
+      zip
+      country
+      email
+    }
+    lastBatch
+    customerByBatch(batch: $batch) {
+      id
+    }
   }
-  lastBatch
-  customerByBatch(batch:$batch){
-    id
-  }
-}
 `;
 
 export const LAST_BATCH = gql`
-query{
-  lastBatch
-}
+  query {
+    lastBatch
+  }
 `;
 
-export const BATCHES_BY_CUSTOMER = gql `
-  query($customer_id: Int!){
-  batchByCustomer(customerId:$customer_id){
-    batch
-    finalDate
-    id
-    dosimeter{
-      customerId
+export const BATCHES_BY_CUSTOMER = gql`
+  query($customer_id: Int!) {
+    batchByCustomer(customerId: $customer_id) {
+      batch
+      finalDate
+      id
+      dosimeter {
+        customerId
+      }
     }
   }
-}
 `;
 
-
 export const CALIBRATION_BY_BATCH = gql`
-query($batch:Int!, $id:ID){
+  query($batch: Int!, $id: ID) {
     # lastCalibrationByBatch(batch:$batch){
     #   id
     #   userId
@@ -77,7 +76,7 @@ query($batch:Int!, $id:ID){
     #   vipProblems
     #   certificateNumber
     # }
-    dosimeterByBatch(batch:$batch, id:$id){
+    dosimeterByBatch(batch: $batch, id: $id) {
       modelNumber
       serialNumber
       range
@@ -87,8 +86,8 @@ query($batch:Int!, $id:ID){
       isMsv
       id
     }
-  	previousCalibration(batch:$batch, id:$id){
-    	id
+    previousCalibration(batch: $batch, id: $id) {
+      id
       userId
       dosimeterId
       tolerance
@@ -107,9 +106,9 @@ query($batch:Int!, $id:ID){
       accPass
       vipProblems
       certificateNumber
-  }
-  	nextCalibration(batch:$batch, id:$id){
-    	id
+    }
+    nextCalibration(batch: $batch, id: $id) {
+      id
       userId
       dosimeterId
       tolerance
@@ -132,10 +131,10 @@ query($batch:Int!, $id:ID){
   }
 `;
 
-export const GET_PREVIOUS_CALIBRATION = gql `
-  query($batch:Int!, $id:ID!){
-	getPreviousCalibration(batch:$batch, id:$id){
-    id
+export const GET_PREVIOUS_CALIBRATION = gql`
+  query($batch: Int!, $id: ID!) {
+    getPreviousCalibration(batch: $batch, id: $id) {
+      id
       userId
       dosimeterId
       tolerance
@@ -155,75 +154,79 @@ export const GET_PREVIOUS_CALIBRATION = gql `
       vipProblems
       certificateNumber
     }
-    dosimeterByBatch(batch:$batch){
+    dosimeterByBatch(batch: $batch) {
       modelNumber
       serialNumber
     }
-}
+  }
 `;
 
 export const CALIBRATIONS_BY_BATCH = gql`
-  query($batch:Int!){
-  calibrationsByBatch(batch: $batch) {
-    id
-    userId
-    dosimeterId
-    calibratorId
-    dateReceived
-    finalDate
-    dueDate
-    certificateNumber
-    tolerance
-    batch
-    accRead
-    elRead
-    vacRequired
-    vacPass
-    vipPass
-    accPass
-    accDate
-    elPass
-    finalPass
-    calibrator{
-      model
-      serialNumber
-      tfn
-      exposureRate
-      date
-      id
-    }
-    user{
-      firstName
-      lastName
-    }
-    dosimeter{
-      modelNumber
-      serialNumber
-      range
-      isMr
-      isMsv
-      isR
-      isSv
-      customer{
-        id
-        name
-        streetAddress1
-        streetAddress2
-        city
-        state
-        zip
-        country
-      }
-    }
-  } 
-}
-`;
-
-export const CALIBRATION = gql `
-    query Calibration($id:ID!){
-    calibration(id:$id){
+  query($batch: Int!) {
+    calibrationsByBatch(batch: $batch) {
       id
       userId
+      techFirstName
+      techLastName
+      dosimeterId
+      calibratorId
+      dateReceived
+      finalDate
+      dueDate
+      certificateNumber
+      tolerance
+      batch
+      accRead
+      elRead
+      vacRequired
+      vacPass
+      vipPass
+      accPass
+      accDate
+      elPass
+      finalPass
+      calibrator {
+        model
+        serialNumber
+        tfn
+        exposureRate
+        date
+        id
+      }
+      user {
+        firstName
+        lastName
+      }
+      dosimeter {
+        modelNumber
+        serialNumber
+        range
+        isMr
+        isMsv
+        isR
+        isSv
+        customer {
+          id
+          name
+          streetAddress1
+          streetAddress2
+          city
+          state
+          zip
+          country
+        }
+      }
+    }
+  }
+`;
+
+export const CALIBRATION = gql`
+  query Calibration($id: ID!) {
+    calibration(id: $id) {
+      id
+      userId
+      techFirstName
+      techLastName
       dosimeterId
       tolerance
       dateReceived
@@ -242,7 +245,7 @@ export const CALIBRATION = gql `
       accPass
       vipProblems
       certificateNumber
-      dosimeter{
+      dosimeter {
         modelNumber
         serialNumber
         range
@@ -255,4 +258,3 @@ export const CALIBRATION = gql `
     }
   }
 `;
-

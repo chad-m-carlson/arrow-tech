@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_11_08_001016) do
+ActiveRecord::Schema.define(version: 2019_11_12_214554) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -44,6 +44,8 @@ ActiveRecord::Schema.define(version: 2019_11_08_001016) do
     t.datetime "updated_at", precision: 6, null: false
     t.bigint "calibrator_id"
     t.boolean "vac_required", default: true
+    t.string "tech_first_name"
+    t.string "tech_last_name"
     t.index ["calibrator_id"], name: "index_calibrations_on_calibrator_id"
     t.index ["dosimeter_id"], name: "index_calibrations_on_dosimeter_id"
     t.index ["user_id"], name: "index_calibrations_on_user_id"
