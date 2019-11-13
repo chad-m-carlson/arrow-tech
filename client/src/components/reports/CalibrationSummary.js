@@ -66,7 +66,7 @@ const CalibrationSummary = ({ calData, dateTested, uniqueDosimeterModels }) => {
                     <p>
                       Tests Performed By:{" "}
                       <BaseCalDetails>
-                        {calData[0].user.firstName} {calData[0].user.lastName}
+                        {calData[0].techFirstName} {calData[0].techLastName}
                       </BaseCalDetails>
                     </p>
                     <p>

@@ -157,7 +157,7 @@ const CertificateOfCalibration = ({
                     <p>
                       Calibration Performed By:{" "}
                       <BaseCalDetails>
-                        {user.firstName} {user.lastName}
+                        {calData[0].techFirstName} {calData[0].techLastName}
                       </BaseCalDetails>
                     </p>
                     <p style={{ marginBottom: "0px" }}>

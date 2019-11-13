@@ -103,7 +103,7 @@ const FailureReport = ({
                     <p>
                       Tests Performed By:{" "}
                       <BaseCalDetails>
-                        {user.firstName} {user.lastName}
+                        {calData[0].techFirstName} {calData[0].techLastName}
                       </BaseCalDetails>
                     </p>
                     <p>
