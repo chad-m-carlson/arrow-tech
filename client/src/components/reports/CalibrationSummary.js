@@ -94,12 +94,13 @@ const CalibrationSummary = ({ calData, dateTested, uniqueDosimeterModels }) => {
                           <span> Number</span>
                         </TableHeader>
                         <TableHeader>
-                          <span>Mid-Scale</span>
+                          <span>Mid-Scale </span>
                           <br />
                           <span>Accuracy Fail</span>
                         </TableHeader>
                         <TableHeader>
                           <span>Visual Inspection</span>
+                          <br />
                           <span>Fail</span>
                         </TableHeader>
                         <TableHeader>
@@ -108,7 +109,8 @@ const CalibrationSummary = ({ calData, dateTested, uniqueDosimeterModels }) => {
                           <span>Fail</span>
                         </TableHeader>
                         <TableHeader>
-                          <span>Electrical Leakage</span>
+                          <span>Electrical Leakage </span>
+                          <br />
                           <span>Fail</span>
                         </TableHeader>
                         <TableHeader>
