@@ -10,13 +10,7 @@ import {
 } from "../../Styles/CalibrationCertificateStyles";
 import { printUnit, printDate } from "../HelperFunctions";
 
-const FailureReport = ({
-  calData,
-  calibratorData,
-  dateTested,
-  customer,
-  user
-}) => {
+const FailureReport = ({ calData, calibratorData, dateTested, customer }) => {
   return (
     <table>
       <div style={{ maxWidth: "7.5in", fontSize: "10pt" }}>
@@ -64,14 +58,14 @@ const FailureReport = ({
                   The referenced Direct-Reading Dosimeters have been tested for
                   response in accordance with applicable American National
                   Standard Institute (ANSI) Standards N13.5 and N322.
-                  Arrow-Tech, Inc. Radioactive Material License #33-16216.
+                  Arrow-Tech, Inc. Radioactive Material License #33-16216-01.
                 </p>
                 <p>
                   The above referenced Gamma Source is calibrated by utilizing
                   Direct-Reading Dosimeter "Transfer Standards" certified for
                   accuracy and with traceability to the National Institute of
-                  Standards and Technology by Battelle National Laboratories.
-                  TFN:{" "}
+                  Standards and Technology by Battelle National Laboratories
+                  PNNL tracking Number{" "}
                   {calibratorData.id ? (
                     calibratorData.tfn
                   ) : (
@@ -87,6 +81,7 @@ const FailureReport = ({
                       ____________________
                     </span>
                   )}
+                  .
                 </p>
                 <p>
                   All instruments were tested on a J.L. Shepherd 20 Curie,

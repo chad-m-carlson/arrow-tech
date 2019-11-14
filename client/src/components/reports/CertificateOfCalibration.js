@@ -10,12 +10,7 @@ import {
 } from "../../Styles/CalibrationCertificateStyles";
 import { printUnit, printDate } from "../HelperFunctions";
 
-const CertificateOfCalibration = ({
-  customer,
-  user,
-  calData,
-  calibratorData
-}) => {
+const CertificateOfCalibration = ({ customer, calData, calibratorData }) => {
   const { range, isR, isMr, isSv, isMsv } = calData[0].dosimeter;
 
   return (
@@ -129,7 +124,7 @@ const CertificateOfCalibration = ({
                   Direct-Reading Dosimeter "Transfer Standards" certified for
                   accuracy and with traceability to the National Institute of
                   Standards and Technology by Battelle National Laboratories
-                  PNNL tracking Number 19189 dated 8/28/2019. TFN:{" "}
+                  PNNL tracking Number{" "}
                   {calibratorData.id ? (
                     calibratorData.tfn
                   ) : (
@@ -145,6 +140,7 @@ const CertificateOfCalibration = ({
                       ____________________
                     </span>
                   )}
+                  .
                 </p>
                 <div
                   style={{

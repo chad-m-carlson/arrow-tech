@@ -14,9 +14,9 @@ const CalibrationReports = props => {
     id: null,
     model: "",
     serialNumber: "",
-    tfn: "265623-01",
+    tfn: "19189",
     exposureRate: "",
-    date: "6/6/2019"
+    date: "8/28/2019"
   });
   const [addCalibrator, setAddCalibrator] = useState(false);
   const [viewFailureReport, setViewFailureReport] = useState(false);
@@ -89,9 +89,9 @@ const CalibrationReports = props => {
         id: null,
         model: "",
         serialNumber: "",
-        tfn: "265623-01",
+        tfn: "19189",
         exposureRate: "",
-        date: "6/6/2019"
+        date: "8/28/2019"
       });
     } else {
       const {
