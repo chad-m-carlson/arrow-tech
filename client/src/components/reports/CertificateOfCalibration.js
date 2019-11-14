@@ -90,7 +90,7 @@ const CertificateOfCalibration = ({
                   The referenced Direct-Reading Dosimeters have been tested for
                   response in accordance with applicable American National
                   Standard Institute (ANSI) Standards N13.5 and N322.
-                  Arrow-Tech, Inc. Radioactive Material License #33-16216.
+                  Arrow-Tech, Inc. Radioactive Material License #33-16216-01.
                 </p>
                 <p>
                   All instruments were tested on a{" "}
@@ -128,8 +128,8 @@ const CertificateOfCalibration = ({
                   The above referenced Gamma Source is calibrated by utilizing
                   Direct-Reading Dosimeter "Transfer Standards" certified for
                   accuracy and with traceability to the National Institute of
-                  Standards and Technology by Battelle National Laboratories.
-                  TFN:{" "}
+                  Standards and Technology by Battelle National Laboratories
+                  PNNL tracking Number 19189 dated 8/28/2019. TFN:{" "}
                   {calibratorData.id ? (
                     calibratorData.tfn
                   ) : (
