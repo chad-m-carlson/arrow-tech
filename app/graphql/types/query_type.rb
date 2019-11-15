@@ -70,7 +70,7 @@ module Types
     end
 
     def customers
-      Customer.all
+      Customer.all.order(:name)
     end
 
     def calibrations_by_batch(batch:)
@@ -117,7 +117,7 @@ module Types
     end
 
     def dosimeter_templates
-      DosimeterTemplate.all
+      DosimeterTemplate.all.order(:model_number)
     end
 
     def users
