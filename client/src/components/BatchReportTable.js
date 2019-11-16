@@ -6,11 +6,10 @@ const BatchReportTable = ({ calData, handleDelete }) => {
   return (
     <Table celled>
       <Table.Header>
-        <Table.Row>
+        <Table.Row style={{ textAlign: "center" }}>
           <Table.HeaderCell>Dosimeter Model Number</Table.HeaderCell>
           <Table.HeaderCell>Dosimeter Serial Number</Table.HeaderCell>
-          <Table.HeaderCell>Date Received</Table.HeaderCell>
-          <Table.HeaderCell>Calibration Tech</Table.HeaderCell>
+          <Table.HeaderCell>VAC Required</Table.HeaderCell>
           <Table.HeaderCell>VAC Pass</Table.HeaderCell>
           <Table.HeaderCell>VIP Pass</Table.HeaderCell>
           <Table.HeaderCell>ACC Pass</Table.HeaderCell>
@@ -25,18 +24,28 @@ const BatchReportTable = ({ calData, handleDelete }) => {
         {calData.map(c => {
           const { modelNumber, serialNumber } = c.dosimeter;
           return (
-            <Table.Row key={c.id} negative={c.finalPass ? false : true}>
+            <Table.Row
+              key={c.id}
+              negative={c.finalPass ? false : true}
+              style={{ textAlign: "center" }}
+            >
               <Table.Cell>{modelNumber}</Table.Cell>
               <Table.Cell>{serialNumber}</Table.Cell>
-              <Table.Cell>{c.dateReceived}</Table.Cell>
-              <Table.Cell>
-                {c.techFirstName} {c.techLastName}
-              </Table.Cell>
               <Table.Cell>
                 <Icon
-                  name={c.vacPass ? "checkmark" : "close"}
-                  color={c.vacPass ? "green" : "red"}
+                  name={c.vacRequired ? "checkmark" : "close"}
+                  color={c.vacRequired ? "green" : "red"}
                 />
+              </Table.Cell>
+              <Table.Cell>
+                {!c.vacRequired ? (
+                  "N/A"
+                ) : (
+                  <Icon
+                    name={c.vacPass ? "checkmark" : "close"}
+                    color={c.vacPass ? "green" : "red"}
+                  />
+                )}
               </Table.Cell>
               <Table.Cell>
                 <Icon
