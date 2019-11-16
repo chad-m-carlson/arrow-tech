@@ -1,6 +1,6 @@
 import React, { useContext, useState, useEffect } from "react";
 import { Button, Form, Segment, Header } from "semantic-ui-react";
-import { AuthContext } from "../providers/AuthProvider";
+import { AuthContext } from "../../providers/AuthProvider";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
