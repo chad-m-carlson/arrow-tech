@@ -1,18 +1,19 @@
 import React from "react";
-import Customers from "./components/Customers";
+import Customers from "./components/customers/Customers";
 import NavBar from "./components/NavBar";
-import Login from "./components/Login";
-import Register from "./components/Register";
-import FetchUser from "./components/FetchUser";
-import ProtectedRoute from "./components/ProtectedRoute";
+import Login from "./components/authentication/Login";
+import Register from "./components/authentication/Register";
+import FetchUser from "./components/authentication/FetchUser";
+import ProtectedRoute from "./components/authentication/ProtectedRoute";
 // import AdminRoute from './components/AdminRoute';
 import Home from "./components/Home";
 import CalibrationForm from "./components/calibration/CalibrationForm";
 import CalibrationReports from "./components/reports/CalibrationReports";
 import NoMatch from "./components/NoMatch";
-import BatchReport from "./components/BatchReport";
+import BatchReport from "./components/reports/BatchReport";
 import CustomerDataForm from "./components/calibration/CustomerDataForm";
 import ManageDosimeters from "./components/dosimeters/ManageDosimeters";
+import CalibratorManagement from "./components/calibrator/CalibratorManagement";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { Switch, Route } from "react-router-dom";
@@ -59,6 +60,11 @@ function App() {
                 exact
                 path="/dosimetermanagement"
                 component={ManageDosimeters}
+              />
+              <ProtectedRoute
+                exact
+                path="/calibratormanagement"
+                component={CalibratorManagement}
               />
               <Route exact path="/register" component={Register} />
               <Route exact path="/login" component={Login} />
