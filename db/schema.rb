@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_11_12_214554) do
+ActiveRecord::Schema.define(version: 2019_11_21_194103) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -28,10 +28,10 @@ ActiveRecord::Schema.define(version: 2019_11_12_214554) do
     t.datetime "final_date"
     t.datetime "ship_back_date"
     t.datetime "due_date"
-    t.boolean "el_pass", default: true
-    t.boolean "vip_pass", default: true
-    t.boolean "vac_pass", default: true
-    t.boolean "acc_pass", default: false
+    t.boolean "el_pass"
+    t.boolean "vip_pass"
+    t.boolean "vac_pass"
+    t.boolean "acc_pass"
     t.boolean "final_pass", default: false
     t.float "el_read"
     t.float "acc_read"
@@ -46,6 +46,10 @@ ActiveRecord::Schema.define(version: 2019_11_12_214554) do
     t.boolean "vac_required", default: true
     t.string "tech_first_name"
     t.string "tech_last_name"
+    t.boolean "el_test_performed"
+    t.boolean "acc_test_performed"
+    t.boolean "vac_test_performed"
+    t.boolean "vip_test_performed"
     t.index ["calibrator_id"], name: "index_calibrations_on_calibrator_id"
     t.index ["dosimeter_id"], name: "index_calibrations_on_dosimeter_id"
     t.index ["user_id"], name: "index_calibrations_on_user_id"

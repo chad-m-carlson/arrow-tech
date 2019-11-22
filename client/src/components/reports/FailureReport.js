@@ -10,6 +10,12 @@ import {
 } from "../../Styles/CalibrationCertificateStyles";
 import { printUnit, printDate } from "../HelperFunctions";
 
+const renderPassFail = (tested, value) => {
+  if (tested && value) return "Pass";
+  else if (tested && !value) return "FAIL";
+  else return "Not Tested";
+};
+
 const FailureReport = ({ calData, calibratorData, dateTested, customer }) => {
   return (
     <table>
@@ -198,25 +204,48 @@ const FailureReport = ({ calData, calibratorData, dateTested, customer }) => {
                                 ).replace(/\D/gm, "") / 2}{" "}
                                 {printUnit(isR, isMr, isSv, isMsv)}{" "}
                               </TableData>
-                              <TableData>
-                                {" "}
-                                {c.accRead} {printUnit(isR, isMr, isSv, isMsv)}
-                              </TableData>
+                              {c.accTestPerformed ? (
+                                <TableData>
+                                  {c.accRead}{" "}
+                                  {printUnit(isR, isMr, isSv, isMsv)}
+                                </TableData>
+                              ) : (
+                                <TableData>NOT READ</TableData>
+                              )}
                               {/* <TableData disabled={!c.vipPass}>{midScaleAccuracy(c.accRead, isR, isMr, isSv, isMsv, range)}% </TableData> */}
                               <TableData failed={!c.accPass}>
-                                <p>{c.accPass ? "Pass" : "Fail"}</p>
+                                <p>
+                                  {renderPassFail(
+                                    c.accTestPerformed,
+                                    c.accPass
+                                  )}
+                                </p>
                               </TableData>
                               <TableData failed={!c.vipPass}>
-                                <p>{c.vipPass ? "Pass" : "Fail"}</p>
+                                <p>
+                                  {renderPassFail(
+                                    c.vipTestPerformed,
+                                    c.vipPass
+                                  )}
+                                </p>
                               </TableData>
                               <TableData failed={!c.elPass}>
                                 <p>
-                                  {c.elRead} ({c.elPass ? "Pass" : "Fail"})
+                                  {renderPassFail(c.elTestPerformed, c.elPass)}
+                                  <br />
+                                  {c.elTestPerformed && (
+                                    <span>({c.elRead})</span>
+                                  )}
                                 </p>
                               </TableData>
                               {c.vacRequired ? (
                                 <TableData failed={!c.vacPass}>
-                                  <p>{c.vacPass ? "Pass" : "Fail"}</p>
+                                  <p>
+                                    {renderPassFail(
+                                      c.vacTestPerformed,
+                                      c.vacPass
+                                    )}
+                                  </p>
                                 </TableData>
                               ) : (
                                 <TableData>
