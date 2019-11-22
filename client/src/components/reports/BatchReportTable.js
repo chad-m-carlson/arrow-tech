@@ -3,6 +3,16 @@ import { Table, Icon } from "semantic-ui-react";
 import { Link } from "react-router-dom";
 
 const BatchReportTable = ({ calData, handleDelete }) => {
+  const renderPassFail = (tested, value) => {
+    if (tested && value) {
+      return <Icon name="checkmark" color="green" />;
+    } else if (tested && !value) {
+      return <Icon name="close" color="red" />;
+    } else {
+      return <Icon name="circle outline" color="blue" />;
+    }
+  };
+
   return (
     <Table celled>
       <Table.Header>
@@ -38,32 +48,18 @@ const BatchReportTable = ({ calData, handleDelete }) => {
                 />
               </Table.Cell>
               <Table.Cell>
-                {!c.vacRequired ? (
-                  "N/A"
-                ) : (
-                  <Icon
-                    name={c.vacPass ? "checkmark" : "close"}
-                    color={c.vacPass ? "green" : "red"}
-                  />
-                )}
+                {!c.vacRequired
+                  ? "N/A"
+                  : renderPassFail(c.vacTestPerformed, c.vacPass)}
               </Table.Cell>
               <Table.Cell>
-                <Icon
-                  name={c.vipPass ? "checkmark" : "close"}
-                  color={c.vipPass ? "green" : "red"}
-                />
+                {renderPassFail(c.vipTestPerformed, c.vipPass)}
               </Table.Cell>
               <Table.Cell>
-                <Icon
-                  name={c.accPass ? "checkmark" : "close"}
-                  color={c.accPass ? "green" : "red"}
-                />
+                {renderPassFail(c.accTestPerformed, c.accPass)}
               </Table.Cell>
               <Table.Cell>
-                <Icon
-                  name={c.elPass ? "checkmark" : "close"}
-                  color={c.elPass ? "green" : "red"}
-                />
+                {renderPassFail(c.elTestPerformed, c.elPass)}
               </Table.Cell>
               <Table.Cell>
                 <Icon

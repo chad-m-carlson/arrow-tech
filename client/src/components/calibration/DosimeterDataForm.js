@@ -46,11 +46,15 @@ const DosimeterDataForm = props => {
   const [vipProblems, setVipProblems] = useState("");
   const [vipPass, setVipPass] = useState(true);
   const [finalPass, setFinalPass] = useState(false);
-  const [finalPassDate, setFinalPassDate] = useState("");
+  const [finalDate, setFinalDate] = useState("");
   const [certificateNumber, setCertificateNumber] = useState("");
   const [dueDate, setDueDate] = useState("");
   const [customerDosimeterModels, setCustomerDosimeterModels] = useState([]);
   const [editing, setEditing] = useState(false);
+  const [elTestPerformed, setElTestPerformed] = useState(true);
+  const [accTestPerformed, setAccTestPerformed] = useState(true);
+  const [vacTestPerformed, setVacTestPerformed] = useState(true);
+  const [vipTestPerformed, setVipTestPerformed] = useState(true);
   // const [back, setBack] = useState(true);
   // const [forward, setForward] = useState(false);
 
@@ -111,7 +115,11 @@ const DosimeterDataForm = props => {
         vipProblems,
         dosimeterId,
         techFirstName,
-        techLastName
+        techLastName,
+        elTestPerformed,
+        vacTestPerformed,
+        vipTestPerformed,
+        accTestPerformed
       } = props.calibration.calibration;
       const {
         modelNumber,
@@ -151,7 +159,11 @@ const DosimeterDataForm = props => {
         isSv,
         isMsv,
         techFirstName,
-        techLastName
+        techLastName,
+        elTestPerformed,
+        vacTestPerformed,
+        vipTestPerformed,
+        accTestPerformed
       );
     }
     setBatch(props.batchNumber);
@@ -189,7 +201,11 @@ const DosimeterDataForm = props => {
     isSv,
     isMsv,
     techFirstName,
-    techLastName
+    techLastName,
+    elTestPerformed,
+    vacTestPerformed,
+    vipTestPerformed,
+    accTestPerformed
   ) => {
     setEditing(true);
     setCalibrationId(id);
@@ -198,18 +214,18 @@ const DosimeterDataForm = props => {
     setIsMr(isMr);
     setIsSv(isSv);
     setIsMsv(isMsv);
-    setAccDate(new Date(accDate));
+    setAccDate(accDate !== null ? new Date(accDate) : "");
     setAccPass(accPass);
     setAccRead(accRead);
     setCertificateNumber(certificateNumber);
     setDateReceived(new Date(dateReceived));
     setDosimeterId(dosimeterId);
-    setDueDate(new Date(dueDate));
-    setElDateIn(new Date(elDateIn));
-    setElDateOut(new Date(elDateOut));
+    setDueDate(dueDate !== null ? new Date(dueDate) : "");
+    setElDateIn(elDateIn !== null ? new Date(elDateIn) : "");
+    setElDateOut(elDateOut !== null ? new Date(elDateOut) : "");
     setElPass(elPass);
     setElRead(elRead);
-    setFinalPassDate(finalDate === null ? "" : new Date(finalDate));
+    setFinalDate(finalDate === null ? "" : new Date(finalDate));
     setFinalPass(finalPass);
     setTolerance(tolerance * 100);
     setVacRequired(vacRequired);
@@ -220,6 +236,10 @@ const DosimeterDataForm = props => {
     setDosimeterModelSelected(modelNumber);
     setTechFirstName(techFirstName);
     setTechLastName(techLastName);
+    setElTestPerformed(elTestPerformed);
+    setVacTestPerformed(vacTestPerformed);
+    setVipTestPerformed(vipTestPerformed);
+    setAccTestPerformed(accTestPerformed);
   };
 
   const handleDosimeterModelSelection = (e, { value }) => {
@@ -300,7 +320,7 @@ const DosimeterDataForm = props => {
         vac_required: vacRequired,
         vac_date_in: vacDateIn,
         vac_date_out: vacDateOut,
-        final_date: finalPassDate,
+        final_date: finalDate,
         // "shipBackDate": shipBackDate,
         due_date: dueDate,
         el_pass: elPass,
@@ -318,7 +338,11 @@ const DosimeterDataForm = props => {
         customer_id: parseInt(props.customerId),
         model_number: dosimeterModelSelected,
         serial_number: dosimeterSerialNumber,
-        tolerance: tolerance / 100
+        tolerance: tolerance / 100,
+        el_test_performed: elTestPerformed,
+        vac_test_performed: vacTestPerformed,
+        vip_test_performed: vipTestPerformed,
+        acc_test_performed: accTestPerformed
       }
     });
   };
@@ -450,17 +474,32 @@ const DosimeterDataForm = props => {
           </p>
         )}
         <Divider style={{ margin: "1.5rem" }} />
+        <Form.Checkbox
+          label="EL Test performed"
+          checked={elTestPerformed}
+          toggle
+          style={{ zIndex: "0" }}
+          onChange={() => setElTestPerformed(!elTestPerformed)}
+        />
         <Form.Group
           fluid
           style={{ display: "flex", justifyContent: "space-between" }}
         >
-          <Form.Input label="EL Date in" error={elDateIn === ""}>
+          <Form.Input
+            label="EL Date in"
+            error={elDateIn === ""}
+            disabled={!elTestPerformed}
+          >
             <DatePicker
               selected={elDateIn}
               onChange={date => setElDateIn(date)}
             />
           </Form.Input>
-          <Form.Input label="EL Date out" error={elDateOut === ""}>
+          <Form.Input
+            label="EL Date out"
+            error={elDateOut === ""}
+            disabled={!elTestPerformed}
+          >
             <DatePicker
               selected={elDateOut}
               onChange={date => setElDateOut(date)}
@@ -471,23 +510,35 @@ const DosimeterDataForm = props => {
             label="EL Read"
             tabIndex="2"
             value={elRead}
-            error={elRead === ""}
-            disabled={elDateIn && elDateOut ? false : true}
+            error={elTestPerformed && elRead === "" ? true : false}
+            disabled={
+              !elTestPerformed || (elDateIn && elDateOut) ? false : true
+            }
             onKeyDown={e => customKeyBindings(e)}
             onChange={e => {
               handleElReading(e.target.value);
             }}
           />
         </Form.Group>
-        <div style={{ textAlign: "center" }}>
+        <div
+          style={
+            elTestPerformed ? { textAlign: "center" } : { display: "none" }
+          }
+        >
           <Form.Checkbox
-            style={{}}
             label="EL Pass"
             onChange={() => setElPass(!elPass)}
             checked={elPass}
           />
         </div>
         <Divider style={{ margin: "1.5rem" }} />
+        <Form.Checkbox
+          toggle
+          style={{ zIndex: "0" }}
+          label="ACC Check performed"
+          checked={accTestPerformed}
+          onChange={() => setAccTestPerformed(!accTestPerformed)}
+        />
         <Form.Group
           style={{ display: "flex", justifyContent: "space-between" }}
           fluid
@@ -496,6 +547,7 @@ const DosimeterDataForm = props => {
             label="Custom Tolerance"
             checked={customTolerance}
             onChange={() => setCustomTolerance(!customTolerance)}
+            style={!accTestPerformed ? { display: "none" } : {}}
           />
           {customTolerance && (
             <Form.Input
@@ -508,7 +560,11 @@ const DosimeterDataForm = props => {
           )}
         </Form.Group>
         <Form.Group style={{ display: "flex", justifyContent: "space-around" }}>
-          <Form.Input label="ACC Date" error={accDate === ""}>
+          <Form.Input
+            label="ACC Date"
+            error={accDate === ""}
+            disabled={!accTestPerformed}
+          >
             <DatePicker
               selected={accDate}
               onChange={date => setAccDate(date)}
@@ -525,19 +581,32 @@ const DosimeterDataForm = props => {
         </Form.Group>
         <div style={{ textAlign: "center" }}>
           <Form.Checkbox
-            style={{}}
+            style={accTestPerformed ? {} : { display: "none" }}
             label="ACC Pass"
             onChange={() => setAccPass(!accPass)}
             checked={accPass}
           />
         </div>
         <Divider style={{ margin: "1.5rem" }} />
+        <Form.Checkbox
+          label="VAC Check Performed"
+          toggle
+          style={{ zIndex: "0" }}
+          checked={vacTestPerformed}
+          onChange={() => setVacTestPerformed(!vacTestPerformed)}
+        />
         <div
-          style={{
-            textAlign: "center",
-            display: "flex",
-            justifyContent: "space-evenly"
-          }}
+          style={
+            vacTestPerformed
+              ? {
+                  textAlign: "center",
+                  display: "flex",
+                  justifyContent: "space-evenly"
+                }
+              : {
+                  display: "none"
+                }
+          }
         >
           <Form.Checkbox
             label="VAC Required?"
@@ -553,7 +622,18 @@ const DosimeterDataForm = props => {
           />
         </div>
         <Divider style={{ margin: "1.5rem" }} />
-        <Form.Group style={{ flexDirection: "column" }}>
+        <Form.Checkbox
+          toggle
+          style={{ zIndex: "0" }}
+          checked={vipTestPerformed}
+          label="VIP Check Performed"
+          onChange={() => setVipTestPerformed(!vipTestPerformed)}
+        />
+        <Form.Group
+          style={
+            vipTestPerformed ? { flexDirection: "column" } : { display: "none" }
+          }
+        >
           <div style={{ margin: "0 auto" }}>
             <Form.Checkbox
               label="VIP Pass"
@@ -578,13 +658,10 @@ const DosimeterDataForm = props => {
         <Form.Group
           style={{ display: "flex", justifyContent: "space-between" }}
         >
-          <Form.Input
-            label="Final Pass Date"
-            error={finalPass && finalPassDate === ""}
-          >
+          <Form.Input label="Final Date" error={finalDate === ""}>
             <DatePicker
-              selected={finalPassDate}
-              onChange={date => setFinalPassDate(date)}
+              selected={finalDate}
+              onChange={date => setFinalDate(date)}
             />
           </Form.Input>
           <Form.Input

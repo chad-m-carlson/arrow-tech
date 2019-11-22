@@ -185,6 +185,10 @@ export const CALIBRATIONS_BY_BATCH = gql`
       accDate
       elPass
       finalPass
+      elTestPerformed
+      vipTestPerformed
+      vacTestPerformed
+      accTestPerformed
       calibrator {
         model
         serialNumber
@@ -241,6 +245,10 @@ export const CALIBRATION = gql`
       accPass
       vipProblems
       certificateNumber
+      elTestPerformed
+      vipTestPerformed
+      vacTestPerformed
+      accTestPerformed
       dosimeter {
         modelNumber
         serialNumber

@@ -27,6 +27,10 @@ class Mutations::CreateCalibrationRecord < Mutations::BaseMutation
   argument :batch, Int, required: false
   argument :tech_first_name, String, required: true
   argument :tech_last_name, String, required: true
+  argument :el_test_performed, Boolean, required: true
+  argument :vac_test_performed, Boolean, required: true
+  argument :vip_test_performed, Boolean, required: true
+  argument :acc_test_performed, Boolean, required: true
 
   argument :customer_id, Int, required: false
   argument :model_number, String, required: false
@@ -36,7 +40,7 @@ class Mutations::CreateCalibrationRecord < Mutations::BaseMutation
   field :calibration, Types::CalibrationType, null: false
   field :messages, String, null: true
 
-  def resolve( id:, user_id:, dosimeter_id:,  date_received:, el_date_in:, el_date_out:, acc_date:, vac_date_in:, vac_date_out:, final_date:, due_date:, el_pass: , vip_pass: , vac_required:,  vac_pass: , acc_pass: , final_pass: ,el_read:, acc_read:, vip_problems:, vac_reading:, vac_ref_reading:, certificate_number:, batch:, customer_id:, model_number:, serial_number:, tolerance:, tech_first_name:, tech_last_name:)
+  def resolve( id:, user_id:, dosimeter_id:,  date_received:, el_date_in:, el_date_out:, acc_date:, vac_date_in:, vac_date_out:, final_date:, due_date:, el_pass: , vip_pass: , vac_required:,  vac_pass: , acc_pass: , final_pass: ,el_read:, acc_read:, vip_problems:, vac_reading:, vac_ref_reading:, certificate_number:, batch:, customer_id:, model_number:, serial_number:, tolerance:, tech_first_name:, tech_last_name:, el_test_performed:, vac_test_performed:, vip_test_performed:, acc_test_performed:)
 
     if model_number == '' || serial_number == ''
       raise GraphQL::ExecutionError, "Dosimeter model and/or serial number must not be blank"
@@ -45,11 +49,28 @@ class Mutations::CreateCalibrationRecord < Mutations::BaseMutation
     if final_pass == true && (certificate_number == nil || final_date == '')
       raise GraphQL::ExecutionError, "Must enter a certificate number and final pass date for passing dosimeters"
     end
-    
+
     if final_pass == false
-      final_date = nil
+      # final_date = nil
       certificate_number = nil
-      # due_date = nil
+      due_date = nil
+    end
+
+    unless el_test_performed
+      el_pass = nil
+      el_read = nil
+    end
+    unless vac_test_performed
+      vac_pass = nil
+      vac_reading = nil
+    end
+    unless vip_test_performed
+      vip_pass = nil 
+      vip_problems = nil
+    end
+    unless acc_test_performed
+      acc_pass = nil 
+      acc_read = nil
     end
 
     dosimeter = Customer.find(customer_id).dosimeters.where("model_number = ? AND serial_number =  ?", model_number, serial_number ).first
@@ -108,7 +129,11 @@ class Mutations::CreateCalibrationRecord < Mutations::BaseMutation
                             batch: batch,
                             certificate_number: certificate_number,
                             tech_first_name: tech_first_name,
-                            tech_last_name: tech_last_name)
+                            tech_last_name: tech_last_name,
+                            el_test_performed: el_test_performed,
+                            vip_test_performed: vip_test_performed,
+                            vac_test_performed: vac_test_performed,
+                            acc_test_performed: acc_test_performed)
         { calibration: calibration,
           messages: @message }
       rescue ActiveRecord::RecordInvalid => e
@@ -143,7 +168,11 @@ class Mutations::CreateCalibrationRecord < Mutations::BaseMutation
                                           batch: batch,
                                           certificate_number: certificate_number,
                                           tech_first_name: tech_first_name,
-                                          tech_last_name: tech_last_name)
+                                          tech_last_name: tech_last_name,
+                                          el_test_performed: el_test_performed,
+                                          vip_test_performed: vip_test_performed,
+                                          vac_test_performed: vac_test_performed,
+                                          acc_test_performed: acc_test_performed)
         { calibration: calibration,
           messages: @message }
       rescue ActiveRecord::RecordInvalid => e

@@ -105,7 +105,11 @@ module Types
                  calibrator_id, 
                  vac_required, 
                  tech_first_name, 
-                 tech_last_name
+                 tech_last_name,
+                 el_test_performed,
+                 vip_test_performed,
+                 vac_test_performed,
+                 acc_test_performed
           FROM calibrations AS c
           LEFT JOIN dosimeters as d ON c.dosimeter_id = d.id
           WHERE c.batch = ?

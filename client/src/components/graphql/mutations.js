@@ -32,6 +32,10 @@ export const CREATE_CALIBRATION_RECORD = gql`
     $model_number: String
     $serial_number: String
     $tolerance: Float
+    $el_test_performed: Boolean!
+    $vip_test_performed: Boolean!
+    $vac_test_performed: Boolean!
+    $acc_test_performed: Boolean!
   ) {
     createCalibrationRecord(
       input: {
@@ -65,6 +69,10 @@ export const CREATE_CALIBRATION_RECORD = gql`
         modelNumber: $model_number
         serialNumber: $serial_number
         tolerance: $tolerance
+        elTestPerformed: $el_test_performed
+        vipTestPerformed: $vip_test_performed
+        vacTestPerformed: $vac_test_performed
+        accTestPerformed: $acc_test_performed
       }
     ) {
       calibration {
@@ -94,6 +102,10 @@ export const CREATE_CALIBRATION_RECORD = gql`
         vipPass
         accPass
         vacReading
+        elTestPerformed
+        vipTestPerformed
+        vacTestPerformed
+        accTestPerformed
       }
       messages
     }
