@@ -29,10 +29,10 @@ module Types
     field :batch, Int, null: true
     field :tech_first_name, String, null: false
     field :tech_last_name, String, null: false
-    field :el_test_performed, Boolean, null: false
-    field :acc_test_performed, Boolean, null: false
-    field :vac_test_performed, Boolean, null: false
-    field :vip_test_performed, Boolean, null: false
+    field :el_test_performed, Boolean, null: true
+    field :acc_test_performed, Boolean, null: true
+    field :vac_test_performed, Boolean, null: true
+    field :vip_test_performed, Boolean, null: true
 
     field :calibrator, Types::CalibratorType, null: true
     field :dosimeter, Types::DosimeterType, null: false
