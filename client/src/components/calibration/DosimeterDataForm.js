@@ -475,7 +475,7 @@ const DosimeterDataForm = props => {
         )}
         <Divider style={{ margin: "1.5rem" }} />
         <Form.Checkbox
-          label="EL Test performed"
+          label="EL test performed"
           checked={elTestPerformed}
           toggle
           style={{ zIndex: "0" }}
@@ -535,7 +535,7 @@ const DosimeterDataForm = props => {
         <Form.Checkbox
           toggle
           style={{ zIndex: "0" }}
-          label="ACC Check performed"
+          label="ACC test performed"
           checked={accTestPerformed}
           onChange={() => setAccTestPerformed(!accTestPerformed)}
         />
@@ -589,7 +589,7 @@ const DosimeterDataForm = props => {
         </div>
         <Divider style={{ margin: "1.5rem" }} />
         <Form.Checkbox
-          label="VAC Check Performed"
+          label="VAC test performed"
           toggle
           style={{ zIndex: "0" }}
           checked={vacTestPerformed}
@@ -626,7 +626,7 @@ const DosimeterDataForm = props => {
           toggle
           style={{ zIndex: "0" }}
           checked={vipTestPerformed}
-          label="VIP Check Performed"
+          label="VIP test performed"
           onChange={() => setVipTestPerformed(!vipTestPerformed)}
         />
         <Form.Group

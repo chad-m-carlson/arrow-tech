@@ -13,7 +13,7 @@ import { printUnit, printDate } from "../HelperFunctions";
 const renderPassFail = (tested, value) => {
   if (tested && value) return "Pass";
   else if (tested && !value) return "FAIL";
-  else return "Not Tested";
+  else return <i>Not Tested</i>;
 };
 
 const FailureReport = ({ calData, calibratorData, dateTested, customer }) => {
@@ -210,10 +210,14 @@ const FailureReport = ({ calData, calibratorData, dateTested, customer }) => {
                                   {printUnit(isR, isMr, isSv, isMsv)}
                                 </TableData>
                               ) : (
-                                <TableData>NOT READ</TableData>
+                                <TableData>
+                                  <i>Not Tested</i>
+                                </TableData>
                               )}
                               {/* <TableData disabled={!c.vipPass}>{midScaleAccuracy(c.accRead, isR, isMr, isSv, isMsv, range)}% </TableData> */}
-                              <TableData failed={!c.accPass}>
+                              <TableData
+                                failed={!c.accPass && c.accTestPerformed}
+                              >
                                 <p>
                                   {renderPassFail(
                                     c.accTestPerformed,
@@ -221,7 +225,9 @@ const FailureReport = ({ calData, calibratorData, dateTested, customer }) => {
                                   )}
                                 </p>
                               </TableData>
-                              <TableData failed={!c.vipPass}>
+                              <TableData
+                                failed={!c.vipPass && c.vipTestPerformed}
+                              >
                                 <p>
                                   {renderPassFail(
                                     c.vipTestPerformed,
@@ -229,7 +235,9 @@ const FailureReport = ({ calData, calibratorData, dateTested, customer }) => {
                                   )}
                                 </p>
                               </TableData>
-                              <TableData failed={!c.elPass}>
+                              <TableData
+                                failed={!c.elPass && c.elTestPerformed}
+                              >
                                 <p>
                                   {renderPassFail(c.elTestPerformed, c.elPass)}
                                   <br />
@@ -239,7 +247,9 @@ const FailureReport = ({ calData, calibratorData, dateTested, customer }) => {
                                 </p>
                               </TableData>
                               {c.vacRequired ? (
-                                <TableData failed={!c.vacPass}>
+                                <TableData
+                                  failed={!c.vacPass && c.vacTestPerformed}
+                                >
                                   <p>
                                     {renderPassFail(
                                       c.vacTestPerformed,

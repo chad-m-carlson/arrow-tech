@@ -204,11 +204,7 @@ const CalibrationReports = props => {
             user={allCalibrationData[0].user}
             calData={allCalibrationData}
             calibratorData={calibrator}
-            dateTested={
-              calData.find(({ finalDate }) => finalDate !== null) === undefined
-                ? calData.find(({ accDate }) => accDate !== null).accDate
-                : calData.find(({ finalDate }) => finalDate !== null).finalDate
-            }
+            dateTested={calData[0].finalDate}
           />
         )}
         {viewCalibrationSummary && (
@@ -216,11 +212,7 @@ const CalibrationReports = props => {
             calData={
               allCalibrationData.length > 0 ? allCalibrationData : calData
             }
-            dateTested={
-              calData.find(({ finalDate }) => finalDate !== null) === undefined
-                ? calData.find(({ accDate }) => accDate !== null).accDate
-                : calData.find(({ finalDate }) => finalDate !== null).finalDate
-            }
+            dateTested={calData[0].finalDate}
             uniqueDosimeterModels={uniqueDosimeterModels}
           />
         )}
