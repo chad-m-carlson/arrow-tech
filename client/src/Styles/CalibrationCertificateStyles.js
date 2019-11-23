@@ -1,30 +1,30 @@
-import styled from 'styled-components';
+import styled from "styled-components";
 
-export const TableData = styled.td `
-  border: .1px solid black;
-  color: ${props => props.failed ? "red" : "black"};
-  font-weight: ${props => props.failed ? "900" : "300"};
-  text-transform: ${props => props.failed ? "uppercase" : "none"}
+export const TableData = styled.td`
+  border: 0.1px solid black;
+  color: ${props => (props.failed ? "red" : "black")};
+  font-weight: ${props => (props.failed ? "900" : "300")};
+  text-transform: ${props => (props.failed ? "uppercase" : "none")};
 `;
 
-export const TableHeader = styled.th `
+export const TableHeader = styled.th`
   width: 60px;
-  border: .1px solid black;
+  border: 0.1px solid black;
   line-height: 10px;
 `;
 
-export const BaseCalDetails = styled.span `
+export const BaseCalDetails = styled.span`
   padding-left: 15px;
   text-decoration: underline;
   font-weight: 700;
 `;
 
-export const Header = styled.div `
+export const Header = styled.div`
   display: none;
   height: 100px;
 `;
 
-export const PageHeader = styled.div `
+export const PageHeader = styled.div`
   height: 100px;
   position: fixed;
   top: 0mm;
@@ -32,18 +32,18 @@ export const PageHeader = styled.div `
   border-bottom: 1px solid black;
 `;
 
-export const Footer = styled.div `
+export const Footer = styled.div`
   position: fixed;
   bottom: 0mm;
   width: 100%;
   border-top: 1px solid black;
 `;
 
-export const PageFooter = styled.div `
+export const PageFooter = styled.div`
   display: none;
   height: 50px;
 `;
 
-export const Page = styled.div `
+export const Page = styled.div`
   page-break-after: always;
 `;
