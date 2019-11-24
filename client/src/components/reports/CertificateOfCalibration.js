@@ -12,7 +12,6 @@ import { printUnit, printDate } from "../HelperFunctions";
 
 const CertificateOfCalibration = ({ customer, calData, calibratorData }) => {
   const { range, isR, isMr, isSv, isMsv } = calData[0].dosimeter;
-
   return (
     <table>
       <div style={{ maxWidth: "7.5in", fontSize: "10pt" }}>
@@ -27,7 +26,10 @@ const CertificateOfCalibration = ({ customer, calData, calibratorData }) => {
                 <p>
                   Certificate Number:{" "}
                   <span style={{ paddingLeft: "15px" }}>
-                    {calData[0].certificateNumber}
+                    {
+                      calData.find(c => c.certificateNumber !== null)
+                        .certificateNumber
+                    }
                   </span>
                 </p>
                 <p>
@@ -180,7 +182,9 @@ const CertificateOfCalibration = ({ customer, calData, calibratorData }) => {
                     <p>
                       Calibration Due Date:{" "}
                       <BaseCalDetails>
-                        {printDate(calData[0].dueDate)}
+                        {printDate(
+                          calData.find(c => c.dueDate !== null).dueDate
+                        )}
                       </BaseCalDetails>{" "}
                     </p>
                   </div>
