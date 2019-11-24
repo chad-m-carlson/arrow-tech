@@ -13,7 +13,7 @@ module Types
     end
 
     def batch_by_customer(customer_id:)
-      Customer.find(customer_id).calibrations.uniq(&:batch)
+      Customer.find(customer_id).calibrations.order(:batch).uniq(&:batch)
     end
 
     field :calibration, Types::CalibrationType, null: false do
