@@ -1,6 +1,7 @@
 import React from "react";
 import { Table, Icon } from "semantic-ui-react";
 import { Link } from "react-router-dom";
+import styled from "styled-components";
 
 const BatchReportTable = ({ calData, handleDelete }) => {
   const renderPassFail = (tested, value) => {
@@ -14,27 +15,33 @@ const BatchReportTable = ({ calData, handleDelete }) => {
   };
 
   return (
-    <Table celled>
+    <Table
+      celled
+      style={{
+        position: "relative"
+      }}
+    >
       <Table.Header>
         <Table.Row style={{ textAlign: "center" }}>
-          <Table.HeaderCell>Dosimeter Model Number</Table.HeaderCell>
-          <Table.HeaderCell>Dosimeter Serial Number</Table.HeaderCell>
-          <Table.HeaderCell>VAC Required</Table.HeaderCell>
-          <Table.HeaderCell>VAC Pass</Table.HeaderCell>
-          <Table.HeaderCell>VIP Pass</Table.HeaderCell>
-          <Table.HeaderCell>ACC Pass</Table.HeaderCell>
-          <Table.HeaderCell>EL Pass</Table.HeaderCell>
-          <Table.HeaderCell>Final Pass</Table.HeaderCell>
-          <Table.HeaderCell>Certificate Number</Table.HeaderCell>
-          <Table.HeaderCell>Edit Record</Table.HeaderCell>
-          <Table.HeaderCell>Delete Record</Table.HeaderCell>
+          <StickyHeader>Dosimeter Model Number</StickyHeader>
+          <StickyHeader>Dosimeter Serial Number</StickyHeader>
+          <StickyHeader>VAC Required</StickyHeader>
+          <StickyHeader>VAC Pass</StickyHeader>
+          <StickyHeader>VIP Pass</StickyHeader>
+          <StickyHeader>ACC Pass</StickyHeader>
+          <StickyHeader>EL Pass</StickyHeader>
+          <StickyHeader>Final Pass</StickyHeader>
+          <StickyHeader>Certificate Number</StickyHeader>
+          <StickyHeader>Edit Record</StickyHeader>
+          <StickyHeader>Delete Record</StickyHeader>
         </Table.Row>
       </Table.Header>
       <Table.Body>
-        {calData.map(c => {
+        {calData.map((c, index) => {
           const { modelNumber, serialNumber } = c.dosimeter;
           return (
             <Table.Row
+              id={c.id}
               key={c.id}
               negative={c.finalPass ? false : true}
               style={{ textAlign: "center" }}
@@ -97,5 +104,20 @@ const BatchReportTable = ({ calData, handleDelete }) => {
     </Table>
   );
 };
+
+const StickyHeader = styled.th`
+  position: sticky;
+  top: 0px;
+  background: #f9fafb;
+  text-align: inherit;
+  color: rgba(0, 0, 0, 0.87);
+  padding: 0.92857143em 0.78571429em;
+  vertical-align: inherit;
+  font-style: none;
+  font-weight: 700;
+  text-transform: none;
+  border-bottom: 1px solid rgba(34, 36, 38, 0.1);
+  border-left: none;
+`;
 
 export default BatchReportTable;

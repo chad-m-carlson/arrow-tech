@@ -6,6 +6,7 @@ import { Query } from "react-apollo";
 import { useMutation } from "@apollo/react-hooks";
 import { CALIBRATIONS_BY_BATCH } from "../graphql/queries";
 import { DELETE_CALIBRATION_RECORD } from "../graphql/mutations";
+import { Segment, Dimmer, Loader, Image } from "semantic-ui-react";
 
 const BatchReport = props => {
   const [batch, setBatch] = useState("");
@@ -46,8 +47,29 @@ const BatchReport = props => {
           fetchPolicy="no-cache"
         >
           {({ loading, error, data }) => {
-            if (loading) return <div>Loading..</div>;
-            if (error) return <div>Error!</div>;
+            if (loading)
+              return (
+                <Segment>
+                  <Dimmer active inverted>
+                    <Loader size="massive">Preparing Batch Report</Loader>
+                  </Dimmer>
+                  <Image src="https://react.semantic-ui.com/images/wireframe/short-paragraph.png" />
+                  <Image src="https://react.semantic-ui.com/images/wireframe/short-paragraph.png" />
+                  <Image src="https://react.semantic-ui.com/images/wireframe/short-paragraph.png" />
+                  <Image src="https://react.semantic-ui.com/images/wireframe/short-paragraph.png" />
+                  <Image src="https://react.semantic-ui.com/images/wireframe/short-paragraph.png" />
+                  <Image src="https://react.semantic-ui.com/images/wireframe/short-paragraph.png" />
+                  <Image src="https://react.semantic-ui.com/images/wireframe/short-paragraph.png" />
+                  <Image src="https://react.semantic-ui.com/images/wireframe/short-paragraph.png" />
+                  <Image src="https://react.semantic-ui.com/images/wireframe/short-paragraph.png" />
+                </Segment>
+              );
+            if (error)
+              return (
+                <div>
+                  <h3>This report could not be loaded. Please try again</h3>
+                </div>
+              );
             if (data.calibrationsByBatch.length > 0) {
               if (dataDeleted) {
                 // ?CAN'T FIGURE OUT HOW TO DISABLE THE CACHE FROM AUTO SETTING STATE WITH ORIGINAL ARRAY INSTEAD OF NEW FILTERED ARRAY
@@ -91,10 +113,16 @@ const BatchReport = props => {
                       </Button>
                     </div>
                   </div>
-                  <BatchReportTable
-                    calData={calData}
-                    handleDelete={handleDelete}
-                  />
+                  <br />
+                  <div
+                    id="batch_table_container"
+                    style={{ height: "65vh", overflow: "scroll" }}
+                  >
+                    <BatchReportTable
+                      calData={calData}
+                      handleDelete={handleDelete}
+                    />
+                  </div>
                 </>
               );
             } else return <div>This Batch number does not exist</div>;

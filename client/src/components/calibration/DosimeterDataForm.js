@@ -359,7 +359,7 @@ const DosimeterDataForm = props => {
     setVacPass(true);
     setVipPass(true);
     document.getElementById("1").focus();
-    document.body.scrollTop = 0;
+    window.scrollTo(0, 0);
   };
 
   const handleFinalPass = () => {
