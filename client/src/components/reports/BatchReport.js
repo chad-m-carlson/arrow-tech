@@ -16,8 +16,13 @@ const BatchReport = props => {
   const [delete_calibration_record] = useMutation(DELETE_CALIBRATION_RECORD);
 
   useEffect(() => {
-    if (props.location.state) setBatch(props.location.state.batch);
-    window.scrollTo(0, 0);
+    if (props.location.state)
+      if (props.location.state.calData)
+        setCalData(props.location.state.calData);
+      else {
+        setBatch(props.location.state.batch);
+        window.scrollTo(0, 0);
+      }
   }, [props.location.state]);
 
   const handleDelete = id => {
@@ -40,7 +45,7 @@ const BatchReport = props => {
           {/* <Button>Set Batch </Button> */}
         </Form.Group>
       </Form>
-      {batch && (
+      {batch || calData.length < 1 ? (
         <Query
           query={CALIBRATIONS_BY_BATCH}
           variables={{ batch: parseInt(batch) }}
@@ -83,7 +88,7 @@ const BatchReport = props => {
                     style={{ display: "flex", justifyContent: "space-between" }}
                   >
                     <h1>
-                      Batch Report #{batch} for{" "}
+                      Batch Report #{calData[0].batch} for{" "}
                       {data.calibrationsByBatch[0].dosimeter.customer.name}
                     </h1>
                     <div>
@@ -128,6 +133,41 @@ const BatchReport = props => {
             } else return <div>This Batch number does not exist</div>;
           }}
         </Query>
+      ) : (
+        <>
+          <div style={{ display: "flex", justifyContent: "space-between" }}>
+            <h1>
+              Batch Report #{batch} for {calData[0].dosimeter.customer.name}
+            </h1>
+            <div>
+              <h4>Total Fail: {calData.filter(c => !c.finalPass).length}</h4>
+              <h4 style={{ marginTop: "-10px" }}>
+                Total Pass: {calData.filter(c => c.finalPass).length}
+              </h4>
+              <Button
+                as={Link}
+                to={{
+                  pathname: "/calreports",
+                  state: {
+                    calData: calData,
+                    uniqueDosimeterModels: [
+                      ...new Set(calData.map(c => c.dosimeter.modelNumber))
+                    ]
+                  }
+                }}
+              >
+                View Reports
+              </Button>
+            </div>
+          </div>
+          <br />
+          <div
+            id="batch_table_container"
+            style={{ height: "65vh", overflow: "scroll" }}
+          >
+            <BatchReportTable calData={calData} handleDelete={handleDelete} />
+          </div>
+        </>
       )}
     </>
   );
