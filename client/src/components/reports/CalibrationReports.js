@@ -37,7 +37,8 @@ const CalibrationReports = props => {
     { key: 2, text: "4R/hr", value: "4R/hr" },
     { key: 3, text: "35.7 R/hr", value: "35.7 R/hr" },
     { key: 4, text: "588.2 R/hr", value: "588.2 R/hr" },
-    { key: 5, text: "43 mR/hr", value: "43 mR/hr" }
+    { key: 5, text: "43 mR/hr", value: "43 mR/hr" },
+    { key: 6, text: "5.2 mSv/hr", value: "5.2 mSv/hr" }
   ];
 
   const [createCalibratorRecord] = useMutation(CREATE_CALIBRATOR_RECORD, {
