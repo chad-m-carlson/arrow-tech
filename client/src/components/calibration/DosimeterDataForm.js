@@ -375,6 +375,23 @@ const DosimeterDataForm = props => {
     }
   };
 
+  const handleVacTestPerformed = () => {
+    if (vacTestPerformed === false) setVacPass(true);
+    setVacTestPerformed(!vacTestPerformed);
+  };
+  const handleAccTestPerformed = () => {
+    if (accTestPerformed === false) setAccPass(true);
+    setAccTestPerformed(!accTestPerformed);
+  };
+  const handleVipTestPerformed = () => {
+    if (vipTestPerformed === false) setVipPass(true);
+    setVipTestPerformed(!vipTestPerformed);
+  };
+  const handleElTestPerformed = () => {
+    if (elTestPerformed === false) setElPass(true);
+    setElTestPerformed(!elTestPerformed);
+  };
+
   const customKeyBindings = e => {
     let currentField = parseInt(e.currentTarget.attributes.id.nodeValue);
     if (e.keyCode === 13 && currentField === 4) {
@@ -398,7 +415,12 @@ const DosimeterDataForm = props => {
 
   return (
     <div>
-      <h1>Calibration</h1>
+      <div>
+        <h1>Calibration</h1>
+        <h5>
+          Dosimeters entered this batch: <i>Coming Soon</i>
+        </h5>
+      </div>
       <Form size="mini">
         <Form.Group
           fluid
@@ -479,7 +501,7 @@ const DosimeterDataForm = props => {
           checked={elTestPerformed}
           toggle
           style={{ zIndex: "0" }}
-          onChange={() => setElTestPerformed(!elTestPerformed)}
+          onChange={handleElTestPerformed}
         />
         <Form.Group
           fluid
@@ -537,7 +559,7 @@ const DosimeterDataForm = props => {
           style={{ zIndex: "0" }}
           label="ACC test performed"
           checked={accTestPerformed}
-          onChange={() => setAccTestPerformed(!accTestPerformed)}
+          onChange={handleAccTestPerformed}
         />
         <Form.Group
           style={{ display: "flex", justifyContent: "space-between" }}
@@ -593,7 +615,7 @@ const DosimeterDataForm = props => {
           toggle
           style={{ zIndex: "0" }}
           checked={vacTestPerformed}
-          onChange={() => setVacTestPerformed(!vacTestPerformed)}
+          onChange={handleVacTestPerformed}
         />
         <div
           style={
@@ -627,7 +649,7 @@ const DosimeterDataForm = props => {
           style={{ zIndex: "0" }}
           checked={vipTestPerformed}
           label="VIP test performed"
-          onChange={() => setVipTestPerformed(!vipTestPerformed)}
+          onChange={handleVipTestPerformed}
         />
         <Form.Group
           style={

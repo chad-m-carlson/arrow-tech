@@ -1,5 +1,8 @@
 import React from "react";
-import { determineCalculatedDosimeterRange } from "../HelperFunctions";
+import {
+  determineCalculatedDosimeterRange,
+  renderPassFail
+} from "../HelperFunctions";
 import CertificateHeader from "./CertificateHeader";
 import CertificateFooter from "./CertificateFooter";
 import {
@@ -12,6 +15,7 @@ import { printUnit, printDate } from "../HelperFunctions";
 
 const CertificateOfCalibration = ({ customer, calData, calibratorData }) => {
   const { range, isR, isMr, isSv, isMsv } = calData[0].dosimeter;
+
   return (
     <table>
       <div style={{ maxWidth: "7.5in", fontSize: "10pt" }}>
@@ -272,17 +276,42 @@ const CertificateOfCalibration = ({ customer, calData, calibratorData }) => {
                                 {c.accRead} {printUnit(isR, isMr, isSv, isMsv)}
                               </TableData>
                               <TableData>
-                                <p>{c.accPass ? "Pass" : "Fail"}</p>
+                                {/* <p>{c.accPass ? "Pass" : "Fail"}</p> */}
+                                <p>
+                                  {renderPassFail(
+                                    c.accTestPerformed,
+                                    c.accPass
+                                  )}
+                                </p>
                               </TableData>
                               <TableData>
-                                <p>{c.vipPass ? "Pass" : "Fail"}</p>
+                                {/* <p>{c.vipPass ? "Pass" : "Fail"}</p> */}
+                                <p>
+                                  {renderPassFail(
+                                    c.vipTestPerformed,
+                                    c.vipPass
+                                  )}
+                                </p>
                               </TableData>
                               <TableData>
-                                <p>{c.elPass ? "Pass" : "Fail"}</p>
+                                {/* <p>{c.elPass ? "Pass" : "Fail"}</p> */}
+                                <p>
+                                  {renderPassFail(c.elTestPerformed, c.elPass)}
+                                  <br />
+                                  {c.elTestPerformed && (
+                                    <span>({c.elRead})</span>
+                                  )}
+                                </p>
                               </TableData>
                               {c.vacRequired && (
                                 <TableData>
-                                  <p>{c.vacPass ? "Pass" : "Fail"}</p>
+                                  {/* <p>{c.vacPass ? "Pass" : "Fail"}</p> */}
+                                  <p>
+                                    {renderPassFail(
+                                      c.vacTestPerformed,
+                                      c.vacPass
+                                    )}
+                                  </p>
                                 </TableData>
                               )}
                               <TableData>

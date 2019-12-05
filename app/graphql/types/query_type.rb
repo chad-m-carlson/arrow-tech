@@ -16,6 +16,14 @@ module Types
       Customer.find(customer_id).calibrations.order(:batch).uniq(&:batch)
     end
 
+    field :batch_quantity, Integer, null: false do
+      argument :batch_id, ID, required: true
+    end
+
+    def batch_quantity(batch_id:)
+      Calibration.where(batch: batch_id).length
+    end
+
     field :calibration, Types::CalibrationType, null: false do
       argument :id, ID, required: true
     end

@@ -55,7 +55,6 @@ class Mutations::CreateCalibrationRecord < Mutations::BaseMutation
       certificate_number = nil
       due_date = nil
     end
-
     unless el_test_performed
       el_pass = nil
       el_read = nil
