@@ -6,6 +6,8 @@ import "react-datepicker/dist/react-datepicker.css";
 import { GET_UNIQUE_DOSIMETER_MODELS } from "../graphql/queries";
 import { CREATE_CALIBRATION_RECORD } from "../graphql/mutations";
 import { useQuery, useMutation } from "@apollo/react-hooks";
+import { Query } from "react-apollo";
+import { BATCH_QUANTITY } from "../graphql/queries";
 import { Link } from "react-router-dom";
 import {
   determineCalculatedDosimeterRange,
@@ -55,6 +57,7 @@ const DosimeterDataForm = props => {
   const [accTestPerformed, setAccTestPerformed] = useState(true);
   const [vacTestPerformed, setVacTestPerformed] = useState(true);
   const [vipTestPerformed, setVipTestPerformed] = useState(true);
+  const [dosimeterInBatch, setDosimeterInBatch] = useState();
   // const [back, setBack] = useState(true);
   // const [forward, setForward] = useState(false);
 
@@ -415,23 +418,41 @@ const DosimeterDataForm = props => {
 
   return (
     <div>
-      <div>
-        <h1>Calibration</h1>
-        <h5>
-          Dosimeters entered this batch: <i>Coming Soon</i>
-        </h5>
-      </div>
+      <h1>Calibration</h1>
       <Form size="mini">
         <Form.Group
           fluid
           style={{ display: "flex", justifyContent: "space-between" }}
         >
-          <Form.Input
-            label="Batch"
-            value={batch}
-            error={batch === "" || batch === null}
-            onChange={e => setBatch(e.target.value)}
-          />
+          <div>
+            <Form.Input
+              label="Batch"
+              value={batch}
+              error={batch === "" || batch === null}
+              onChange={e => setBatch(e.target.value)}
+            />
+            <br />
+            <Query
+              query={BATCH_QUANTITY}
+              variables={{ batch_id: batch }}
+              fetchPolicy="no-cache"
+              pollInterval="3000"
+            >
+              {({ loading, error, data }) => {
+                if (loading) return "loading";
+                if (error) return "error";
+                if (data) {
+                  setDosimeterInBatch(data.batchQuantity);
+                  return (
+                    <p>
+                      Dosimeters in batch:<b> {dosimeterInBatch}</b>
+                    </p>
+                  );
+                }
+              }}
+            </Query>
+          </div>
+
           <Form.Input
             label="Tech First Name"
             value={techFirstName}

@@ -108,6 +108,7 @@ export const CREATE_CALIBRATION_RECORD = gql`
         accTestPerformed
       }
       messages
+      dosimetersInBatch
     }
   }
 `;
