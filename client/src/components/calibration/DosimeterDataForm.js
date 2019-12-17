@@ -428,6 +428,7 @@ const DosimeterDataForm = props => {
             <Form.Input
               label="Batch"
               value={batch}
+              type="number"
               error={batch === "" || batch === null}
               onChange={e => setBatch(e.target.value)}
             />
