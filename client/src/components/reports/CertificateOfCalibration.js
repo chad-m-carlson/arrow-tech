@@ -30,10 +30,10 @@ const CertificateOfCalibration = ({ customer, calData, calibratorData }) => {
                 <p>
                   Certificate Number:{" "}
                   <span style={{ paddingLeft: "15px" }}>
-                    {
-                      calData.find(c => c.certificateNumber !== null)
-                        .certificateNumber
-                    }
+                    {calData.find(c => c.finalPass === true)
+                      ? calData.find(c => c.certificateNumber !== null)
+                          .certificateNumber
+                      : ""}
                   </span>
                 </p>
                 <p>
@@ -186,9 +186,11 @@ const CertificateOfCalibration = ({ customer, calData, calibratorData }) => {
                     <p>
                       Calibration Due Date:{" "}
                       <BaseCalDetails>
-                        {printDate(
-                          calData.find(c => c.dueDate !== null).dueDate
-                        )}
+                        {calData.find(c => c.finalPass === true)
+                          ? printDate(
+                              calData.find(c => c.dueDate !== null).dueDate
+                            )
+                          : ""}
                       </BaseCalDetails>{" "}
                     </p>
                   </div>

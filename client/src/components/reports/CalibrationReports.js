@@ -261,15 +261,7 @@ const CalibrationReports = props => {
                   Previous Model CoC
                 </Button>
                 <Button
-                  disabled={
-                    cocCounter === uniqueDosimeterModels.length - 1 ||
-                    calData.filter(
-                      c =>
-                        c.finalPass === true &&
-                        c.dosimeter.modelNumber ===
-                          uniqueDosimeterModels[cocCounter + 1]
-                    ).length === 0
-                  }
+                  disabled={cocCounter === uniqueDosimeterModels.length - 1}
                   style={{ marginBottom: "10px" }}
                   onClick={() => handleCocNavigation("next")}
                 >
