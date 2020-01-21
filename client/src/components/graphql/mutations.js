@@ -167,6 +167,16 @@ export const CREATE_CUSTOMER = gql`
   }
 `;
 
+export const UPDATE_BATCH_CUSTOMER = gql`
+  mutation UpdateBatchCustomer($id: ID!, $batch: Int!) {
+    updateBatchCustomer(input: { id: $id, batch: $batch }) {
+      calibration {
+        id
+      }
+    }
+  }
+`;
+
 export const CREATE_CALIBRATOR_RECORD = gql`
   mutation CreateCalibratorRecord(
     $id: ID
