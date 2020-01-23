@@ -173,6 +173,8 @@ export const UPDATE_BATCH_CUSTOMER = gql`
       calibration {
         id
       }
+      errors
+      messages
     }
   }
 `;

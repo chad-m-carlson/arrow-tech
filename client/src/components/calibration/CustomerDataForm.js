@@ -7,10 +7,13 @@ import { useQuery, useMutation } from "@apollo/react-hooks";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
-const CustomerDataForm = (
-  { sendCustomerIdToDosimeterForm, selectedBatch, customerId, calibration },
-  props
-) => {
+const CustomerDataForm = ({
+  sendCustomerIdToDosimeterForm,
+  selectedBatch,
+  customerId,
+  calibration,
+  history
+}) => {
   const blankCustomer = {
     id: "",
     name: "",
@@ -31,7 +34,6 @@ const CustomerDataForm = (
   // const [filteredCustomerList, setFilteredCustomerList] = useState([]);
   const [selectedCustomer, setSelectedCustomer] = useState(blankCustomer);
   const [batchNumber, setBatchNumber] = useState(null);
-  const [customerSelected, setCustomerSelected] = useState(false);
 
   const { data, loading, error } = useQuery(GET_ALL_CUSTOMERS_QUERY, {
     variables: { batch: selectedBatch ? selectedBatch : null },
@@ -52,7 +54,12 @@ const CustomerDataForm = (
   });
 
   const [updateBatchCustomer] = useMutation(UPDATE_BATCH_CUSTOMER, {
-    onCompleted(data) {}
+    onCompleted(data) {
+      toastMessage(data.updateBatchCustomer.messages, "success");
+    },
+    onError(error) {
+      toastMessage(error.graphQLErrors[0].message, "error");
+    }
   });
 
   useEffect(() => {
@@ -93,7 +100,7 @@ const CustomerDataForm = (
   sendCustomerIdToDosimeterForm &&
     sendCustomerIdToDosimeterForm(() => selectedCustomer.id, batchNumber);
 
-  const handleSubmit = () => {
+  const handleSubmit = action => {
     create_customer({
       variables: {
         id: selectedCustomer.id ? selectedCustomer.id : null,
@@ -107,12 +114,11 @@ const CustomerDataForm = (
         email: selectedCustomer.email
       }
     });
-    setBatchNumber(data.lastBatch + 1);
-    setCustomerSelected(true);
-    updateCustomer();
+    action == "editBatch" && updateCustomerBatch();
+    action == "new" && setBatchNumber(data.lastBatch + 1);
   };
 
-  const updateCustomer = () => {
+  const updateCustomerBatch = () => {
     updateBatchCustomer({
       variables: {
         id: selectedCustomer.id,
@@ -229,18 +235,22 @@ const CustomerDataForm = (
           label="Country"
         />
       </Form>
-      {customerId || calibration || customerSelected ? (
+      {customerId || calibration || selectedCustomer.id !== "" ? (
         <Button
           inverted
           color="blue"
           onClick={() => {
-            updateCustomer();
+            if (selectedCustomer.id !== "" && history) {
+              handleSubmit("edit");
+            } else if (!history) {
+              handleSubmit("editBatch");
+            } else handleSubmit("edit");
           }}
         >
           Update Customer Information
         </Button>
       ) : (
-        <Button inverted color="blue" onClick={() => handleSubmit()}>
+        <Button inverted color="blue" onClick={() => handleSubmit("new")}>
           Save Customer
         </Button>
       )}
