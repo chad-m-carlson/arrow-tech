@@ -45,3 +45,8 @@ export const renderPassFail = (tested, value) => {
   else if (tested && !value) return "FAIL";
   else return <i>Not Tested</i>;
 };
+
+export const subtractDates = (dateOut, dateIn) => {
+  const difference = Math.abs(dateOut - dateIn);
+  return Math.ceil(difference / (1000 * 60 * 60 * 24));
+};

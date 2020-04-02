@@ -11,7 +11,8 @@ import { BATCH_QUANTITY } from "../graphql/queries";
 import { Link } from "react-router-dom";
 import {
   determineCalculatedDosimeterRange,
-  convertValueReadToMr
+  convertValueReadToMr,
+  subtractDates
 } from "../HelperFunctions";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -294,7 +295,7 @@ const DosimeterDataForm = props => {
   const handleElReading = valueRead => {
     setElRead(valueRead);
     if (elDateIn && elDateOut) {
-      const testDuration = elDateOut.getDate() - elDateIn.getDate();
+      const testDuration = subtractDates(elDateOut, elDateIn);
       const perDayLeakageAllowed = 0.025 * dosimeterRange;
       if (
         testDuration * perDayLeakageAllowed >=
