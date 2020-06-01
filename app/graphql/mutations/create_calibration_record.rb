@@ -49,8 +49,12 @@ class Mutations::CreateCalibrationRecord < Mutations::BaseMutation
       raise GraphQL::ExecutionError, "Dosimeter model and/or serial number must not be blank"
     end
 
-    if final_pass == true && certificate_number == (nil || "")
-      raise GraphQL::ExecutionError, "Must enter a certificate number and/or due date for passing dosimeters"
+    if final_pass == true && certificate_number == (nil || '')
+      raise GraphQL::ExecutionError, "Must enter a certificate number for passing dosimeters"
+    end
+
+    if final_pass == true && due_date == (nil || '')
+      raise GraphQL::ExecutionError, "Must enter a due date for passing dosimeters"
     end
 
     if final_pass == false
