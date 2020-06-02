@@ -1,7 +1,7 @@
 import React from "react";
 import {
   determineCalculatedDosimeterRange,
-  renderPassFail
+  renderPassFail,
 } from "../HelperFunctions";
 import CertificateHeader from "./CertificateHeader";
 import CertificateFooter from "./CertificateFooter";
@@ -9,9 +9,16 @@ import {
   TableData,
   TableHeader,
   BaseCalDetails,
-  Page
+  Page,
 } from "../../Styles/CalibrationCertificateStyles";
 import { printUnit, printDate } from "../HelperFunctions";
+
+const handleDueDate = (calData) => {
+  let passingCal = calData.find((c) => c.finalPass === true);
+  if (passingCal.dueDate === null) {
+    return "Not Specified";
+  } else return printDate(passingCal.dueDate);
+};
 
 const CertificateOfCalibration = ({ customer, calData, calibratorData }) => {
   const { range, isR, isMr, isSv, isMsv } = calData[0].dosimeter;
@@ -30,8 +37,8 @@ const CertificateOfCalibration = ({ customer, calData, calibratorData }) => {
                 <p>
                   Certificate Number:{" "}
                   <span style={{ paddingLeft: "15px" }}>
-                    {calData.find(c => c.finalPass === true)
-                      ? calData.find(c => c.certificateNumber !== null)
+                    {calData.find((c) => c.finalPass === true)
+                      ? calData.find((c) => c.certificateNumber !== null)
                           .certificateNumber
                       : ""}
                   </span>
@@ -152,7 +159,7 @@ const CertificateOfCalibration = ({ customer, calData, calibratorData }) => {
                   style={{
                     display: "flex",
                     justifyContent: "space-between",
-                    padding: "0px 30px 0px 30px"
+                    padding: "0px 30px 0px 30px",
                   }}
                 >
                   <div style={{ margin: "0px 30px 30px 30px" }}>
@@ -185,13 +192,7 @@ const CertificateOfCalibration = ({ customer, calData, calibratorData }) => {
                     </p>
                     <p>
                       Calibration Due Date:{" "}
-                      <BaseCalDetails>
-                        {calData.find(c => c.finalPass === true)
-                          ? printDate(
-                              calData.find(c => c.dueDate !== null).dueDate
-                            )
-                          : ""}
-                      </BaseCalDetails>{" "}
+                      <BaseCalDetails>{handleDueDate(calData)}</BaseCalDetails>{" "}
                     </p>
                   </div>
                 </div>
@@ -208,7 +209,7 @@ const CertificateOfCalibration = ({ customer, calData, calibratorData }) => {
                     style={{
                       maxWidth: "7.5in",
                       fontSize: "8px",
-                      borderCollapse: "collapse"
+                      borderCollapse: "collapse",
                     }}
                   >
                     <thead>
@@ -251,15 +252,15 @@ const CertificateOfCalibration = ({ customer, calData, calibratorData }) => {
                     </thead>
                     <tbody>
                       {calData
-                        .filter(c => c.finalPass === true)
-                        .map(c => {
+                        .filter((c) => c.finalPass === true)
+                        .map((c) => {
                           const {
                             serialNumber,
                             range,
                             isR,
                             isMr,
                             isMsv,
-                            isSv
+                            isSv,
                           } = c.dosimeter;
                           return (
                             <tr key={c.id} style={{ textAlign: "center" }}>
@@ -322,13 +323,13 @@ const CertificateOfCalibration = ({ customer, calData, calibratorData }) => {
                             </tr>
                           );
                         })}
-                      {calData.filter(c => c.finalPass === true).length ===
+                      {calData.filter((c) => c.finalPass === true).length ===
                         0 && (
                         <tr
                           style={{
                             textAlign: "center",
                             fontSize: "16px",
-                            letterSpacing: "8px"
+                            letterSpacing: "8px",
                           }}
                         >
                           <td
