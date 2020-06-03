@@ -60,6 +60,7 @@ const DosimeterDataForm = (props) => {
   const [vipTestPerformed, setVipTestPerformed] = useState(true);
   const [dosimeterInBatch, setDosimeterInBatch] = useState();
   const [dueDateRequired, setDueDateRequired] = useState(true);
+  const [dueDateError, setDueDateError] = useState(true);
   // const [back, setBack] = useState(true);
   // const [forward, setForward] = useState(false);
 
@@ -179,6 +180,13 @@ const DosimeterDataForm = (props) => {
   useEffect(() => {
     handleFinalPass();
   }, [elPass, accPass, vacPass, vipPass]);
+
+  useEffect(() => {
+    if (dueDateRequired) {
+      if (finalPass && dueDate == ("" || null)) setDueDateError(true);
+      else if (finalPass && dueDate != "") setDueDateError(false);
+    } else setDueDateError(false);
+  }, [dueDateRequired, finalPass, dueDate]);
 
   const setCurrentRecordToState = (
     accDate,
@@ -446,7 +454,7 @@ const DosimeterDataForm = (props) => {
               query={BATCH_QUANTITY}
               variables={{ batch_id: batch }}
               fetchPolicy="no-cache"
-              //pollInterval="3000"
+              pollInterval="3000"
             >
               {({ loading, error, data }) => {
                 if (loading) return "loading";
@@ -726,7 +734,7 @@ const DosimeterDataForm = (props) => {
           <div>
             <Form.Input
               label="Due Date"
-              error={finalPass && dueDate === "" && dueDateRequired}
+              error={dueDateError}
               disabled={!dueDateRequired}
             >
               <DatePicker
