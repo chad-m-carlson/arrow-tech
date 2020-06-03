@@ -31,6 +31,7 @@ class Mutations::CreateCalibrationRecord < Mutations::BaseMutation
   argument :vac_test_performed, Boolean, required: true
   argument :vip_test_performed, Boolean, required: true
   argument :acc_test_performed, Boolean, required: true
+  argument :due_date_required, Boolean, required: true
 
   argument :customer_id, Int, required: false
   argument :model_number, String, required: false
@@ -41,7 +42,7 @@ class Mutations::CreateCalibrationRecord < Mutations::BaseMutation
   field :messages, String, null: true
   field :dosimeters_in_batch, Int, null: true
 
-  def resolve( id:, user_id:, dosimeter_id:,  date_received:, el_date_in:, el_date_out:, acc_date:, vac_date_in:, vac_date_out:, final_date:, due_date:, el_pass: , vip_pass: , vac_required:,  vac_pass: , acc_pass: , final_pass: ,el_read:, acc_read:, vip_problems:, vac_reading:, vac_ref_reading:, certificate_number:, batch:, customer_id:, model_number:, serial_number:, tolerance:, tech_first_name:, tech_last_name:, el_test_performed:, vac_test_performed:, vip_test_performed:, acc_test_performed:)
+  def resolve( id:, user_id:, dosimeter_id:,  date_received:, el_date_in:, el_date_out:, acc_date:, vac_date_in:, vac_date_out:, final_date:, due_date:, el_pass: , vip_pass: , vac_required:,  vac_pass: , acc_pass: , final_pass: ,el_read:, acc_read:, vip_problems:, vac_reading:, vac_ref_reading:, certificate_number:, batch:, customer_id:, model_number:, serial_number:, tolerance:, tech_first_name:, tech_last_name:, el_test_performed:, vac_test_performed:, vip_test_performed:, acc_test_performed:, due_date_required:)
 
     @dosimeters_in_batch = Calibration.where(batch: batch).count
     
@@ -53,7 +54,7 @@ class Mutations::CreateCalibrationRecord < Mutations::BaseMutation
       raise GraphQL::ExecutionError, "Must enter a certificate number for passing dosimeters"
     end
 
-    if final_pass == true && due_date == (nil || '')
+    if final_pass == true && due_date == (nil || '') && due_date_required == true
       raise GraphQL::ExecutionError, "Must enter a due date for passing dosimeters"
     end
 
@@ -77,6 +78,9 @@ class Mutations::CreateCalibrationRecord < Mutations::BaseMutation
     unless acc_test_performed
       acc_pass = nil 
       acc_read = nil
+    end
+    unless due_date_required 
+      due_date = nil 
     end
 
     dosimeter = Customer.find(customer_id).dosimeters.where("model_number = ? AND serial_number =  ?", model_number, serial_number ).first
@@ -122,6 +126,7 @@ class Mutations::CreateCalibrationRecord < Mutations::BaseMutation
                             final_date: final_date,
                             # ship_back_date: ship_back_date,
                             due_date: due_date,
+                            due_date_required: due_date_required,
                             el_pass: el_pass,
                             vip_pass: vip_pass,
                             vac_required: vac_required,
@@ -142,8 +147,7 @@ class Mutations::CreateCalibrationRecord < Mutations::BaseMutation
                             acc_test_performed: acc_test_performed)
         { calibration: calibration,
           messages: @message,
-          dosimeters_in_batch: @dosimeters_in_batch
-        }
+          dosimeters_in_batch: @dosimeters_in_batch }
       rescue ActiveRecord::RecordInvalid => e
         GraphQL::ExecutionError.new("#{e.record.errors.full_messages.join(', ')}") 
       end
@@ -163,6 +167,7 @@ class Mutations::CreateCalibrationRecord < Mutations::BaseMutation
                                           final_date: final_date, 
                                           # ship_back_date: ship_back_date, 
                                           due_date: due_date, 
+                                          due_date_required: due_date_required,
                                           el_pass: el_pass, 
                                           vip_pass: vip_pass, 
                                           vac_required: vac_required,

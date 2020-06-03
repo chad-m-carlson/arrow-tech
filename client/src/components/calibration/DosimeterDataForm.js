@@ -59,6 +59,7 @@ const DosimeterDataForm = (props) => {
   const [vacTestPerformed, setVacTestPerformed] = useState(true);
   const [vipTestPerformed, setVipTestPerformed] = useState(true);
   const [dosimeterInBatch, setDosimeterInBatch] = useState();
+  const [dueDateRequired, setDueDateRequired] = useState(true);
   // const [back, setBack] = useState(true);
   // const [forward, setForward] = useState(false);
 
@@ -105,6 +106,7 @@ const DosimeterDataForm = (props) => {
         certificateNumber,
         dateReceived,
         dueDate,
+        dueDateRequired,
         elDateIn,
         elDateOut,
         elPass,
@@ -142,6 +144,7 @@ const DosimeterDataForm = (props) => {
         certificateNumber,
         dateReceived,
         dueDate,
+        dueDateRequired,
         elDateIn,
         elDateOut,
         elPass,
@@ -184,6 +187,7 @@ const DosimeterDataForm = (props) => {
     certificateNumber,
     dateReceived,
     dueDate,
+    dueDateRequired,
     elDateIn,
     elDateOut,
     elPass,
@@ -225,6 +229,7 @@ const DosimeterDataForm = (props) => {
     setDateReceived(new Date(dateReceived));
     setDosimeterId(dosimeterId);
     setDueDate(dueDate !== null ? new Date(dueDate) : "");
+    setDueDateRequired(dueDateRequired);
     setElDateIn(elDateIn !== null ? new Date(elDateIn) : "");
     setElDateOut(elDateOut !== null ? new Date(elDateOut) : "");
     setElPass(elPass);
@@ -329,6 +334,7 @@ const DosimeterDataForm = (props) => {
         final_date: finalDate,
         // "shipBackDate": shipBackDate,
         due_date: dueDate,
+        due_date_required: dueDateRequired,
         el_pass: elPass,
         vip_pass: vipPass,
         vac_pass: vacPass,
@@ -440,7 +446,7 @@ const DosimeterDataForm = (props) => {
               query={BATCH_QUANTITY}
               variables={{ batch_id: batch }}
               fetchPolicy="no-cache"
-              pollInterval="3000"
+              //pollInterval="3000"
             >
               {({ loading, error, data }) => {
                 if (loading) return "loading";
@@ -717,13 +723,25 @@ const DosimeterDataForm = (props) => {
             error={finalPass && certificateNumber === ""}
             onChange={(e) => setCertificateNumber(e.target.value)}
           />
-          <Form.Input label="Due Date" error={finalPass && dueDate === ""}>
-            <DatePicker
-              showYearDropdown
-              selected={dueDate}
-              onChange={(date) => setDueDate(date)}
+          <div>
+            <Form.Input
+              label="Due Date"
+              error={finalPass && dueDate === "" && dueDateRequired}
+              disabled={!dueDateRequired}
+            >
+              <DatePicker
+                showYearDropdown
+                selected={dueDate}
+                onChange={(date) => setDueDate(date)}
+              />
+            </Form.Input>
+            <Form.Checkbox
+              style={{ paddingTop: "5px" }}
+              label="Due Date Required"
+              onChange={() => setDueDateRequired(!dueDateRequired)}
+              checked={dueDateRequired}
             />
-          </Form.Input>
+          </div>
         </Form.Group>
       </Form>
       <Button

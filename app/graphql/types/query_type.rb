@@ -96,6 +96,7 @@ module Types
                  final_date,
                  ship_back_date,
                  due_date,
+                 due_date_required,
                  el_pass,
                  vip_pass,
                  vac_pass, 

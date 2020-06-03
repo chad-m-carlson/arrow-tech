@@ -241,6 +241,7 @@ export const CALIBRATION = gql`
       accDate
       finalDate
       dueDate
+      dueDateRequired
       elPass
       vipPass
       vacRequired
