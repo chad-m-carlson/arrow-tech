@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import CertificateOfCalibration from "./CertificateOfCalibration";
 import FailureReport from "./FailureReport";
 import CalibrationSummary from "./CalibrationSummary";
-import { Form, Button, Grid } from "semantic-ui-react";
+import { Dimmer, Loader, Form, Button, Grid } from "semantic-ui-react";
 import { Link } from "react-router-dom";
 import { CREATE_CALIBRATOR_RECORD } from "../graphql/mutations";
 import { useMutation } from "@apollo/react-hooks";
@@ -25,6 +25,7 @@ const CalibrationReports = (props) => {
   const [cocCounter, setCocCounter] = useState(0);
   const [allCalibrationData, setAllCalibrationData] = useState([]);
   const [currentCalibrationData, setCurrentCalibrationData] = useState([]);
+  const [savingCalibratorData, setSavingCalibratorData] = useState(false);
 
   const {
     calData,
@@ -68,6 +69,7 @@ const CalibrationReports = (props) => {
         ),
         ...x,
       ]);
+      setSavingCalibratorData(!savingCalibratorData);
       toastMessage("Calibration equipment saved", "success");
     },
     onError(error) {
@@ -141,6 +143,7 @@ const CalibrationReports = (props) => {
         dosimeter_model: passingDosimeterModels[cocCounter],
       },
     });
+    setSavingCalibratorData(!savingCalibratorData);
   };
 
   const handleCocNavigation = (direction) => {
@@ -194,6 +197,9 @@ const CalibrationReports = (props) => {
 
   return (
     <Grid columns={2}>
+      <Dimmer active={savingCalibratorData}>
+        <Loader size="massive">Saving...</Loader>
+      </Dimmer>
       <Grid.Column style={{ width: "60%" }} id="pdf-container">
         {viewCalibrationReport && (
           <CertificateOfCalibration
