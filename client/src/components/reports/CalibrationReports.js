@@ -87,32 +87,40 @@ const CalibrationReports = (props) => {
 
   const calibratorSet = () => {
     // ?calData filtered by dosimeter model
-    let x = calData.filter(
-      (c) => c.dosimeter.modelNumber === passingDosimeterModels[cocCounter]
-    );
-    if (x[0].calibrator === null) {
-      setAddCalibrator(true);
-      setCalibrator({
-        id: null,
-        model: "",
-        serialNumber: "",
-        tfn: "19189",
-        exposureRate: "",
-        date: "8/28/2019",
-      });
+    if (passingDosimeterModels.length > 0) {
+      let x = calData.filter(
+        (c) => c.dosimeter.modelNumber === passingDosimeterModels[cocCounter]
+      );
+      if (x[0].calibrator === null) {
+        setAddCalibrator(true);
+        setCalibrator({
+          id: null,
+          model: "",
+          serialNumber: "",
+          tfn: "19189",
+          exposureRate: "",
+          date: "8/28/2019",
+        });
+      } else {
+        const {
+          id,
+          model,
+          serialNumber,
+          tfn,
+          exposureRate,
+          date,
+        } = x[0].calibrator;
+        setCalibrator({ id, model, serialNumber, tfn, exposureRate, date });
+        setAddCalibrator(false);
+      }
+      setCurrentCalibrationData(x);
     } else {
-      const {
-        id,
-        model,
-        serialNumber,
-        tfn,
-        exposureRate,
-        date,
-      } = x[0].calibrator;
-      setCalibrator({ id, model, serialNumber, tfn, exposureRate, date });
       setAddCalibrator(false);
+      setCalibrator({
+        ...calibrator,
+        id: 1,
+      });
     }
-    setCurrentCalibrationData(x);
   };
 
   const setCalibratorModel = (e, { value }) => {
