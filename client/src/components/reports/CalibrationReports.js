@@ -313,7 +313,6 @@ const CalibrationReports = (props) => {
             state: {
               batch: calData[0].batch,
               calData: allCalibrationData,
-              noLoad: true,
             },
           }}
         >

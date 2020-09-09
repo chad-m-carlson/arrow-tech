@@ -18,16 +18,15 @@ const BatchReport = (props) => {
   const [delete_calibration_record] = useMutation(DELETE_CALIBRATION_RECORD);
 
   useEffect(() => {
-    if (props.location.state)
-      if (props.location.state.calData) {
-        setNoLoad(props.location.state.calData.length > 0 ? true : false);
-        setCalData(props.location.state.calData);
-        setBatch(props.location.state.calData[0].batch);
-        setIsLoading(false);
-      } else {
-        setBatch(props.location.state.batch);
-        window.scrollTo(0, 0);
-      }
+    setNoLoad(props.location.state.calData ? true : false);
+    if (props.location.state.calData) {
+      setCalData(props.location.state.calData);
+      setBatch(props.location.state.calData[0].batch);
+      setIsLoading(false);
+    } else {
+      setBatch(props.location.state.batch);
+      window.scrollTo(0, 0);
+    }
     setIsLoading(false);
   }, [props.location.state]);
 

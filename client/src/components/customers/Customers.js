@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Form, Card, Divider } from "semantic-ui-react";
 import {
   GET_ALL_CUSTOMERS_QUERY,
-  BATCHES_BY_CUSTOMER
+  BATCHES_BY_CUSTOMER,
 } from "../graphql/queries";
 import { Query } from "react-apollo";
 import { useQuery, useMutation } from "@apollo/react-hooks";
@@ -21,18 +21,18 @@ const Customers = () => {
     state: "",
     zip: "",
     country: "",
-    email: ""
+    email: "",
   };
   const [customerList, setCustomerList] = useState([blankCustomer]);
   const [customerSelection, setCustomerSelection] = useState([
-    { key: "", text: "", value: "" }
+    { key: "", text: "", value: "" },
   ]);
   const [dataLoading, setDataLoading] = useState(false);
   const [selectedCustomer, setSelectedCustomer] = useState("");
 
   const { data, loading, error } = useQuery(GET_ALL_CUSTOMERS_QUERY, {
     variables: { batch: null },
-    fetchPolicy: "network-only"
+    fetchPolicy: "network-only",
   });
 
   useEffect(() => {
@@ -42,14 +42,18 @@ const Customers = () => {
       setCustomerList([...customerList, ...data.customers]);
       setCustomerSelection([
         ...customerSelection,
-        ...data.customers.map(c => ({ key: c.id, text: c.name, value: c.id }))
+        ...data.customers.map((c) => ({
+          key: c.id,
+          text: c.name,
+          value: c.id,
+        })),
       ]);
       setDataLoading(false);
     }
   }, [data, loading]);
 
   const handleCustomerSelection = (e, { value }) => {
-    setSelectedCustomer(...customerList.filter(c => c.id === value));
+    setSelectedCustomer(...customerList.filter((c) => c.id === value));
   };
 
   return (
@@ -87,7 +91,7 @@ const Customers = () => {
                 if (data)
                   return (
                     <div>
-                      {data.batchByCustomer.map(b => (
+                      {data.batchByCustomer.map((b) => (
                         <ul>
                           <li>
                             Batch #{b.batch}{" "}
@@ -98,7 +102,7 @@ const Customers = () => {
                           <Link
                             to={{
                               pathname: "/batchreport",
-                              state: { batch: b.batch }
+                              state: { batch: b.batch },
                             }}
                             style={{ fontSize: "10px", paddingTop: "0px" }}
                           >
@@ -110,8 +114,8 @@ const Customers = () => {
                               pathname: "/calform",
                               state: {
                                 batch: b.batch,
-                                customerId: b.dosimeter.customerId
-                              }
+                                customerId: b.dosimeter.customerId,
+                              },
                             }}
                             style={{ fontSize: "10px", paddingTop: "0px" }}
                           >
