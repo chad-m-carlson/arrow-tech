@@ -308,7 +308,14 @@ const CalibrationReports = (props) => {
         <Button
           style={{ marginBottom: "10px" }}
           as={Link}
-          to={{ pathname: "/batchreport", state: { batch: calData[0].batch } }}
+          to={{
+            pathname: "/batchreport",
+            state: {
+              batch: calData[0].batch,
+              calData: allCalibrationData,
+              noLoad: true,
+            },
+          }}
         >
           Back to Batch #{calData[0].batch} Report
         </Button>

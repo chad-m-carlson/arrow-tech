@@ -82,7 +82,8 @@ const BatchReportTable = ({ calData, handleDelete }) => {
                     state: {
                       batch: c.batch,
                       calibrationId: c.id,
-                      customerId: c.dosimeter.customer.id
+                      customerId: c.dosimeter.customer.id,
+                      calData: calData
                     }
                   }}
                 >

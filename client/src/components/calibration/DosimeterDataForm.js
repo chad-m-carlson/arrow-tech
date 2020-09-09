@@ -765,7 +765,10 @@ const DosimeterDataForm = (props) => {
       {batch && (
         <Button
           as={Link}
-          to={{ pathname: "/batchreport", state: { batch: batch } }}
+          to={{
+            pathname: "/batchreport",
+            state: { batch: batch, calData: props.calData }
+          }}
         >
           View Batch Report
         </Button>

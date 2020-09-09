@@ -57,6 +57,7 @@ const CalibrationForm = props => {
             }
             calibration={data}
             backToBatch={props.history.push}
+            calData={props.location.state ? props.location.state.calData : null}
           />
         </Grid.Column>
       </Grid.Row>
