@@ -12,17 +12,23 @@ const BatchReport = (props) => {
   const [batch, setBatch] = useState("");
   const [calData, setCalData] = useState([]);
   const [dataDeleted, setDataDeleted] = useState(false);
+  const [noLoad, setNoLoad] = useState(true);
+  const [isLoading, setIsLoading] = useState(true);
 
   const [delete_calibration_record] = useMutation(DELETE_CALIBRATION_RECORD);
 
   useEffect(() => {
     if (props.location.state)
-      if (props.location.state.calData)
+      if (props.location.state.calData) {
+        setNoLoad(props.location.state.calData.length > 0 ? true : false);
         setCalData(props.location.state.calData);
-      else {
+        setBatch(props.location.state.calData[0].batch);
+        setIsLoading(false);
+      } else {
         setBatch(props.location.state.batch);
         window.scrollTo(0, 0);
       }
+    setIsLoading(false);
   }, [props.location.state]);
 
   const handleDelete = (id) => {
@@ -33,9 +39,8 @@ const BatchReport = (props) => {
   };
 
   const passingDosimeterModels = (data) => {
-    let passingDosimeters = data.calibrationsByBatch.filter(
-      (c) => c.finalPass == true
-    );
+    if (data.length == 0) return [];
+    let passingDosimeters = data.filter((c) => c.finalPass == true);
     let modelsPassed = new Set(
       passingDosimeters.map((pd) => pd.dosimeter.modelNumber)
     );
@@ -48,15 +53,26 @@ const BatchReport = (props) => {
         <Form.Group>
           <Form.Input
             placeholder="Enter a batch number"
+            disabled={isLoading}
             type="number"
             autoFocus
             value={batch}
-            onChange={(e) => setBatch(e.target.value)}
+            onChange={(e) => {
+              setNoLoad(false);
+              setBatch(e.target.value);
+            }}
           />
           {/* <Button>Set Batch </Button> */}
         </Form.Group>
       </Form>
-      {batch || calData.length < 1 ? (
+      {isLoading && noLoad ? (
+        <Segment style={{ height: "300px" }}>
+          <Dimmer active inverted>
+            <Loader size="massive">Preparing Batch Report</Loader>
+          </Dimmer>
+        </Segment>
+      ) : null}
+      {!noLoad && batch ? (
         <Query
           query={CALIBRATIONS_BY_BATCH}
           variables={{ batch: parseInt(batch) }}
@@ -65,19 +81,10 @@ const BatchReport = (props) => {
           {({ loading, error, data }) => {
             if (loading)
               return (
-                <Segment>
+                <Segment style={{ height: "300px" }}>
                   <Dimmer active inverted>
                     <Loader size="massive">Preparing Batch Report</Loader>
                   </Dimmer>
-                  <Image src="https://react.semantic-ui.com/images/wireframe/short-paragraph.png" />
-                  <Image src="https://react.semantic-ui.com/images/wireframe/short-paragraph.png" />
-                  <Image src="https://react.semantic-ui.com/images/wireframe/short-paragraph.png" />
-                  <Image src="https://react.semantic-ui.com/images/wireframe/short-paragraph.png" />
-                  <Image src="https://react.semantic-ui.com/images/wireframe/short-paragraph.png" />
-                  <Image src="https://react.semantic-ui.com/images/wireframe/short-paragraph.png" />
-                  <Image src="https://react.semantic-ui.com/images/wireframe/short-paragraph.png" />
-                  <Image src="https://react.semantic-ui.com/images/wireframe/short-paragraph.png" />
-                  <Image src="https://react.semantic-ui.com/images/wireframe/short-paragraph.png" />
                 </Segment>
               );
             if (error)
@@ -99,7 +106,8 @@ const BatchReport = (props) => {
                     style={{ display: "flex", justifyContent: "space-between" }}
                   >
                     <h1>
-                      Batch Report #{calData[0].batch} for{" "}
+                      Batch Report #
+                      {calData.length > 0 ? calData[0].batch : null} for{" "}
                       {data.calibrationsByBatch[0].dosimeter.customer.name}
                     </h1>
                     <div>
@@ -123,7 +131,9 @@ const BatchReport = (props) => {
                               ),
                             ],
                             passingDosimeterModels: [
-                              ...passingDosimeterModels(data),
+                              ...passingDosimeterModels(
+                                data.calibrationsByBatch
+                              ),
                             ],
                           },
                         }}
@@ -149,38 +159,56 @@ const BatchReport = (props) => {
         </Query>
       ) : (
         <>
-          <div style={{ display: "flex", justifyContent: "space-between" }}>
-            <h1>
-              Batch Report #{batch} for {calData[0].dosimeter.customer.name}
-            </h1>
-            <div>
-              <h4>Total Fail: {calData.filter(c => !c.finalPass).length}</h4>
-              <h4 style={{ marginTop: "-10px" }}>
-                Total Pass: {calData.filter(c => c.finalPass).length}
-              </h4>
-              <Button
-                as={Link}
-                to={{
-                  pathname: "/calreports",
-                  state: {
-                    calData: calData,
-                    uniqueDosimeterModels: [
-                      ...new Set(calData.map(c => c.dosimeter.modelNumber))
-                    ]
-                  }
-                }}
+          {calData.length > 0 && noLoad && (
+            <>
+              <div style={{ display: "flex", justifyContent: "space-between" }}>
+                <h1>
+                  Batch Report #{batch} for{" "}
+                  {calData.length > 0
+                    ? calData[0].dosimeter.customer.name
+                    : null}
+                </h1>
+                <div>
+                  <h4>
+                    Total Fail: {calData.filter((c) => !c.finalPass).length}
+                  </h4>
+                  <h4 style={{ marginTop: "-10px" }}>
+                    Total Pass: {calData.filter((c) => c.finalPass).length}
+                  </h4>
+                  <Button
+                    as={Link}
+                    to={{
+                      pathname: "/calreports",
+                      state: {
+                        calData: calData,
+                        uniqueDosimeterModels: [
+                          ...new Set(
+                            calData.map((c) => c.dosimeter.modelNumber)
+                          ),
+                        ],
+                        passingDosimeterModels: [
+                          ...passingDosimeterModels(calData),
+                        ],
+                      },
+                    }}
+                  >
+                    View Reports
+                  </Button>
+                </div>
+              </div>
+              <br />
+
+              <div
+                id="batch_table_container"
+                style={{ height: "65vh", overflow: "scroll" }}
               >
-                View Reports
-              </Button>
-            </div>
-          </div>
-          <br />
-          <div
-            id="batch_table_container"
-            style={{ height: "65vh", overflow: "scroll" }}
-          >
-            <BatchReportTable calData={calData} handleDelete={handleDelete} />
-          </div>
+                <BatchReportTable
+                  calData={calData}
+                  handleDelete={handleDelete}
+                />
+              </div>
+            </>
+          )}
         </>
       )}
     </>
