@@ -36,6 +36,7 @@ export const CREATE_CALIBRATION_RECORD = gql`
     $vip_test_performed: Boolean!
     $vac_test_performed: Boolean!
     $acc_test_performed: Boolean!
+    $due_date_required: Boolean!
   ) {
     createCalibrationRecord(
       input: {
@@ -73,6 +74,7 @@ export const CREATE_CALIBRATION_RECORD = gql`
         vipTestPerformed: $vip_test_performed
         vacTestPerformed: $vac_test_performed
         accTestPerformed: $acc_test_performed
+        dueDateRequired: $due_date_required
       }
     ) {
       calibration {
@@ -106,8 +108,10 @@ export const CREATE_CALIBRATION_RECORD = gql`
         vipTestPerformed
         vacTestPerformed
         accTestPerformed
+        dueDateRequired
       }
       messages
+      dosimetersInBatch
     }
   }
 `;
@@ -162,6 +166,18 @@ export const CREATE_CUSTOMER = gql`
       customer {
         id
       }
+    }
+  }
+`;
+
+export const UPDATE_BATCH_CUSTOMER = gql`
+  mutation UpdateBatchCustomer($id: ID!, $batch: Int!) {
+    updateBatchCustomer(input: { id: $id, batch: $batch }) {
+      calibration {
+        id
+      }
+      errors
+      messages
     }
   }
 `;

@@ -6,15 +6,18 @@ import "react-datepicker/dist/react-datepicker.css";
 import { GET_UNIQUE_DOSIMETER_MODELS } from "../graphql/queries";
 import { CREATE_CALIBRATION_RECORD } from "../graphql/mutations";
 import { useQuery, useMutation } from "@apollo/react-hooks";
+import { Query } from "react-apollo";
+import { BATCH_QUANTITY } from "../graphql/queries";
 import { Link } from "react-router-dom";
 import {
   determineCalculatedDosimeterRange,
-  convertValueReadToMr
+  convertValueReadToMr,
+  subtractDates,
 } from "../HelperFunctions";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
-const DosimeterDataForm = props => {
+const DosimeterDataForm = (props) => {
   const [batch, setBatch] = useState("");
   const [techFirstName, setTechFirstName] = useState("");
   const [techLastName, setTechLastName] = useState("");
@@ -55,12 +58,15 @@ const DosimeterDataForm = props => {
   const [accTestPerformed, setAccTestPerformed] = useState(true);
   const [vacTestPerformed, setVacTestPerformed] = useState(true);
   const [vipTestPerformed, setVipTestPerformed] = useState(true);
+  const [dosimeterInBatch, setDosimeterInBatch] = useState();
+  const [dueDateRequired, setDueDateRequired] = useState(true);
+  const [dueDateError, setDueDateError] = useState(true);
   // const [back, setBack] = useState(true);
   // const [forward, setForward] = useState(false);
 
   const { user } = useContext(AuthContext);
   const { data } = useQuery(GET_UNIQUE_DOSIMETER_MODELS, {
-    fetchPolicy: "no-cache"
+    fetchPolicy: "no-cache",
   });
   const [create_calibration_record] = useMutation(CREATE_CALIBRATION_RECORD, {
     onCompleted(data) {
@@ -79,17 +85,17 @@ const DosimeterDataForm = props => {
       error.graphQLErrors &&
         toastMessage(error.graphQLErrors[0].message, "error");
       document.getElementById("1").focus();
-    }
+    },
   });
 
   useEffect(() => {
     // fills drop down menu with dosimeter model data
     if (data) {
       setCustomerDosimeterModels(
-        data.dosimeterTemplates.map(o => ({
+        data.dosimeterTemplates.map((o) => ({
           key: o.id,
           text: o.modelNumber,
-          value: o.modelNumber
+          value: o.modelNumber,
         }))
       );
     }
@@ -101,6 +107,7 @@ const DosimeterDataForm = props => {
         certificateNumber,
         dateReceived,
         dueDate,
+        dueDateRequired,
         elDateIn,
         elDateOut,
         elPass,
@@ -119,7 +126,7 @@ const DosimeterDataForm = props => {
         elTestPerformed,
         vacTestPerformed,
         vipTestPerformed,
-        accTestPerformed
+        accTestPerformed,
       } = props.calibration.calibration;
       const {
         modelNumber,
@@ -128,7 +135,7 @@ const DosimeterDataForm = props => {
         isR,
         isMr,
         isSv,
-        isMsv
+        isMsv,
       } = props.calibration.calibration.dosimeter;
 
       setCurrentRecordToState(
@@ -138,6 +145,7 @@ const DosimeterDataForm = props => {
         certificateNumber,
         dateReceived,
         dueDate,
+        dueDateRequired,
         elDateIn,
         elDateOut,
         elPass,
@@ -173,6 +181,13 @@ const DosimeterDataForm = props => {
     handleFinalPass();
   }, [elPass, accPass, vacPass, vipPass]);
 
+  useEffect(() => {
+    if (dueDateRequired) {
+      if (finalPass && dueDate == ("" || null)) setDueDateError(true);
+      else if (finalPass && dueDate != "") setDueDateError(false);
+    } else setDueDateError(false);
+  }, [dueDateRequired, finalPass, dueDate]);
+
   const setCurrentRecordToState = (
     accDate,
     accPass,
@@ -180,6 +195,7 @@ const DosimeterDataForm = props => {
     certificateNumber,
     dateReceived,
     dueDate,
+    dueDateRequired,
     elDateIn,
     elDateOut,
     elPass,
@@ -221,6 +237,7 @@ const DosimeterDataForm = props => {
     setDateReceived(new Date(dateReceived));
     setDosimeterId(dosimeterId);
     setDueDate(dueDate !== null ? new Date(dueDate) : "");
+    setDueDateRequired(dueDateRequired);
     setElDateIn(elDateIn !== null ? new Date(elDateIn) : "");
     setElDateOut(elDateOut !== null ? new Date(elDateOut) : "");
     setElPass(elPass);
@@ -245,23 +262,25 @@ const DosimeterDataForm = props => {
   const handleDosimeterModelSelection = (e, { value }) => {
     setDosimeterModelSelected(value);
     setDosimeterRange(
-      data.dosimeterTemplates.filter(d => d.modelNumber === value)[0].range
+      data.dosimeterTemplates.filter((d) => d.modelNumber === value)[0].range
     );
-    setIsR(data.dosimeterTemplates.filter(d => d.modelNumber === value)[0].isR);
+    setIsR(
+      data.dosimeterTemplates.filter((d) => d.modelNumber === value)[0].isR
+    );
     setIsMr(
-      data.dosimeterTemplates.filter(d => d.modelNumber === value)[0].isMr
+      data.dosimeterTemplates.filter((d) => d.modelNumber === value)[0].isMr
     );
     setIsMsv(
-      data.dosimeterTemplates.filter(d => d.modelNumber === value)[0].isMsv
+      data.dosimeterTemplates.filter((d) => d.modelNumber === value)[0].isMsv
     );
     setIsSv(
-      data.dosimeterTemplates.filter(d => d.modelNumber === value)[0].isSv
+      data.dosimeterTemplates.filter((d) => d.modelNumber === value)[0].isSv
     );
     handleAccReading(accRead);
     handleElReading(elRead);
   };
 
-  const handleAccReading = valueRead => {
+  const handleAccReading = (valueRead) => {
     const midRange = dosimeterRange / 2;
     setAccRead(valueRead);
     let lowestAcceptable =
@@ -288,10 +307,10 @@ const DosimeterDataForm = props => {
     } else setAccPass(false);
   };
 
-  const handleElReading = valueRead => {
+  const handleElReading = (valueRead) => {
     setElRead(valueRead);
     if (elDateIn && elDateOut) {
-      const testDuration = elDateOut.getDate() - elDateIn.getDate();
+      const testDuration = subtractDates(elDateOut, elDateIn);
       const perDayLeakageAllowed = 0.025 * dosimeterRange;
       if (
         testDuration * perDayLeakageAllowed >=
@@ -304,7 +323,7 @@ const DosimeterDataForm = props => {
     // 2.5% of full scale reading per day is the maximum allowed. 200mR dosimeter passes a two day el leakage test if it reads less than 10mR
   };
 
-  const handleDosimeterCalibrationSubmission = e => {
+  const handleDosimeterCalibrationSubmission = (e) => {
     e.preventDefault();
     create_calibration_record({
       variables: {
@@ -323,6 +342,7 @@ const DosimeterDataForm = props => {
         final_date: finalDate,
         // "shipBackDate": shipBackDate,
         due_date: dueDate,
+        due_date_required: dueDateRequired,
         el_pass: elPass,
         vip_pass: vipPass,
         vac_pass: vacPass,
@@ -342,8 +362,8 @@ const DosimeterDataForm = props => {
         el_test_performed: elTestPerformed,
         vac_test_performed: vacTestPerformed,
         vip_test_performed: vipTestPerformed,
-        acc_test_performed: accTestPerformed
-      }
+        acc_test_performed: accTestPerformed,
+      },
     });
   };
 
@@ -375,7 +395,24 @@ const DosimeterDataForm = props => {
     }
   };
 
-  const customKeyBindings = e => {
+  const handleVacTestPerformed = () => {
+    if (vacTestPerformed === false) setVacPass(true);
+    setVacTestPerformed(!vacTestPerformed);
+  };
+  const handleAccTestPerformed = () => {
+    if (accTestPerformed === false) setAccPass(true);
+    setAccTestPerformed(!accTestPerformed);
+  };
+  const handleVipTestPerformed = () => {
+    if (vipTestPerformed === false) setVipPass(true);
+    setVipTestPerformed(!vipTestPerformed);
+  };
+  const handleElTestPerformed = () => {
+    if (elTestPerformed === false) setElPass(true);
+    setElTestPerformed(!elTestPerformed);
+  };
+
+  const customKeyBindings = (e) => {
     let currentField = parseInt(e.currentTarget.attributes.id.nodeValue);
     if (e.keyCode === 13 && currentField === 4) {
       handleDosimeterCalibrationSubmission(e);
@@ -392,7 +429,7 @@ const DosimeterDataForm = props => {
   const toastMessage = (message, type) => {
     toast(message, {
       type: type,
-      autoClose: type == "info" ? 1500 : 8000
+      autoClose: type == "info" ? 1500 : 8000,
     });
   };
 
@@ -404,23 +441,47 @@ const DosimeterDataForm = props => {
           fluid
           style={{ display: "flex", justifyContent: "space-between" }}
         >
-          <Form.Input
-            label="Batch"
-            value={batch}
-            error={batch === "" || batch === null}
-            onChange={e => setBatch(e.target.value)}
-          />
+          <div>
+            <Form.Input
+              label="Batch"
+              value={batch}
+              type="number"
+              error={batch === "" || batch === null}
+              onChange={(e) => setBatch(e.target.value)}
+            />
+            <br />
+            <Query
+              query={BATCH_QUANTITY}
+              variables={{ batch_id: batch }}
+              fetchPolicy="no-cache"
+              pollInterval="3000"
+            >
+              {({ loading, error, data }) => {
+                if (loading) return "loading";
+                if (error) return "error";
+                if (data) {
+                  setDosimeterInBatch(data.batchQuantity);
+                  return (
+                    <p>
+                      Dosimeters in batch:<b> {dosimeterInBatch}</b>
+                    </p>
+                  );
+                }
+              }}
+            </Query>
+          </div>
+
           <Form.Input
             label="Tech First Name"
             value={techFirstName}
             error={techFirstName === ""}
-            onChange={e => setTechFirstName(e.target.value)}
+            onChange={(e) => setTechFirstName(e.target.value)}
           />
           <Form.Input
             label="Tech Last Name"
             value={techLastName}
             error={techLastName === ""}
-            onChange={e => setTechLastName(e.target.value)}
+            onChange={(e) => setTechLastName(e.target.value)}
           />
         </Form.Group>
       </Form>
@@ -435,7 +496,7 @@ const DosimeterDataForm = props => {
           <Form.Input label="Date Received" error={dateReceived === ""}>
             <DatePicker
               selected={dateReceived}
-              onChange={date => setDateReceived(date)}
+              onChange={(date) => setDateReceived(date)}
             />
           </Form.Input>
           <Form.Select
@@ -457,8 +518,8 @@ const DosimeterDataForm = props => {
                 : ""
             }
             error={dosimeterSerialNumber === ""}
-            onKeyDown={e => customKeyBindings(e)}
-            onChange={e => setDosimeterSerialNumber(e.target.value)}
+            onKeyDown={(e) => customKeyBindings(e)}
+            onChange={(e) => setDosimeterSerialNumber(e.target.value)}
           />
         </Form.Group>
         {dosimeterRange > 1 && (
@@ -479,7 +540,7 @@ const DosimeterDataForm = props => {
           checked={elTestPerformed}
           toggle
           style={{ zIndex: "0" }}
-          onChange={() => setElTestPerformed(!elTestPerformed)}
+          onChange={handleElTestPerformed}
         />
         <Form.Group
           fluid
@@ -492,7 +553,7 @@ const DosimeterDataForm = props => {
           >
             <DatePicker
               selected={elDateIn}
-              onChange={date => setElDateIn(date)}
+              onChange={(date) => setElDateIn(date)}
             />
           </Form.Input>
           <Form.Input
@@ -502,7 +563,7 @@ const DosimeterDataForm = props => {
           >
             <DatePicker
               selected={elDateOut}
-              onChange={date => setElDateOut(date)}
+              onChange={(date) => setElDateOut(date)}
             />
           </Form.Input>
           <Form.Input
@@ -514,8 +575,8 @@ const DosimeterDataForm = props => {
             disabled={
               !elTestPerformed || (elDateIn && elDateOut) ? false : true
             }
-            onKeyDown={e => customKeyBindings(e)}
-            onChange={e => {
+            onKeyDown={(e) => customKeyBindings(e)}
+            onChange={(e) => {
               handleElReading(e.target.value);
             }}
           />
@@ -537,7 +598,7 @@ const DosimeterDataForm = props => {
           style={{ zIndex: "0" }}
           label="ACC test performed"
           checked={accTestPerformed}
-          onChange={() => setAccTestPerformed(!accTestPerformed)}
+          onChange={handleAccTestPerformed}
         />
         <Form.Group
           style={{ display: "flex", justifyContent: "space-between" }}
@@ -555,7 +616,7 @@ const DosimeterDataForm = props => {
               label="Custom Tolerance %"
               placeholder="Percentage"
               value={tolerance}
-              onChange={e => setTolerance(e.target.value)}
+              onChange={(e) => setTolerance(e.target.value)}
             />
           )}
         </Form.Group>
@@ -567,7 +628,7 @@ const DosimeterDataForm = props => {
           >
             <DatePicker
               selected={accDate}
-              onChange={date => setAccDate(date)}
+              onChange={(date) => setAccDate(date)}
             />
           </Form.Input>
           <Form.Input
@@ -575,8 +636,8 @@ const DosimeterDataForm = props => {
             id="3"
             tabIndex="3"
             value={accRead}
-            onKeyDown={e => customKeyBindings(e)}
-            onChange={e => handleAccReading(e.target.value)}
+            onKeyDown={(e) => customKeyBindings(e)}
+            onChange={(e) => handleAccReading(e.target.value)}
           />
         </Form.Group>
         <div style={{ textAlign: "center" }}>
@@ -593,7 +654,7 @@ const DosimeterDataForm = props => {
           toggle
           style={{ zIndex: "0" }}
           checked={vacTestPerformed}
-          onChange={() => setVacTestPerformed(!vacTestPerformed)}
+          onChange={handleVacTestPerformed}
         />
         <div
           style={
@@ -601,10 +662,10 @@ const DosimeterDataForm = props => {
               ? {
                   textAlign: "center",
                   display: "flex",
-                  justifyContent: "space-evenly"
+                  justifyContent: "space-evenly",
                 }
               : {
-                  display: "none"
+                  display: "none",
                 }
           }
         >
@@ -627,7 +688,7 @@ const DosimeterDataForm = props => {
           style={{ zIndex: "0" }}
           checked={vipTestPerformed}
           label="VIP test performed"
-          onChange={() => setVipTestPerformed(!vipTestPerformed)}
+          onChange={handleVipTestPerformed}
         />
         <Form.Group
           style={
@@ -643,7 +704,7 @@ const DosimeterDataForm = props => {
           </div>
           <Form.Input
             label="VIP Problems"
-            onChange={e => setVipProblems(e.target.value)}
+            onChange={(e) => setVipProblems(e.target.value)}
           />
         </Form.Group>
         <Divider style={{ margin: "1.5rem" }} />
@@ -661,29 +722,41 @@ const DosimeterDataForm = props => {
           <Form.Input label="Final Date" error={finalDate === ""}>
             <DatePicker
               selected={finalDate}
-              onChange={date => setFinalDate(date)}
+              onChange={(date) => setFinalDate(date)}
             />
           </Form.Input>
           <Form.Input
             label="Certificate Number"
             value={certificateNumber}
             error={finalPass && certificateNumber === ""}
-            onChange={e => setCertificateNumber(e.target.value)}
+            onChange={(e) => setCertificateNumber(e.target.value)}
           />
-          <Form.Input label="Due Date" error={finalPass && dueDate === ""}>
-            <DatePicker
-              showYearDropdown
-              selected={dueDate}
-              onChange={date => setDueDate(date)}
+          <div>
+            <Form.Input
+              label="Due Date"
+              error={dueDateError}
+              disabled={!dueDateRequired}
+            >
+              <DatePicker
+                showYearDropdown
+                selected={dueDate}
+                onChange={(date) => setDueDate(date)}
+              />
+            </Form.Input>
+            <Form.Checkbox
+              style={{ paddingTop: "5px" }}
+              label="Due Date Required"
+              onChange={() => setDueDateRequired(!dueDateRequired)}
+              checked={dueDateRequired}
             />
-          </Form.Input>
+          </div>
         </Form.Group>
       </Form>
       <Button
         id="4"
         tabIndex="4"
-        onKeyDown={e => customKeyBindings(e)}
-        onClick={e => handleDosimeterCalibrationSubmission(e)}
+        onKeyDown={(e) => customKeyBindings(e)}
+        onClick={(e) => handleDosimeterCalibrationSubmission(e)}
       >
         {!editing
           ? "Submit Dosimeter Calibration"

@@ -1,5 +1,8 @@
 import React from "react";
-import { determineCalculatedDosimeterRange } from "../HelperFunctions";
+import {
+  determineCalculatedDosimeterRange,
+  renderPassFail
+} from "../HelperFunctions";
 import CertificateHeader from "./CertificateHeader";
 import CertificateFooter from "./CertificateFooter";
 import {
@@ -9,12 +12,6 @@ import {
   Page
 } from "../../Styles/CalibrationCertificateStyles";
 import { printUnit, printDate } from "../HelperFunctions";
-
-const renderPassFail = (tested, value) => {
-  if (tested && value) return "Pass";
-  else if (tested && !value) return "FAIL";
-  else return <i>Not Tested</i>;
-};
 
 const FailureReport = ({ calData, calibratorData, dateTested, customer }) => {
   return (

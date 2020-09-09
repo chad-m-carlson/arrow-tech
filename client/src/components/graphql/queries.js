@@ -220,6 +220,12 @@ export const CALIBRATIONS_BY_BATCH = gql`
   }
 `;
 
+export const BATCH_QUANTITY = gql`
+  query($batch_id: ID!) {
+    batchQuantity(batchId: $batch_id)
+  }
+`;
+
 export const CALIBRATION = gql`
   query Calibration($id: ID!) {
     calibration(id: $id) {
@@ -235,6 +241,7 @@ export const CALIBRATION = gql`
       accDate
       finalDate
       dueDate
+      dueDateRequired
       elPass
       vipPass
       vacRequired

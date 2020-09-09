@@ -43,6 +43,7 @@ const CalibrationForm = props => {
             customerId={
               props.location.state ? props.location.state.customerId : null
             }
+            calibration={data}
           />
         </Grid.Column>
         <Grid.Column style={{ width: "60%", borderLeft: "1px solid gray" }}>

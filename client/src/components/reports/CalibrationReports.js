@@ -2,21 +2,21 @@ import React, { useState, useEffect } from "react";
 import CertificateOfCalibration from "./CertificateOfCalibration";
 import FailureReport from "./FailureReport";
 import CalibrationSummary from "./CalibrationSummary";
-import { Form, Button, Grid } from "semantic-ui-react";
+import { Dimmer, Loader, Form, Button, Grid } from "semantic-ui-react";
 import { Link } from "react-router-dom";
 import { CREATE_CALIBRATOR_RECORD } from "../graphql/mutations";
 import { useMutation } from "@apollo/react-hooks";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
-const CalibrationReports = props => {
+const CalibrationReports = (props) => {
   const [calibrator, setCalibrator] = useState({
     id: null,
     model: "",
     serialNumber: "",
     tfn: "19189",
     exposureRate: "",
-    date: "8/28/2019"
+    date: "8/28/2019",
   });
   const [addCalibrator, setAddCalibrator] = useState(false);
   const [viewFailureReport, setViewFailureReport] = useState(false);
@@ -25,11 +25,16 @@ const CalibrationReports = props => {
   const [cocCounter, setCocCounter] = useState(0);
   const [allCalibrationData, setAllCalibrationData] = useState([]);
   const [currentCalibrationData, setCurrentCalibrationData] = useState([]);
+  const [savingCalibratorData, setSavingCalibratorData] = useState(false);
 
-  const { calData, uniqueDosimeterModels } = props.location.state;
+  const {
+    calData,
+    uniqueDosimeterModels,
+    passingDosimeterModels,
+  } = props.location.state;
   const calibratorModelList = [
     { key: 1, text: "J.L. Shepherd 20", value: "J.L. Shepherd 20" },
-    { key: 2, text: "TEMCO 100", value: "TEMCO 100" }
+    { key: 2, text: "TEMCO 100", value: "TEMCO 100" },
   ];
 
   const calibratorExposureRateList = [
@@ -37,19 +42,20 @@ const CalibrationReports = props => {
     { key: 2, text: "4R/hr", value: "4R/hr" },
     { key: 3, text: "35.7 R/hr", value: "35.7 R/hr" },
     { key: 4, text: "588.2 R/hr", value: "588.2 R/hr" },
-    { key: 5, text: "43 mR/hr", value: "43 mR/hr" }
+    { key: 5, text: "43 mR/hr", value: "43 mR/hr" },
+    { key: 6, text: "5.2 mSv/hr", value: "5.2 mSv/hr" },
   ];
 
   const [createCalibratorRecord] = useMutation(CREATE_CALIBRATOR_RECORD, {
     onCompleted(data) {
       setCalibrator({
         ...calibrator,
-        id: data.createCalibratorRecord.calibrator.id
+        id: data.createCalibratorRecord.calibrator.id,
       });
       let x = allCalibrationData.filter(
-        c => c.dosimeter.modelNumber === uniqueDosimeterModels[cocCounter]
+        (c) => c.dosimeter.modelNumber === passingDosimeterModels[cocCounter]
       );
-      x.forEach(c => {
+      x.forEach((c) => {
         {
           c.calibrator = data.createCalibratorRecord.calibrator;
         }
@@ -59,15 +65,16 @@ const CalibrationReports = props => {
       });
       setAllCalibrationData([
         ...allCalibrationData.filter(
-          c => c.dosimeter.modelNumber !== uniqueDosimeterModels[cocCounter]
+          (c) => c.dosimeter.modelNumber !== passingDosimeterModels[cocCounter]
         ),
-        ...x
+        ...x,
       ]);
+      setSavingCalibratorData(!savingCalibratorData);
       toastMessage("Calibration equipment saved", "success");
     },
     onError(error) {
       toastMessage(error.graphQLErrors[0].message, "error");
-    }
+    },
   });
 
   useEffect(() => {
@@ -80,32 +87,40 @@ const CalibrationReports = props => {
 
   const calibratorSet = () => {
     // ?calData filtered by dosimeter model
-    let x = calData.filter(
-      c => c.dosimeter.modelNumber === uniqueDosimeterModels[cocCounter]
-    );
-    if (x[0].calibrator === null) {
-      setAddCalibrator(true);
-      setCalibrator({
-        id: null,
-        model: "",
-        serialNumber: "",
-        tfn: "19189",
-        exposureRate: "",
-        date: "8/28/2019"
-      });
+    if (passingDosimeterModels.length > 0) {
+      let x = calData.filter(
+        (c) => c.dosimeter.modelNumber === passingDosimeterModels[cocCounter]
+      );
+      if (x[0].calibrator === null) {
+        setAddCalibrator(true);
+        setCalibrator({
+          id: null,
+          model: "",
+          serialNumber: "",
+          tfn: "19189",
+          exposureRate: "",
+          date: "8/28/2019",
+        });
+      } else {
+        const {
+          id,
+          model,
+          serialNumber,
+          tfn,
+          exposureRate,
+          date,
+        } = x[0].calibrator;
+        setCalibrator({ id, model, serialNumber, tfn, exposureRate, date });
+        setAddCalibrator(false);
+      }
+      setCurrentCalibrationData(x);
     } else {
-      const {
-        id,
-        model,
-        serialNumber,
-        tfn,
-        exposureRate,
-        date
-      } = x[0].calibrator;
-      setCalibrator({ id, model, serialNumber, tfn, exposureRate, date });
       setAddCalibrator(false);
+      setCalibrator({
+        ...calibrator,
+        id: 1,
+      });
     }
-    setCurrentCalibrationData(x);
   };
 
   const setCalibratorModel = (e, { value }) => {
@@ -133,12 +148,13 @@ const CalibrationReports = props => {
         tfn: calibrator.tfn,
         date: calibrator.date,
         batch: calData[0].batch,
-        dosimeter_model: uniqueDosimeterModels[cocCounter]
-      }
+        dosimeter_model: passingDosimeterModels[cocCounter],
+      },
     });
+    setSavingCalibratorData(!savingCalibratorData);
   };
 
-  const handleCocNavigation = direction => {
+  const handleCocNavigation = (direction) => {
     if (direction === "next") {
       setCocCounter(cocCounter + 1);
     } else setCocCounter(cocCounter - 1);
@@ -153,9 +169,9 @@ const CalibrationReports = props => {
     document.getElementById("footer").style.display = "block";
     document.getElementById("page-container").style.margin = "0";
     document.getElementById("pdf-container").style.width = "100%";
-    toastContainer.forEach(e => (e.style.display = "none"));
+    toastContainer.forEach((e) => (e.style.display = "none"));
     window.print();
-    toastContainer.forEach(e => (e.style.display = "inline"));
+    toastContainer.forEach((e) => (e.style.display = "inline"));
     document.getElementById("header").style.display = "none";
     document.getElementById("footer").style.display = "none";
     document.getElementById("navbar").style.display = "inline-flex";
@@ -164,7 +180,7 @@ const CalibrationReports = props => {
     document.getElementById("pdf-container").style.width = "60%";
   };
 
-  const switchCerts = certToView => {
+  const switchCerts = (certToView) => {
     if (certToView === "calibration") {
       setViewCalibrationReport(true);
       setViewFailureReport(false);
@@ -183,12 +199,15 @@ const CalibrationReports = props => {
   const toastMessage = (message, type) => {
     toast(message, {
       type: type,
-      autoClose: 4000
+      autoClose: 4000,
     });
   };
 
   return (
     <Grid columns={2}>
+      <Dimmer active={savingCalibratorData}>
+        <Loader size="massive">Saving...</Loader>
+      </Dimmer>
       <Grid.Column style={{ width: "60%" }} id="pdf-container">
         {viewCalibrationReport && (
           <CertificateOfCalibration
@@ -248,7 +267,7 @@ const CalibrationReports = props => {
             View Calibration Report
           </Button>
           <br />
-          {uniqueDosimeterModels.length > 1 &&
+          {passingDosimeterModels.length > 1 &&
             !viewFailureReport &&
             !viewCalibrationSummary && (
               <>
@@ -260,15 +279,7 @@ const CalibrationReports = props => {
                   Previous Model CoC
                 </Button>
                 <Button
-                  disabled={
-                    cocCounter === uniqueDosimeterModels.length - 1 ||
-                    calData.filter(
-                      c =>
-                        c.finalPass === true &&
-                        c.dosimeter.modelNumber ===
-                          uniqueDosimeterModels[cocCounter + 1]
-                    ).length === 0
-                  }
+                  disabled={cocCounter === passingDosimeterModels.length - 1}
                   style={{ marginBottom: "10px" }}
                   onClick={() => handleCocNavigation("next")}
                 >
@@ -301,12 +312,12 @@ const CalibrationReports = props => {
         >
           Back to Batch #{calData[0].batch} Report
         </Button>
-        {addCalibrator && (
+        {addCalibrator && viewCalibrationReport && (
           <div
             style={{
               display: "flex",
               flexDirection: "column",
-              justifyContent: "center"
+              justifyContent: "center",
             }}
           >
             <Form onSubmit={handleSubmit}>
@@ -314,7 +325,7 @@ const CalibrationReports = props => {
                 style={{
                   display: "flex",
                   flexDirection: "column",
-                  width: "fit-content"
+                  width: "fit-content",
                 }}
               >
                 <Form.Select
