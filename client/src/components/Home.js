@@ -74,7 +74,7 @@ const Home = () => {
           </Query>
         </>
         <div style={{}}>
-          <NavLink to="/batchreport">
+          <NavLink to={{ pathname: "/batchreport", state: { calData: false } }}>
             <Card>
               <h3>Batch Reports</h3>
             </Card>
@@ -102,7 +102,7 @@ const Home = () => {
               style={{
                 display: "block",
                 textAlign: "center",
-                paddingTop: "68px"
+                paddingTop: "68px",
               }}
             >
               <h3 style={{ marginBottom: "-25px" }}>Manage Calibrator Certs</h3>
