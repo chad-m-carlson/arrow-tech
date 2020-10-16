@@ -302,7 +302,10 @@ const CertificateOfCalibration = ({ customer, calData, calibratorData }) => {
                                   {renderPassFail(c.elTestPerformed, c.elPass)}
                                   <br />
                                   {c.elTestPerformed && (
-                                    <span>({c.elRead})</span>
+                                    <span>
+                                      ({c.elRead}
+                                      {printUnit(isR, isMr, isSv, isMsv)})
+                                    </span>
                                   )}
                                 </p>
                               </TableData>

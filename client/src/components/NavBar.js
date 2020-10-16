@@ -3,7 +3,7 @@ import { AuthContext } from "../providers/AuthProvider";
 import { Menu } from "semantic-ui-react";
 import { NavLink, Link } from "react-router-dom";
 
-const NavBar = props => {
+const NavBar = (props) => {
   const { handleLogout, admin, authenticated } = useContext(AuthContext);
 
   const adminControls = () => (
@@ -33,7 +33,7 @@ const NavBar = props => {
                 />
                 <Menu.Item
                   as={NavLink}
-                  to="/batchreport"
+                  to={{ pathname: "/batchreport", state: { caldata: false } }}
                   content="Batch Reports"
                   exact
                 />

@@ -1,7 +1,7 @@
 import React from "react";
 import {
   determineCalculatedDosimeterRange,
-  renderPassFail
+  renderPassFail,
 } from "../HelperFunctions";
 import CertificateHeader from "./CertificateHeader";
 import CertificateFooter from "./CertificateFooter";
@@ -9,7 +9,7 @@ import {
   TableData,
   TableHeader,
   BaseCalDetails,
-  Page
+  Page,
 } from "../../Styles/CalibrationCertificateStyles";
 import { printUnit, printDate } from "../HelperFunctions";
 
@@ -94,7 +94,7 @@ const FailureReport = ({ calData, calibratorData, dateTested, customer }) => {
                   style={{
                     display: "flex",
                     justifyContent: "space-between",
-                    padding: "0px 30px 0px 30px"
+                    padding: "0px 30px 0px 30px",
                   }}
                 >
                   <div style={{ margin: "0px 30px 30px 30px" }}>
@@ -118,7 +118,7 @@ const FailureReport = ({ calData, calibratorData, dateTested, customer }) => {
                     style={{
                       maxWidth: "7.5in",
                       fontSize: "8px",
-                      borderCollapse: "collapse"
+                      borderCollapse: "collapse",
                     }}
                   >
                     <thead>
@@ -167,8 +167,8 @@ const FailureReport = ({ calData, calibratorData, dateTested, customer }) => {
                     </thead>
                     <tbody>
                       {calData
-                        .filter(c => c.finalPass === false)
-                        .map(c => {
+                        .filter((c) => c.finalPass === false)
+                        .map((c) => {
                           const {
                             serialNumber,
                             modelNumber,
@@ -176,7 +176,7 @@ const FailureReport = ({ calData, calibratorData, dateTested, customer }) => {
                             isR,
                             isMr,
                             isMsv,
-                            isSv
+                            isSv,
                           } = c.dosimeter;
                           return (
                             <tr key={c.id} style={{ textAlign: "center" }}>
@@ -239,7 +239,12 @@ const FailureReport = ({ calData, calibratorData, dateTested, customer }) => {
                                   {renderPassFail(c.elTestPerformed, c.elPass)}
                                   <br />
                                   {c.elTestPerformed && (
-                                    <span>({c.elRead})</span>
+                                    <span>
+                                      ({c.elRead})
+                                      <span style={{ textTransform: "none" }}>
+                                        ({printUnit(isR, isMr, isSv, isMsv)})
+                                      </span>
+                                    </span>
                                   )}
                                 </p>
                               </TableData>
@@ -265,13 +270,13 @@ const FailureReport = ({ calData, calibratorData, dateTested, customer }) => {
                             </tr>
                           );
                         })}
-                      {calData.filter(c => c.finalPass === false).length ===
+                      {calData.filter((c) => c.finalPass === false).length ===
                         0 && (
                         <tr
                           style={{
                             textAlign: "center",
                             fontSize: "16px",
-                            letterSpacing: "8px"
+                            letterSpacing: "8px",
                           }}
                         >
                           <td
