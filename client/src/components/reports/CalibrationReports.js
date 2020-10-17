@@ -97,9 +97,9 @@ const CalibrationReports = (props) => {
           id: null,
           model: "",
           serialNumber: "",
-          tfn: "19189",
+          tfn: "20027",
           exposureRate: "",
-          date: "8/28/2019",
+          date: "02/27/2020",
         });
       } else {
         const {

@@ -1,0 +1,2 @@
+class ExposureRate < ApplicationRecord
+end

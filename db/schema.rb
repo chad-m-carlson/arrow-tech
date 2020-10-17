@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_06_03_011158) do
+ActiveRecord::Schema.define(version: 2020_10_17_160432) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -54,6 +54,23 @@ ActiveRecord::Schema.define(version: 2020_06_03_011158) do
     t.index ["calibrator_id"], name: "index_calibrations_on_calibrator_id"
     t.index ["dosimeter_id"], name: "index_calibrations_on_dosimeter_id"
     t.index ["user_id"], name: "index_calibrations_on_user_id"
+  end
+
+  create_table "calibrator_certs", force: :cascade do |t|
+    t.string "tfn"
+    t.string "date"
+    t.boolean "inactive"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+  end
+
+  create_table "calibrator_models", force: :cascade do |t|
+    t.string "model"
+    t.boolean "inactive"
+    t.bigint "calibrator_cert_id", null: false
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["calibrator_cert_id"], name: "index_calibrator_models_on_calibrator_cert_id"
   end
 
   create_table "calibrators", force: :cascade do |t|
@@ -105,6 +122,17 @@ ActiveRecord::Schema.define(version: 2020_06_03_011158) do
     t.index ["customer_id"], name: "index_dosimeters_on_customer_id"
   end
 
+  create_table "exposure_rates", force: :cascade do |t|
+    t.string "value"
+    t.boolean "is_r", default: false
+    t.boolean "is_mr", default: false
+    t.boolean "is_sv", default: false
+    t.boolean "is_msv", default: false
+    t.boolean "inactive"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+  end
+
   create_table "users", force: :cascade do |t|
     t.string "provider", default: "email", null: false
     t.string "uid", default: "", null: false
@@ -139,5 +167,6 @@ ActiveRecord::Schema.define(version: 2020_06_03_011158) do
 
   add_foreign_key "calibrations", "dosimeters"
   add_foreign_key "calibrations", "users"
+  add_foreign_key "calibrator_models", "calibrator_certs"
   add_foreign_key "dosimeters", "customers"
 end

@@ -1,0 +1,11 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  tfn: MyString
+  date: MyString
+  inactive: false
+
+two:
+  tfn: MyString
+  date: MyString
+  inactive: false
