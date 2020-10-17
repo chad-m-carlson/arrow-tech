@@ -1,7 +1,12 @@
 import React from "react";
-import { Header, PageHeader } from "../../Styles/CalibrationCertificateStyles";
+import {
+  Header,
+  PageHeader,
+  CertTitle,
+  CertTitleNumber,
+} from "../../Styles/CalibrationCertificateStyles";
 
-const CertificateHeader = () => {
+const CertificateHeader = (props) => {
   return (
     <thead>
       <tr>
@@ -9,7 +14,16 @@ const CertificateHeader = () => {
           <Header id="header">
             <PageHeader>
               <div style={{ textAlign: "Center" }}>
-                <img src={require("../../logo.png")} alt="logo"></img>
+                <img
+                  src={require("../../logo.png")}
+                  alt="logo"
+                  style={{ marginLeft: "-40px" }}
+                ></img>
+                <CertTitle certificateType={props.certificateType}>
+                  {props.certificateType}
+
+                  <CertTitleNumber>Batch: {props.batchNumber}</CertTitleNumber>
+                </CertTitle>
               </div>
             </PageHeader>
           </Header>

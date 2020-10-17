@@ -14,9 +14,9 @@ const CalibrationReports = (props) => {
     id: null,
     model: "",
     serialNumber: "",
-    tfn: "19189",
+    tfn: "20027",
     exposureRate: "",
-    date: "8/28/2019",
+    date: "02/27/2020",
   });
   const [addCalibrator, setAddCalibrator] = useState(false);
   const [viewFailureReport, setViewFailureReport] = useState(false);
@@ -165,6 +165,7 @@ const CalibrationReports = (props) => {
     const toastContainer = document.querySelectorAll(".Toastify");
     document.getElementById("navbar").style.display = "none";
     document.getElementById("hide-to-print").style.display = "none";
+    document.getElementById("UI-title").style.display = "none";
     document.getElementById("header").style.display = "block";
     document.getElementById("footer").style.display = "block";
     document.getElementById("page-container").style.margin = "0";
@@ -174,6 +175,7 @@ const CalibrationReports = (props) => {
     toastContainer.forEach((e) => (e.style.display = "inline"));
     document.getElementById("header").style.display = "none";
     document.getElementById("footer").style.display = "none";
+    document.getElementById("UI-title").style.display = "block";
     document.getElementById("navbar").style.display = "inline-flex";
     document.getElementById("hide-to-print").style.display = "inline";
     document.getElementById("page-container").style.margin = "4rem";

@@ -22,17 +22,24 @@ const handleDueDate = (calData) => {
 
 const CertificateOfCalibration = ({ customer, calData, calibratorData }) => {
   const { range, isR, isMr, isSv, isMsv } = calData[0].dosimeter;
+  const certType = "Certificate Of Calibration";
 
   return (
     <table>
       <div style={{ maxWidth: "7.5in", fontSize: "10pt" }}>
-        <CertificateHeader />
+        <CertificateHeader
+          batchNumber={calData[0].batch}
+          certificateType={certType}
+        />
         <tbody>
           <tr>
             <td>
               <Page>
-                <h1 style={{ textAlign: "center", fontWeight: "900" }}>
-                  Certificate of Calibration
+                <h1
+                  id="UI-title"
+                  style={{ textAlign: "center", fontWeight: "900" }}
+                >
+                  {certType}
                 </h1>
                 <p>
                   Certificate Number:{" "}

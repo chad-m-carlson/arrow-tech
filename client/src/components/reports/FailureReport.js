@@ -14,16 +14,24 @@ import {
 import { printUnit, printDate } from "../HelperFunctions";
 
 const FailureReport = ({ calData, calibratorData, dateTested, customer }) => {
+  const certType = "Failure Report";
+
   return (
     <table>
       <div style={{ maxWidth: "7.5in", fontSize: "10pt" }}>
-        <CertificateHeader />
+        <CertificateHeader
+          batchNumber={calData[0].batch}
+          certificateType={certType}
+        />
         <tbody>
           <tr>
             <td>
               <Page>
-                <h1 style={{ textAlign: "center", fontWeight: "900" }}>
-                  Failure Report
+                <h1
+                  id="UI-title"
+                  style={{ textAlign: "center", fontWeight: "900" }}
+                >
+                  {certType}
                 </h1>
                 <p>
                   Customer:{" "}

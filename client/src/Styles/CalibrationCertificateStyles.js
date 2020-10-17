@@ -2,9 +2,9 @@ import styled from "styled-components";
 
 export const TableData = styled.td`
   border: 0.1px solid black;
-  color: ${props => (props.failed ? "red" : "black")};
-  font-weight: ${props => (props.failed ? "900" : "300")};
-  text-transform: ${props => (props.failed ? "uppercase" : "none")};
+  color: ${(props) => (props.failed ? "red" : "black")};
+  font-weight: ${(props) => (props.failed ? "900" : "300")};
+  text-transform: ${(props) => (props.failed ? "uppercase" : "none")};
 `;
 
 export const TableHeader = styled.th`
@@ -21,14 +21,14 @@ export const BaseCalDetails = styled.span`
 
 export const Header = styled.div`
   display: none;
-  height: 100px;
+  height: 155px;
 `;
 
 export const PageHeader = styled.div`
-  height: 100px;
+  height: 155px;
   position: fixed;
   top: 0mm;
-  width: 90%;
+  width: 100%;
   border-bottom: 1px solid black;
 `;
 
@@ -46,4 +46,20 @@ export const PageFooter = styled.div`
 
 export const Page = styled.div`
   page-break-after: always;
+`;
+
+export const CertTitle = styled.h1`
+  text-align: center;
+  font-weight: 900;
+  margin-top: 0px;
+`;
+
+export const CertTitleNumber = styled.span`
+  position: absolute;
+  font-size: 8pt;
+  font-weight: 100;
+  top: 0in;
+  left: 7in;
+  margin-right: 50px;
+  width: 100px;
 `;

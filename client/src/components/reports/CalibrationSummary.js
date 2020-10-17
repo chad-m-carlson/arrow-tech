@@ -5,23 +5,30 @@ import {
   TableData,
   TableHeader,
   BaseCalDetails,
-  Page
+  Page,
 } from "../../Styles/CalibrationCertificateStyles";
 import { printDate } from "../HelperFunctions";
 
 const CalibrationSummary = ({ calData, dateTested, uniqueDosimeterModels }) => {
   const { customer } = calData[0].dosimeter;
+  const certType = "Calibration Summary";
 
   return (
     <table>
       <div style={{ maxWidth: "7.5in", fontSize: "10pt" }}>
-        <CertificateHeader />
+        <CertificateHeader
+          batchNumber={calData[0].batch}
+          certificateType={certType}
+        />
         <tbody>
           <tr>
             <td>
               <Page>
-                <h1 style={{ textAlign: "center", fontWeight: "900" }}>
-                  Calibration Summary
+                <h1
+                  id="UI-title"
+                  style={{ textAlign: "center", fontWeight: "900" }}
+                >
+                  {certType}
                 </h1>
                 <p>
                   Customer:{" "}
@@ -59,7 +66,7 @@ const CalibrationSummary = ({ calData, dateTested, uniqueDosimeterModels }) => {
                   style={{
                     display: "flex",
                     justifyContent: "space-between",
-                    padding: "0px 30px 0px 30px"
+                    padding: "0px 30px 0px 30px",
                   }}
                 >
                   <div style={{ margin: "0px 30px 30px 30px" }}>
@@ -83,7 +90,7 @@ const CalibrationSummary = ({ calData, dateTested, uniqueDosimeterModels }) => {
                     style={{
                       width: "7.5in",
                       fontSize: "8px",
-                      borderCollapse: "collapse"
+                      borderCollapse: "collapse",
                     }}
                   >
                     <thead>
@@ -131,14 +138,14 @@ const CalibrationSummary = ({ calData, dateTested, uniqueDosimeterModels }) => {
                       </tr>
                     </thead>
                     <tbody>
-                      {uniqueDosimeterModels.map(d => {
+                      {uniqueDosimeterModels.map((d) => {
                         return (
                           <tr key={d.index} style={{ textAlign: "center" }}>
                             <TableData>{d}</TableData>
                             <TableData>
                               {
                                 calData.filter(
-                                  c =>
+                                  (c) =>
                                     c.dosimeter.modelNumber === d &&
                                     c.accPass === false
                                 ).length
@@ -147,7 +154,7 @@ const CalibrationSummary = ({ calData, dateTested, uniqueDosimeterModels }) => {
                             <TableData>
                               {
                                 calData.filter(
-                                  c =>
+                                  (c) =>
                                     c.dosimeter.modelNumber === d &&
                                     c.vipPass === false
                                 ).length
@@ -156,7 +163,7 @@ const CalibrationSummary = ({ calData, dateTested, uniqueDosimeterModels }) => {
                             <TableData>
                               {
                                 calData.filter(
-                                  c =>
+                                  (c) =>
                                     c.dosimeter.modelNumber === d &&
                                     c.vacPass === false
                                 ).length
@@ -165,7 +172,7 @@ const CalibrationSummary = ({ calData, dateTested, uniqueDosimeterModels }) => {
                             <TableData>
                               {
                                 calData.filter(
-                                  c =>
+                                  (c) =>
                                     c.dosimeter.modelNumber === d &&
                                     c.elPass === false
                                 ).length
@@ -174,7 +181,7 @@ const CalibrationSummary = ({ calData, dateTested, uniqueDosimeterModels }) => {
                             <TableData>
                               {
                                 calData.filter(
-                                  c =>
+                                  (c) =>
                                     c.dosimeter.modelNumber === d &&
                                     c.finalPass === false
                                 ).length
@@ -183,7 +190,7 @@ const CalibrationSummary = ({ calData, dateTested, uniqueDosimeterModels }) => {
                             <TableData>
                               {
                                 calData.filter(
-                                  c =>
+                                  (c) =>
                                     c.dosimeter.modelNumber === d &&
                                     c.finalPass === true
                                 ).length
@@ -192,7 +199,7 @@ const CalibrationSummary = ({ calData, dateTested, uniqueDosimeterModels }) => {
                             <TableData>
                               {
                                 calData.filter(
-                                  c => c.dosimeter.modelNumber === d
+                                  (c) => c.dosimeter.modelNumber === d
                                 ).length
                               }
                             </TableData>
@@ -203,7 +210,7 @@ const CalibrationSummary = ({ calData, dateTested, uniqueDosimeterModels }) => {
                         <td
                           style={{
                             borderBottom: ".1px solid black",
-                            borderLeft: ".1px solid black"
+                            borderLeft: ".1px solid black",
                           }}
                         ></td>
                         <td style={{ borderBottom: ".1px solid black" }}></td>
@@ -216,7 +223,7 @@ const CalibrationSummary = ({ calData, dateTested, uniqueDosimeterModels }) => {
                             borderBottom: ".1px solid black",
                             borderRight: ".1px solid black",
                             textAlign: "right",
-                            paddingRight: "5px"
+                            paddingRight: "5px",
                           }}
                         >
                           Grand Total
@@ -225,7 +232,7 @@ const CalibrationSummary = ({ calData, dateTested, uniqueDosimeterModels }) => {
                           style={{
                             borderBottom: ".1px solid black",
                             borderRight: ".1px solid black",
-                            textAlign: "center"
+                            textAlign: "center",
                           }}
                         >
                           {calData.length}
