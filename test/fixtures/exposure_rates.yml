@@ -1,0 +1,15 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  is_r: false
+  is_mr: false
+  is_sv: false
+  is_msv: false
+  inactive: false
+
+two:
+  is_r: false
+  is_mr: false
+  is_sv: false
+  is_msv: false
+  inactive: false

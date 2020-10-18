@@ -5,7 +5,8 @@ import CalibrationSummary from "./CalibrationSummary";
 import { Dimmer, Loader, Form, Button, Grid } from "semantic-ui-react";
 import { Link } from "react-router-dom";
 import { CREATE_CALIBRATOR_RECORD } from "../graphql/mutations";
-import { useMutation } from "@apollo/react-hooks";
+import { CALIBRATOR_CERTS } from "../graphql/queries";
+import { useMutation, useQuery } from "@apollo/react-hooks";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
@@ -14,9 +15,9 @@ const CalibrationReports = (props) => {
     id: null,
     model: "",
     serialNumber: "",
-    tfn: "20027",
+    tfn: "",
     exposureRate: "",
-    date: "02/27/2020",
+    date: "",
   });
   const [addCalibrator, setAddCalibrator] = useState(false);
   const [viewFailureReport, setViewFailureReport] = useState(false);
@@ -26,6 +27,13 @@ const CalibrationReports = (props) => {
   const [allCalibrationData, setAllCalibrationData] = useState([]);
   const [currentCalibrationData, setCurrentCalibrationData] = useState([]);
   const [savingCalibratorData, setSavingCalibratorData] = useState(false);
+
+  const { data } = useQuery(CALIBRATOR_CERTS, {
+    variables: {
+      active: true,
+    },
+    fetchPolicy: "no-cache",
+  });
 
   const {
     calData,
@@ -83,7 +91,7 @@ const CalibrationReports = (props) => {
 
   useEffect(() => {
     calibratorSet();
-  }, [cocCounter]);
+  }, [cocCounter, data]);
 
   const calibratorSet = () => {
     // ?calData filtered by dosimeter model
@@ -97,9 +105,9 @@ const CalibrationReports = (props) => {
           id: null,
           model: "",
           serialNumber: "",
-          tfn: "20027",
+          tfn: data ? data.calibratorCerts[0].tfn : null,
           exposureRate: "",
-          date: "02/27/2020",
+          date: data ? data.calibratorCerts[0].date : null,
         });
       } else {
         const {

@@ -7,6 +7,9 @@ module Types
     field :dosimeter_templates, [Types::DosimeterTemplateType], null: false
     field :users, [Types::UserType], null: false
     field :calibrators, [Types::CalibratorType], null: false
+    field :calibrator_certs, [Types::CalibratorCertType], null: false do
+      argument :active, Boolean, required: false
+    end
 
     field :batch_by_customer, [Types::CalibrationType], null: false do
       argument :customer_id, Int, required: true
@@ -187,6 +190,13 @@ module Types
 
     def calibrator(id:)
       Calibrator.find(id)
+    end
+
+    def calibrator_certs(active:)
+      if active
+        CalibratorCert.where(active: true)
+      else CalibratorCert.all.order(active: :desc)
+      end
     end
 
     def dosimeter(id:)
