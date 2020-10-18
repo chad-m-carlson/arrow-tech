@@ -232,3 +232,23 @@ export const CREATE_DOSIMETER_TEMPLATE = gql`
     }
   }
 `;
+
+export const UPDATE_ACTIVE_CAL_CERT = gql`
+  mutation UpdateActiveCalCert($id: ID!) {
+    updateActiveCalCert(input: { id: $id }) {
+      calibratorCert {
+        id
+      }
+    }
+  }
+`;
+
+export const ADD_NEW_CALIBRATOR_CERT = gql`
+  mutation AddNewCalibratorCert($tfn: String!, $date: String!) {
+    addNewCalibratorCert(input: { tfn: $tfn, date: $date }) {
+      calibratorCert {
+        id
+      }
+    }
+  }
+`;

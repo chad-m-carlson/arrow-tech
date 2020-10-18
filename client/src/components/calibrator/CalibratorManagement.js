@@ -7,7 +7,7 @@ const CalibratorManagement = (props) => {
     <div>
       <h1>Calibrator Management</h1>
       <CalibratorCertificates />
-      <ExposureRates />
+      {/* <ExposureRates /> */}
     </div>
   );
 };

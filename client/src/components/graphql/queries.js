@@ -269,3 +269,14 @@ export const CALIBRATION = gql`
     }
   }
 `;
+
+export const CALIBRATOR_CERTS = gql`
+  query CalibratorCerts($active: Boolean) {
+    calibratorCerts(active: $active) {
+      id
+      tfn
+      date
+      active
+    }
+  }
+`;

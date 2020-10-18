@@ -10,5 +10,7 @@ module Types
     field :create_dosimeter_template, mutation: Mutations::CreateDosimeterTemplate
     field :delete_dosimeter_template, mutation: Mutations::DeleteDosimeterTemplate
     field :update_batch_customer, mutation: Mutations::UpdateBatchCustomer
+    field :update_active_cal_cert, mutation: Mutations::UpdateActiveCalCert
+    field :add_new_calibrator_cert, mutation: Mutations::AddNewCalibratorCert
   end
 end

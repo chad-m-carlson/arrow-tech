@@ -59,7 +59,7 @@ ActiveRecord::Schema.define(version: 2020_10_17_160432) do
   create_table "calibrator_certs", force: :cascade do |t|
     t.string "tfn"
     t.string "date"
-    t.boolean "inactive"
+    t.boolean "active", default: true
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
   end
