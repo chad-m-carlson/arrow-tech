@@ -67,18 +67,21 @@ const CalibratorCertificates = () => {
       <div>
         <AddCalibratorCertificates refetch={refetch} />
         <Segment.Group>
-          {certData.map((c) => (
-            <Segment key={c.id}>
-              <div>Calibration Date: {c.date}</div>
-              <div>PNNL Tracking Number: {c.tfn}</div>
-              <Form.Button
-                checked={activeCertId == c.id}
-                onClick={() => handleSetActive(c.id)}
-              >
-                Set Active
-              </Form.Button>
-            </Segment>
-          ))}
+          <Segment>
+            <h3>In-Active Calibrator Certificates</h3>
+            {certData.map((c) => (
+              <Segment key={c.id}>
+                <div>Calibration Date: {c.date}</div>
+                <div>PNNL Tracking Number: {c.tfn}</div>
+                <Form.Button
+                  checked={activeCertId == c.id}
+                  onClick={() => handleSetActive(c.id)}
+                >
+                  Set Active
+                </Form.Button>
+              </Segment>
+            ))}
+          </Segment>
         </Segment.Group>
       </div>
     </>

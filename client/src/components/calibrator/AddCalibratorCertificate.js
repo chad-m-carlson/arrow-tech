@@ -34,7 +34,7 @@ const AddCalibratorCertificate = ({ refetch }) => {
       <h2>Add Certificate</h2>
       <Form style={{ width: "200px" }}>
         <Form.Input
-          label="TFN: "
+          label="PNNL Tracking Number: "
           onChange={(e) => setTfn(e.target.value)}
           value={tfn}
         ></Form.Input>
