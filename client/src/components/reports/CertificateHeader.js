@@ -21,8 +21,14 @@ const CertificateHeader = (props) => {
                 ></img>
                 <CertTitle certificateType={props.certificateType}>
                   {props.certificateType}
-
                   <CertTitleNumber>Batch: {props.batchNumber}</CertTitleNumber>
+                  {props.certNumber && (
+                    <CertTitleNumber
+                      style={{ top: "10px", marginLeft: "23px" }}
+                    >
+                      Cert: {props.certNumber}
+                    </CertTitleNumber>
+                  )}
                 </CertTitle>
               </div>
             </PageHeader>

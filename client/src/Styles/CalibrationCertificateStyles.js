@@ -59,7 +59,7 @@ export const CertTitleNumber = styled.span`
   font-size: 8pt;
   font-weight: 100;
   top: 0in;
-  left: 7in;
+  left: 6.25in;
   margin-right: 50px;
   width: 100px;
 `;

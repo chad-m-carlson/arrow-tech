@@ -29,6 +29,7 @@ const CertificateOfCalibration = ({ customer, calData, calibratorData }) => {
       <div style={{ maxWidth: "7.5in", fontSize: "10pt" }}>
         <CertificateHeader
           batchNumber={calData[0].batch}
+          certNumber={calData[0].certificateNumber}
           certificateType={certType}
         />
         <tbody>
