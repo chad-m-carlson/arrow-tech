@@ -179,7 +179,16 @@ const DosimeterDataForm = (props) => {
 
   useEffect(() => {
     handleFinalPass();
-  }, [elPass, accPass, vacPass, vipPass]);
+  }, [
+    elPass,
+    accPass,
+    vacPass,
+    vipPass,
+    elTestPerformed,
+    accTestPerformed,
+    vacTestPerformed,
+    vipTestPerformed,
+  ]);
 
   useEffect(() => {
     if (dueDateRequired) {
@@ -384,32 +393,15 @@ const DosimeterDataForm = (props) => {
 
   const handleFinalPass = () => {
     if (
-      elPass === true &&
-      accPass === true &&
-      vacPass === true &&
-      vipPass === true
+      (elPass || !elTestPerformed) &&
+      (accPass || !accTestPerformed) &&
+      (vacPass || !vacTestPerformed) &&
+      (vipPass || !vipTestPerformed)
     ) {
       setFinalPass(true);
     } else {
       setFinalPass(false);
     }
-  };
-
-  const handleVacTestPerformed = () => {
-    if (vacTestPerformed === false) setVacPass(true);
-    setVacTestPerformed(!vacTestPerformed);
-  };
-  const handleAccTestPerformed = () => {
-    if (accTestPerformed === false) setAccPass(true);
-    setAccTestPerformed(!accTestPerformed);
-  };
-  const handleVipTestPerformed = () => {
-    if (vipTestPerformed === false) setVipPass(true);
-    setVipTestPerformed(!vipTestPerformed);
-  };
-  const handleElTestPerformed = () => {
-    if (elTestPerformed === false) setElPass(true);
-    setElTestPerformed(!elTestPerformed);
   };
 
   const customKeyBindings = (e) => {
@@ -540,7 +532,7 @@ const DosimeterDataForm = (props) => {
           checked={elTestPerformed}
           toggle
           style={{ zIndex: "0" }}
-          onChange={handleElTestPerformed}
+          onChange={() => setElTestPerformed(!elTestPerformed)}
         />
         <Form.Group
           fluid
@@ -598,7 +590,7 @@ const DosimeterDataForm = (props) => {
           style={{ zIndex: "0" }}
           label="ACC test performed"
           checked={accTestPerformed}
-          onChange={handleAccTestPerformed}
+          onChange={() => setAccTestPerformed(!accTestPerformed)}
         />
         <Form.Group
           style={{ display: "flex", justifyContent: "space-between" }}
@@ -654,7 +646,7 @@ const DosimeterDataForm = (props) => {
           toggle
           style={{ zIndex: "0" }}
           checked={vacTestPerformed}
-          onChange={handleVacTestPerformed}
+          onChange={() => setVacTestPerformed(!vacTestPerformed)}
         />
         <div
           style={
@@ -688,7 +680,7 @@ const DosimeterDataForm = (props) => {
           style={{ zIndex: "0" }}
           checked={vipTestPerformed}
           label="VIP test performed"
-          onChange={handleVipTestPerformed}
+          onChange={() => setVipTestPerformed(!vipTestPerformed)}
         />
         <Form.Group
           style={
@@ -767,7 +759,7 @@ const DosimeterDataForm = (props) => {
           as={Link}
           to={{
             pathname: "/batchreport",
-            state: { batch: batch, calData: props.calData }
+            state: { batch: batch, calData: props.calData },
           }}
         >
           View Batch Report
