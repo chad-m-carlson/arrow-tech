@@ -15,7 +15,7 @@ export const GET_UNIQUE_DOSIMETER_MODELS = gql`
 `;
 
 export const GET_ALL_CUSTOMERS_QUERY = gql`
-  query($batch: Int) {
+  query ($batch: Int) {
     customers {
       id
       name
@@ -41,7 +41,7 @@ export const LAST_BATCH = gql`
 `;
 
 export const BATCHES_BY_CUSTOMER = gql`
-  query($customer_id: Int!) {
+  query ($customer_id: Int!) {
     batchByCustomer(customerId: $customer_id) {
       batch
       finalDate
@@ -54,7 +54,7 @@ export const BATCHES_BY_CUSTOMER = gql`
 `;
 
 export const CALIBRATION_BY_BATCH = gql`
-  query($batch: Int!, $id: ID) {
+  query ($batch: Int!, $id: ID) {
     # lastCalibrationByBatch(batch:$batch){
     #   id
     #   userId
@@ -132,7 +132,7 @@ export const CALIBRATION_BY_BATCH = gql`
 `;
 
 export const GET_PREVIOUS_CALIBRATION = gql`
-  query($batch: Int!, $id: ID!) {
+  query ($batch: Int!, $id: ID!) {
     getPreviousCalibration(batch: $batch, id: $id) {
       id
       userId
@@ -162,7 +162,7 @@ export const GET_PREVIOUS_CALIBRATION = gql`
 `;
 
 export const CALIBRATIONS_BY_BATCH = gql`
-  query($batch: Int!) {
+  query ($batch: Int!) {
     calibrationsByBatch(batch: $batch) {
       id
       userId
@@ -221,7 +221,7 @@ export const CALIBRATIONS_BY_BATCH = gql`
 `;
 
 export const BATCH_QUANTITY = gql`
-  query($batch_id: ID!) {
+  query ($batch_id: ID!) {
     batchQuantity(batchId: $batch_id)
   }
 `;
