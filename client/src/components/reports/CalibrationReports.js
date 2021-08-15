@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import CertificateOfCalibration from "./CertificateOfCalibration";
+import UniqueCertificateOfCalibration from "./UniqueCertificateOfCalibration";
 import FailureReport from "./FailureReport";
 import CalibrationSummary from "./CalibrationSummary";
 import { Dimmer, Loader, Form, Button, Grid } from "semantic-ui-react";
@@ -23,10 +24,14 @@ const CalibrationReports = (props) => {
   const [viewFailureReport, setViewFailureReport] = useState(false);
   const [viewCalibrationSummary, setViewCalibrationSummary] = useState(true);
   const [viewCalibrationReport, setViewCalibrationReport] = useState(false);
+  const [viewUniqueCalibrationReport, setViewUniqueCalibrationReport] =
+    useState(false);
   const [cocCounter, setCocCounter] = useState(0);
   const [allCalibrationData, setAllCalibrationData] = useState([]);
   const [currentCalibrationData, setCurrentCalibrationData] = useState([]);
   const [savingCalibratorData, setSavingCalibratorData] = useState(false);
+  useState();
+  const [allCalibratorsSet, setAllCalibratorsSet] = useState(false);
 
   const { data } = useQuery(CALIBRATOR_CERTS, {
     variables: {
@@ -35,11 +40,8 @@ const CalibrationReports = (props) => {
     fetchPolicy: "no-cache",
   });
 
-  const {
-    calData,
-    uniqueDosimeterModels,
-    passingDosimeterModels,
-  } = props.location.state;
+  const { calData, uniqueDosimeterModels, passingDosimeterModels } =
+    props.location.state;
   const calibratorModelList = [
     { key: 1, text: "J.L. Shepherd 20", value: "J.L. Shepherd 20" },
     { key: 2, text: "TEMCO 100", value: "TEMCO 100" },
@@ -91,43 +93,71 @@ const CalibrationReports = (props) => {
 
   useEffect(() => {
     calibratorSet();
-  }, [cocCounter, data]);
+    determineCalibratorStatus(allCalibrationData);
+  }, [cocCounter, data, viewUniqueCalibrationReport]);
+
+  useEffect(() => {
+    determineCalibratorStatus(allCalibrationData);
+  }, [savingCalibratorData]);
+
+  const determineCalibratorStatus = (calData) => {
+    let passingDosimeterCount = calData.filter(
+      (c) => c.finalPass == true
+    ).length;
+    let calibratorSetCount = calData.filter(
+      (c) => c.finalPass == true && c.calibrator != null
+    ).length;
+    if (
+      passingDosimeterCount > 0 &&
+      passingDosimeterCount == calibratorSetCount
+    )
+      setAllCalibratorsSet(true);
+  };
+
+  const determineDosimetersToView = () => {
+    let dosimetersToView;
+    if (viewCalibrationReport) {
+      dosimetersToView = calData.filter(
+        (c) => c.dosimeter.modelNumber === passingDosimeterModels[cocCounter]
+      );
+    } else {
+      dosimetersToView = calData;
+    }
+    return dosimetersToView;
+  };
 
   const calibratorSet = () => {
     // ?calData filtered by dosimeter model
     if (passingDosimeterModels.length > 0) {
-      let x = calData.filter(
-        (c) => c.dosimeter.modelNumber === passingDosimeterModels[cocCounter]
-      );
-      if (x[0].calibrator === null) {
-        setAddCalibrator(true);
-        setCalibrator({
-          id: null,
-          model: "",
-          serialNumber: "",
-          tfn: data ? data.calibratorCerts[0].tfn : null,
-          exposureRate: "",
-          date: data ? data.calibratorCerts[0].date : null,
-        });
-      } else {
-        const {
-          id,
-          model,
-          serialNumber,
-          tfn,
-          exposureRate,
-          date,
-        } = x[0].calibrator;
-        setCalibrator({ id, model, serialNumber, tfn, exposureRate, date });
-        setAddCalibrator(false);
-      }
-      setCurrentCalibrationData(x);
+      let dosimetersToView = determineDosimetersToView();
+      determineCalibratorData(dosimetersToView);
+      setCurrentCalibrationData(dosimetersToView);
     } else {
       setAddCalibrator(false);
       setCalibrator({
         ...calibrator,
         id: 1,
       });
+    }
+  };
+
+  const determineCalibratorData = (dosimetersToView) => {
+    if (viewUniqueCalibrationReport) return;
+    if (dosimetersToView[0].calibrator === null) {
+      setAddCalibrator(true);
+      setCalibrator({
+        id: null,
+        model: "",
+        serialNumber: "",
+        tfn: data ? data.calibratorCerts[0].tfn : null,
+        exposureRate: "",
+        date: data ? data.calibratorCerts[0].date : null,
+      });
+    } else {
+      const { id, model, serialNumber, tfn, exposureRate, date } =
+        dosimetersToView[0].calibrator;
+      setCalibrator({ id, model, serialNumber, tfn, exposureRate, date });
+      setAddCalibrator(false);
     }
   };
 
@@ -191,18 +221,26 @@ const CalibrationReports = (props) => {
   };
 
   const switchCerts = (certToView) => {
-    if (certToView === "calibration") {
+    if (certToView === "batchcalibration") {
       setViewCalibrationReport(true);
       setViewFailureReport(false);
       setViewCalibrationSummary(false);
+      setViewUniqueCalibrationReport(false);
     } else if (certToView === "failure") {
       setViewCalibrationReport(false);
       setViewFailureReport(true);
       setViewCalibrationSummary(false);
+      setViewUniqueCalibrationReport(false);
+    } else if (certToView === "uniquecalibration") {
+      setViewCalibrationReport(false);
+      setViewFailureReport(false);
+      setViewCalibrationSummary(false);
+      setViewUniqueCalibrationReport(true);
     } else {
       setViewCalibrationReport(false);
       setViewFailureReport(false);
       setViewCalibrationSummary(true);
+      setViewUniqueCalibrationReport(false);
     }
   };
 
@@ -225,6 +263,13 @@ const CalibrationReports = (props) => {
             user={allCalibrationData[0].user}
             calData={currentCalibrationData}
             calibratorData={calibrator}
+          />
+        )}
+        {viewUniqueCalibrationReport && (
+          <UniqueCertificateOfCalibration
+            customer={allCalibrationData[0].dosimeter.customer}
+            user={allCalibrationData[0].user}
+            calData={currentCalibrationData}
           />
         )}
         {viewFailureReport && (
@@ -256,7 +301,7 @@ const CalibrationReports = (props) => {
         <>
           <Button
             disabled={!calibrator.id}
-            style={{ marginBottom: "10px" }}
+            style={{ marginBottom: "10px", width: "250px" }}
             onClick={printCoc}
             color="green"
           >
@@ -264,33 +309,42 @@ const CalibrationReports = (props) => {
           </Button>
           <br />
           <Button
-            style={{ marginBottom: "10px" }}
+            style={{ marginBottom: "10px", width: "250px" }}
             onClick={() => switchCerts("summary")}
           >
             View Calibration Summary
           </Button>
           <br />
           <Button
-            style={{ marginBottom: "10px" }}
-            onClick={() => switchCerts("calibration")}
+            disabled={!allCalibratorsSet}
+            style={{ marginBottom: "10px", width: "250px" }}
+            onClick={() => switchCerts("uniquecalibration")}
           >
-            View Calibration Report
+            View Unique Calibration Report
+          </Button>
+          <br />
+          <Button
+            style={{ marginBottom: "10px", width: "250px" }}
+            onClick={() => switchCerts("batchcalibration")}
+          >
+            View Batch Calibration Report
           </Button>
           <br />
           {passingDosimeterModels.length > 1 &&
             !viewFailureReport &&
-            !viewCalibrationSummary && (
+            !viewCalibrationSummary &&
+            !viewUniqueCalibrationReport && (
               <>
                 <Button
                   disabled={cocCounter === 0}
-                  style={{ marginBottom: "10px" }}
+                  style={{ marginBottom: "10px", width: "125px" }}
                   onClick={() => handleCocNavigation("prev")}
                 >
                   Previous Model CoC
                 </Button>
                 <Button
                   disabled={cocCounter === passingDosimeterModels.length - 1}
-                  style={{ marginBottom: "10px" }}
+                  style={{ marginBottom: "10px", width: "125px" }}
                   onClick={() => handleCocNavigation("next")}
                 >
                   Next Model CoC
@@ -299,7 +353,10 @@ const CalibrationReports = (props) => {
               </>
             )}
           <Button
-            style={{ marginBottom: "10px" }}
+            style={{
+              marginBottom: "10px",
+              width: "250px",
+            }}
             onClick={() => switchCerts("failure")}
           >
             View Failure Report
@@ -308,7 +365,7 @@ const CalibrationReports = (props) => {
         </>
         {viewCalibrationReport && (
           <Button
-            style={{ marginBottom: "10px" }}
+            style={{ marginBottom: "10px", width: "250px" }}
             onClick={() => setAddCalibrator(true)}
           >
             Edit Calibration Equipment
@@ -316,7 +373,7 @@ const CalibrationReports = (props) => {
         )}
         <br />
         <Button
-          style={{ marginBottom: "10px" }}
+          style={{ marginBottom: "10px", width: "250px" }}
           as={Link}
           to={{
             pathname: "/batchreport",
@@ -328,6 +385,12 @@ const CalibrationReports = (props) => {
         >
           Back to Batch #{calData[0].batch} Report
         </Button>
+
+        {/* <AssignCalibratorData
+          calData={calData}
+          passingDosimeterModels={props.location.state.passingDosimeterModels}
+          uniqueDosimeterModels={props.location.state.uniqueDosimeterModels}
+        /> */}
         {addCalibrator && viewCalibrationReport && (
           <div
             style={{

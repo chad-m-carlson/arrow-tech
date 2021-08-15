@@ -180,7 +180,7 @@ const CertificateOfCalibration = ({ customer, calData, calibratorData }) => {
                     <p style={{ marginBottom: "0px" }}>
                       Approved By:{" "}
                       <BaseCalDetails>
-                        ____________________________________________
+                        _________________________________
                       </BaseCalDetails>
                     </p>
                     <p style={{ fontSize: "8px", marginLeft: "160px" }}>
@@ -190,7 +190,7 @@ const CertificateOfCalibration = ({ customer, calData, calibratorData }) => {
                   <div>
                     <p>
                       Calibration Date:{" "}
-                      <BaseCalDetails>
+                      <BaseCalDetails style={{ marginLeft: "27px" }}>
                         {printDate(
                           calData[0].finalDate !== null
                             ? calData[0].finalDate
