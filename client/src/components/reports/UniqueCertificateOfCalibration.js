@@ -16,6 +16,13 @@ import { printUnit, printDate } from "../HelperFunctions";
 const CertificateOfCalibration = ({ customer, calData }) => {
   const certType = "Certificate Of Calibration";
   var i = 0;
+
+  const handleDueDate = (date) => {
+    if (date === null) {
+      return "Not Specified";
+    } else return printDate(date);
+  };
+
   return (
     <>
       {calData
@@ -208,7 +215,9 @@ const CertificateOfCalibration = ({ customer, calData }) => {
                             </p>
                             <p>
                               Calibration Due Date:{" "}
-                              <BaseCalDetails>{c.dueDate}</BaseCalDetails>{" "}
+                              <BaseCalDetails>
+                                {handleDueDate(c.dueDate)}
+                              </BaseCalDetails>{" "}
                             </p>
                           </div>
                         </div>
