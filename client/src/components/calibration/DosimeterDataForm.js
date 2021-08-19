@@ -128,15 +128,8 @@ const DosimeterDataForm = (props) => {
         vipTestPerformed,
         accTestPerformed,
       } = props.calibration.calibration;
-      const {
-        modelNumber,
-        serialNumber,
-        range,
-        isR,
-        isMr,
-        isSv,
-        isMsv,
-      } = props.calibration.calibration.dosimeter;
+      const { modelNumber, serialNumber, range, isR, isMr, isSv, isMsv } =
+        props.calibration.calibration.dosimeter;
 
       setCurrentRecordToState(
         accDate,

@@ -72,15 +72,15 @@ class Mutations::CreateCalibrationRecord < Mutations::BaseMutation
       vac_reading = nil
     end
     unless vip_test_performed
-      vip_pass = nil 
+      vip_pass = nil
       vip_problems = nil
     end
     unless acc_test_performed
-      acc_pass = nil 
+      acc_pass = nil
       acc_read = nil
     end
-    unless due_date_required 
-      due_date = nil 
+    unless due_date_required
+      due_date = nil
     end
 
     dosimeter = Customer.find(customer_id).dosimeters.where("model_number = ? AND serial_number =  ?", model_number, serial_number ).first
@@ -110,6 +110,10 @@ class Mutations::CreateCalibrationRecord < Mutations::BaseMutation
     end
 
     if id
+      
+      if Calibration.find(id).calibrator_id.nil?
+        calibrator_id = find_existing_calibrator_id(dosimeter.id, batch)
+      end
       begin
         #! IF WE ARE UPDATING A CALIBRATION RECORD
         calibration = Calibration.find(id)
@@ -144,7 +148,8 @@ class Mutations::CreateCalibrationRecord < Mutations::BaseMutation
                             el_test_performed: el_test_performed,
                             vip_test_performed: vip_test_performed,
                             vac_test_performed: vac_test_performed,
-                            acc_test_performed: acc_test_performed)
+                            acc_test_performed: acc_test_performed,
+                            calibrator_id: calibrator_id)
         { calibration: calibration,
           messages: @message,
           dosimeters_in_batch: @dosimeters_in_batch }
@@ -154,7 +159,7 @@ class Mutations::CreateCalibrationRecord < Mutations::BaseMutation
     else
       # ! IF WE ARE CREATING A NEW CALIBRATION RECORD
       begin
-        calibration = Calibration.create!(user_id: user_id, 
+        new_calibration = Calibration.create!(user_id: user_id, 
                                           dosimeter_id: dosimeter.id,
                                           tolerance: tolerance, 
                                           date_received: date_received, 
@@ -186,11 +191,30 @@ class Mutations::CreateCalibrationRecord < Mutations::BaseMutation
                                           vip_test_performed: vip_test_performed,
                                           vac_test_performed: vac_test_performed,
                                           acc_test_performed: acc_test_performed)
-        { calibration: calibration,
+
+        calibrations_without_calibrator_count = Calibration.where(batch: batch, calibrator_id: nil).count 
+        if calibrations_without_calibrator_count > 0 && calibrations_without_calibrator_count != Calibration.where(batch: batch).count
+          calibrator_id = find_existing_calibrator_id(dosimeter.id, batch)
+          new_calibration.update!(calibrator_id: calibrator_id)
+        end
+        { calibration: new_calibration,
           messages: @message }
       rescue ActiveRecord::RecordInvalid => e
         GraphQL::ExecutionError.new("#{e.record.errors.full_messages.join(', ')}") 
       end
+
     end
+  end
+
+  def find_existing_calibrator_id(dosimeter_id, batch)
+    dosimeter_model = Dosimeter.find(dosimeter_id).model_number
+    calibrations = Calibration.where(batch: batch)
+    calibrator_id = nil
+    calibrations.each do |c|
+      if c.dosimeter.model_number == dosimeter_model && (c.calibrator_id.nil? || c.calibrator_id != "")
+        return c.calibrator_id
+      end
+    end
+    calibrator_id
   end
 end
