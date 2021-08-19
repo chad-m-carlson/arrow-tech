@@ -63,7 +63,7 @@ const CalibrationReports = (props) => {
         id: data.createCalibratorRecord.calibrator.id,
       });
       let x = allCalibrationData.filter(
-        (c) => c.dosimeter.modelNumber === passingDosimeterModels[cocCounter]
+        (c) => c.dosimeter.modelNumber === uniqueDosimeterModels[cocCounter]
       );
       x.forEach((c) => {
         {
@@ -75,7 +75,7 @@ const CalibrationReports = (props) => {
       });
       setAllCalibrationData([
         ...allCalibrationData.filter(
-          (c) => c.dosimeter.modelNumber !== passingDosimeterModels[cocCounter]
+          (c) => c.dosimeter.modelNumber !== uniqueDosimeterModels[cocCounter]
         ),
         ...x,
       ]);
@@ -101,12 +101,8 @@ const CalibrationReports = (props) => {
   }, [savingCalibratorData]);
 
   const determineCalibratorStatus = (calData) => {
-    let passingDosimeterCount = calData.filter(
-      (c) => c.finalPass == true
-    ).length;
-    let calibratorSetCount = calData.filter(
-      (c) => c.finalPass == true && c.calibrator != null
-    ).length;
+    let passingDosimeterCount = calData.length;
+    let calibratorSetCount = calData.filter((c) => c.calibrator != null).length;
     if (
       passingDosimeterCount > 0 &&
       passingDosimeterCount == calibratorSetCount
@@ -118,7 +114,7 @@ const CalibrationReports = (props) => {
     let dosimetersToView;
     if (viewCalibrationReport) {
       dosimetersToView = calData.filter(
-        (c) => c.dosimeter.modelNumber === passingDosimeterModels[cocCounter]
+        (c) => c.dosimeter.modelNumber === uniqueDosimeterModels[cocCounter]
       );
     } else {
       dosimetersToView = calData;
@@ -186,7 +182,7 @@ const CalibrationReports = (props) => {
         tfn: calibrator.tfn,
         date: calibrator.date,
         batch: calData[0].batch,
-        dosimeter_model: passingDosimeterModels[cocCounter],
+        dosimeter_model: uniqueDosimeterModels[cocCounter],
       },
     });
     setSavingCalibratorData(!savingCalibratorData);
@@ -343,7 +339,7 @@ const CalibrationReports = (props) => {
                   Previous Model CoC
                 </Button>
                 <Button
-                  disabled={cocCounter === passingDosimeterModels.length - 1}
+                  disabled={cocCounter === uniqueDosimeterModels.length - 1}
                   style={{ marginBottom: "10px", width: "125px" }}
                   onClick={() => handleCocNavigation("next")}
                 >

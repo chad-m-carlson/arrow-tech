@@ -15,6 +15,7 @@ import { printUnit, printDate } from "../HelperFunctions";
 
 const handleDueDate = (calData) => {
   let passingCal = calData.find((c) => c.finalPass === true);
+  if (!passingCal) return "Not Specified";
   if (passingCal.dueDate === null) {
     return "Not Specified";
   } else return printDate(passingCal.dueDate);
