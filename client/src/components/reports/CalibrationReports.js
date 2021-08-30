@@ -94,7 +94,7 @@ const CalibrationReports = (props) => {
   useEffect(() => {
     calibratorSet();
     determineCalibratorStatus(allCalibrationData);
-  }, [cocCounter, data, viewUniqueCalibrationReport]);
+  }, [cocCounter, data, viewUniqueCalibrationReport, viewCalibrationReport]);
 
   useEffect(() => {
     determineCalibratorStatus(allCalibrationData);
