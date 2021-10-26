@@ -44,9 +44,7 @@ const CertificateOfCalibration = ({ customer, calData }) => {
                         <h1
                           id="UI-title"
                           style={{ textAlign: "center", fontWeight: "900" }}
-                        >
-                          {/* {certType} */}
-                        </h1>
+                        ></h1>
                         <p>
                           Certificate Number:{" "}
                           <span style={{ paddingLeft: "15px" }}>
@@ -126,7 +124,7 @@ const CertificateOfCalibration = ({ customer, calData }) => {
                         </p>
                         <p>
                           All instruments were tested on a{" "}
-                          {c.calibrator.id ? (
+                          {c.calibrator ? (
                             c.calibrator.model
                           ) : (
                             <span style={{ backgroundColor: "yellow" }}>
@@ -134,7 +132,7 @@ const CertificateOfCalibration = ({ customer, calData }) => {
                             </span>
                           )}{" "}
                           Curie, Cesium 137 Carousel Calibrator, Serial Number{" "}
-                          {c.calibrator.id ? (
+                          {c.calibrator ? (
                             c.calibrator.serialNumber
                           ) : (
                             <span style={{ backgroundColor: "yellow" }}>
@@ -142,7 +140,7 @@ const CertificateOfCalibration = ({ customer, calData }) => {
                             </span>
                           )}
                           , using an exposure rate of{" "}
-                          {c.calibrator.id ? (
+                          {c.calibrator ? (
                             c.calibrator.exposureRate
                           ) : (
                             <span style={{ backgroundColor: "yellow" }}>
@@ -151,10 +149,16 @@ const CertificateOfCalibration = ({ customer, calData }) => {
                           )}
                           . All referenced Direct-Reading Dosimeters indicated
                           exposure are within the{" "}
-                          {c.tolerance !== 0.1
+                          {c.calibrator && c.tolerance !== 0.1
                             ? "customer defined limits"
-                            : "allowable limits"}{" "}
-                          of +/- {c.tolerance * 100}% of true exposure.
+                            : "allowable limits of +/-"}{" "}
+                          {c.calibrator &&
+                            c.tolerance * 100 + "% of true exposure."}
+                          {!c.calibrator && (
+                            <span style={{ backgroundColor: "yellow" }}>
+                              ____________________
+                            </span>
+                          )}
                         </p>
                         <p>
                           The above referenced Gamma Source is calibrated by
@@ -163,7 +167,7 @@ const CertificateOfCalibration = ({ customer, calData }) => {
                           traceability to the National Institute of Standards
                           and Technology by Battelle National Laboratories PNNL
                           tracking Number{" "}
-                          {c.calibrator.id ? (
+                          {c.calibrator ? (
                             c.calibrator.tfn
                           ) : (
                             <span style={{ backgroundColor: "yellow" }}>
@@ -171,7 +175,7 @@ const CertificateOfCalibration = ({ customer, calData }) => {
                             </span>
                           )}{" "}
                           dated{" "}
-                          {c.calibrator.id ? (
+                          {c.calibrator ? (
                             c.calibrator.date
                           ) : (
                             <span style={{ backgroundColor: "yellow" }}>
@@ -280,18 +284,6 @@ const CertificateOfCalibration = ({ customer, calData }) => {
                               </tr>
                             </thead>
                             <tbody>
-                              {/* {calData
-                        .filter((c) => c.finalPass === true)
-                        .map((c) => {
-                          const {
-                            serialNumber,
-                            range,
-                            isR,
-                            isMr,
-                            isMsv,
-                            isSv,
-                          } = c.dosimeter;
-                          return ( */}
                               <tr key={c.id} style={{ textAlign: "center" }}>
                                 <TableData>{serialNumber}</TableData>
                                 <TableData>
@@ -309,7 +301,6 @@ const CertificateOfCalibration = ({ customer, calData }) => {
                                   {printUnit(isR, isMr, isSv, isMsv)}
                                 </TableData>
                                 <TableData>
-                                  {/* <p>{c.accPass ? "Pass" : "Fail"}</p> */}
                                   <p>
                                     {renderPassFail(
                                       c.accTestPerformed,
@@ -318,7 +309,6 @@ const CertificateOfCalibration = ({ customer, calData }) => {
                                   </p>
                                 </TableData>
                                 <TableData>
-                                  {/* <p>{c.vipPass ? "Pass" : "Fail"}</p> */}
                                   <p>
                                     {renderPassFail(
                                       c.vipTestPerformed,
@@ -327,7 +317,6 @@ const CertificateOfCalibration = ({ customer, calData }) => {
                                   </p>
                                 </TableData>
                                 <TableData>
-                                  {/* <p>{c.elPass ? "Pass" : "Fail"}</p> */}
                                   <p>
                                     {renderPassFail(
                                       c.elTestPerformed,
@@ -344,7 +333,6 @@ const CertificateOfCalibration = ({ customer, calData }) => {
                                 </TableData>
                                 {c.vacRequired && (
                                   <TableData>
-                                    {/* <p>{c.vacPass ? "Pass" : "Fail"}</p> */}
                                     <p>
                                       {renderPassFail(
                                         c.vacTestPerformed,
@@ -357,25 +345,6 @@ const CertificateOfCalibration = ({ customer, calData }) => {
                                   <p>{c.finalPass ? "Pass" : "Fail"}</p>
                                 </TableData>
                               </tr>
-                              {/*}   );
-                         })}*/}
-                              {/* {calData.filter((c) => c.finalPass === true).length ===
-                        0 && (
-                        <tr
-                          style={{
-                            textAlign: "center",
-                            fontSize: "16px",
-                            letterSpacing: "8px",
-                          }}
-                        >
-                          <td
-                            style={{ border: ".1px solid black" }}
-                            colspan="15"
-                          >
-                            No Passing Dosimeters
-                          </td>
-                        </tr>
-                      )} */}
                               <tr>
                                 <td>
                                   <br />
