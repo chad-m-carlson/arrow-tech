@@ -31,7 +31,6 @@ const CalibrationReports = (props) => {
   const [currentCalibrationData, setCurrentCalibrationData] = useState([]);
   const [savingCalibratorData, setSavingCalibratorData] = useState(false);
   useState();
-  const [allCalibratorsSet, setAllCalibratorsSet] = useState(false);
   const [uniqueCertificateNumbers, setUniqueCertificateNumbers] = useState([]);
 
   const { data } = useQuery(CALIBRATOR_CERTS, {
@@ -99,22 +98,7 @@ const CalibrationReports = (props) => {
 
   useEffect(() => {
     calibratorSet();
-    determineCalibratorStatus(allCalibrationData);
   }, [cocCounter, data, viewUniqueCalibrationReport, viewCalibrationReport]);
-
-  useEffect(() => {
-    determineCalibratorStatus(allCalibrationData);
-  }, [savingCalibratorData]);
-
-  const determineCalibratorStatus = (calData) => {
-    let passingDosimeterCount = calData.length;
-    let calibratorSetCount = calData.filter((c) => c.calibrator != null).length;
-    if (
-      passingDosimeterCount > 0 &&
-      passingDosimeterCount == calibratorSetCount
-    )
-      setAllCalibratorsSet(true);
-  };
 
   const determineDosimetersToView = () => {
     let dosimetersToView;
@@ -306,7 +290,7 @@ const CalibrationReports = (props) => {
         <h4>Total Dosimeters: {calData.length}</h4>
         <>
           <Button
-            disabled={!calibrator.id}
+            //disabled={!calibrator.id && viewCalibrationReport}
             style={{ marginBottom: "10px", width: "250px" }}
             onClick={printCoc}
             color="green"
@@ -322,7 +306,6 @@ const CalibrationReports = (props) => {
           </Button>
           <br />
           <Button
-            //disabled={!allCalibratorsSet}
             style={{ marginBottom: "10px", width: "250px" }}
             disabled={currentCalibrationData.length == 0}
             onClick={() => switchCerts("uniquecalibration")}

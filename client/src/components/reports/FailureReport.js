@@ -76,23 +76,8 @@ const FailureReport = ({ calData, calibratorData, dateTested, customer }) => {
                   Direct-Reading Dosimeter "Transfer Standards" certified for
                   accuracy and with traceability to the National Institute of
                   Standards and Technology by Battelle National Laboratories
-                  PNNL tracking Number{" "}
-                  {calibratorData.id ? (
-                    calibratorData.tfn
-                  ) : (
-                    <span style={{ backgroundColor: "yellow" }}>
-                      ____________________
-                    </span>
-                  )}{" "}
-                  dated{" "}
-                  {calibratorData.id ? (
-                    calibratorData.date
-                  ) : (
-                    <span style={{ backgroundColor: "yellow" }}>
-                      ____________________
-                    </span>
-                  )}
-                  .
+                  PNNL tracking Number {calibratorData.tfn} dated{" "}
+                  {calibratorData.date}.
                 </p>
                 <p>
                   All instruments were tested on a J.L. Shepherd 20 Curie,
