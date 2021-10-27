@@ -192,6 +192,7 @@ export const CREATE_CALIBRATOR_RECORD = gql`
     $exposure_rate: String!
     $batch: Int!
     $dosimeter_model: String!
+    $certificate_number: String!
   ) {
     createCalibratorRecord(
       input: {
@@ -203,6 +204,7 @@ export const CREATE_CALIBRATOR_RECORD = gql`
         exposureRate: $exposure_rate
         batch: $batch
         dosimeterModel: $dosimeter_model
+        certificateNumber: $certificate_number
       }
     ) {
       calibrator {

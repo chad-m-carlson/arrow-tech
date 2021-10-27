@@ -58,6 +58,10 @@ class Mutations::CreateCalibrationRecord < Mutations::BaseMutation
       raise GraphQL::ExecutionError, "Must enter a due date for passing dosimeters"
     end
 
+    if certificate_number && !one_model_per_cert(batch, certificate_number, model_number)
+      raise GraphQL::ExecutionError, "Only one model of dosimeter allowed on a certificate number"
+    end
+
     if final_pass == false
       # final_date = nil
       certificate_number = nil
@@ -216,5 +220,14 @@ class Mutations::CreateCalibrationRecord < Mutations::BaseMutation
       end
     end
     calibrator_id
+  end
+
+  def one_model_per_cert(batch, certificate_number, model_number)
+    calibrations = Calibration.where(batch: batch, certificate_number: certificate_number)
+    calibrations.each do |c|
+      if c.dosimeter.model_number && calibrations.count > 1
+        return false if c.dosimeter.model_number != model_number
+      end
+    end
   end
 end

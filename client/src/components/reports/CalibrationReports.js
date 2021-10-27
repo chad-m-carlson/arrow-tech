@@ -32,6 +32,7 @@ const CalibrationReports = (props) => {
   const [savingCalibratorData, setSavingCalibratorData] = useState(false);
   useState();
   const [allCalibratorsSet, setAllCalibratorsSet] = useState(false);
+  const [uniqueCertificateNumbers, setUniqueCertificateNumbers] = useState([]);
 
   const { data } = useQuery(CALIBRATOR_CERTS, {
     variables: {
@@ -63,7 +64,7 @@ const CalibrationReports = (props) => {
         id: data.createCalibratorRecord.calibrator.id,
       });
       let x = allCalibrationData.filter(
-        (c) => c.dosimeter.modelNumber === uniqueDosimeterModels[cocCounter]
+        (c) => c.certificateNumber === uniqueCertificateNumbers[cocCounter]
       );
       x.forEach((c) => {
         {
@@ -75,7 +76,7 @@ const CalibrationReports = (props) => {
       });
       setAllCalibrationData([
         ...allCalibrationData.filter(
-          (c) => c.dosimeter.modelNumber !== uniqueDosimeterModels[cocCounter]
+          (c) => c.certificateNumber !== uniqueCertificateNumbers[cocCounter]
         ),
         ...x,
       ]);
@@ -89,6 +90,11 @@ const CalibrationReports = (props) => {
 
   useEffect(() => {
     setAllCalibrationData(calData);
+    setUniqueCertificateNumbers(
+      [...new Set(calData.map((c) => c.certificateNumber))].filter(
+        (c) => c != null
+      )
+    );
   }, []);
 
   useEffect(() => {
@@ -114,7 +120,7 @@ const CalibrationReports = (props) => {
     let dosimetersToView;
     if (viewCalibrationReport) {
       dosimetersToView = calData.filter(
-        (c) => c.dosimeter.modelNumber === uniqueDosimeterModels[cocCounter]
+        (c) => c.certificateNumber === uniqueCertificateNumbers[cocCounter]
       );
     } else {
       dosimetersToView = calData;
@@ -173,6 +179,9 @@ const CalibrationReports = (props) => {
   };
 
   const handleSubmit = () => {
+    let dosimeterModel = calData.find(
+      (l) => l.certificateNumber === uniqueCertificateNumbers[cocCounter]
+    ).dosimeter.modelNumber;
     createCalibratorRecord({
       variables: {
         id: calibrator.id,
@@ -182,7 +191,8 @@ const CalibrationReports = (props) => {
         tfn: calibrator.tfn,
         date: calibrator.date,
         batch: calData[0].batch,
-        dosimeter_model: uniqueDosimeterModels[cocCounter],
+        dosimeter_model: dosimeterModel,
+        certificate_number: uniqueCertificateNumbers[cocCounter],
       },
     });
     setSavingCalibratorData(!savingCalibratorData);
@@ -312,8 +322,9 @@ const CalibrationReports = (props) => {
           </Button>
           <br />
           <Button
-            disabled={!allCalibratorsSet}
+            //disabled={!allCalibratorsSet}
             style={{ marginBottom: "10px", width: "250px" }}
+            disabled={currentCalibrationData.length == 0}
             onClick={() => switchCerts("uniquecalibration")}
           >
             View Unique Calibration Report
@@ -321,12 +332,14 @@ const CalibrationReports = (props) => {
           <br />
           <Button
             style={{ marginBottom: "10px", width: "250px" }}
+            disabled={currentCalibrationData.length == 0}
             onClick={() => switchCerts("batchcalibration")}
           >
             View Batch Calibration Report
           </Button>
           <br />
-          {passingDosimeterModels.length > 1 &&
+          {(passingDosimeterModels.length > 1 ||
+            uniqueCertificateNumbers.length > 1) &&
             !viewFailureReport &&
             !viewCalibrationSummary &&
             !viewUniqueCalibrationReport && (
@@ -339,7 +352,7 @@ const CalibrationReports = (props) => {
                   Previous Model CoC
                 </Button>
                 <Button
-                  disabled={cocCounter === uniqueDosimeterModels.length - 1}
+                  disabled={cocCounter === uniqueCertificateNumbers.length - 1}
                   style={{ marginBottom: "10px", width: "125px" }}
                   onClick={() => handleCocNavigation("next")}
                 >
@@ -381,12 +394,6 @@ const CalibrationReports = (props) => {
         >
           Back to Batch #{calData[0].batch} Report
         </Button>
-
-        {/* <AssignCalibratorData
-          calData={calData}
-          passingDosimeterModels={props.location.state.passingDosimeterModels}
-          uniqueDosimeterModels={props.location.state.uniqueDosimeterModels}
-        /> */}
         {addCalibrator && viewCalibrationReport && (
           <div
             style={{
