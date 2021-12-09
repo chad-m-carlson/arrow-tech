@@ -48,12 +48,21 @@ const CalibrationReports = (props) => {
   ];
 
   const calibratorExposureRateList = [
-    { key: 1, text: "520 mR/hr", value: "520 mR/hr" },
-    { key: 2, text: "4R/hr", value: "4R/hr" },
-    { key: 3, text: "35.7 R/hr", value: "35.7 R/hr" },
-    { key: 4, text: "588.2 R/hr", value: "588.2 R/hr" },
-    { key: 5, text: "43 mR/hr", value: "43 mR/hr" },
-    { key: 6, text: "5.2 mSv/hr", value: "5.2 mSv/hr" },
+    { key: 1, text: "40 mR/hr", value: "40 mR/hr" },
+    { key: 2, text: "480 mR/hr", value: "480 mR/hr" },
+    { key: 3, text: "4.8 mSv/hr", value: "4.8 mSv/hr" },
+    { key: 4, text: "3.75 R/hr", value: "3.75 R/hr" },
+    { key: 5, text: ".341 mSv/hr", value: ".341 mSv/hr" },
+    { key: 6, text: "34.1 R/hr", value: "34.1 R/hr" },
+    { key: 7, text: "34.3 R/hr", value: "34.3 R/hr" },
+    { key: 8, text: "566.9 R/hr", value: "566.9 R/hr" },
+    //below are the old expsoure rates
+    { key: 9, text: "520 mR/hr", value: "520 mR/hr" },
+    { key: 10, text: "4R/hr", value: "4R/hr" },
+    { key: 11, text: "35.7 R/hr", value: "35.7 R/hr" },
+    { key: 12, text: "588.2 R/hr", value: "588.2 R/hr" },
+    { key: 13, text: "43 mR/hr", value: "43 mR/hr" },
+    { key: 14, text: "5.2 mSv/hr", value: "5.2 mSv/hr" },
   ];
 
   const [createCalibratorRecord] = useMutation(CREATE_CALIBRATOR_RECORD, {
