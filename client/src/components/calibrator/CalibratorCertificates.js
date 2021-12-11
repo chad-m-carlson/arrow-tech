@@ -7,7 +7,7 @@ import AddCalibratorCertificates from "./AddCalibratorCertificate";
 
 const CalibratorCertificates = () => {
   const [activeCertId, setActiveCertId] = useState("");
-  const [activeCert, setActiveCert] = useState({});
+  const [activeCerts, setActiveCerts] = useState([]);
   const [certData, setCertData] = useState([]);
 
   const { data, refetch } = useQuery(CALIBRATOR_CERTS, {
@@ -38,10 +38,10 @@ const CalibratorCertificates = () => {
   useEffect(() => {
     if (data) {
       setCertData(data.calibratorCerts.filter((c) => c.active != true));
-      const activeCert = data.calibratorCerts.filter((c) => c.active == true);
-      if (activeCert.length > 0) {
-        setActiveCertId(activeCert[0].id);
-        setActiveCert(activeCert[0]);
+      const activeCerts = data.calibratorCerts.filter((c) => c.active == true);
+      if (activeCerts.length > 0) {
+        setActiveCertId(activeCerts.id);
+        setActiveCerts(activeCerts);
       }
     }
   }, [data]);
@@ -59,9 +59,19 @@ const CalibratorCertificates = () => {
     <>
       <Segment.Group>
         <Segment>
-          <h3>Active Calibrator Certificate</h3>
-          <p>Calibration Date: {activeCert.date}</p>
-          <p>PNNL Tracking Number: {activeCert.tfn}</p>
+          <h3>Active Calibrator Certificates</h3>
+          {activeCerts.map((ac) => (
+            <Segment key={ac.id}>
+              <div>PNNL Tracking Number: {ac.tfn}</div>
+              <div>Calibration Date: {ac.date}</div>
+              <Form.Button
+                checked={activeCertId == ac.id}
+                onClick={() => handleSetActive(ac.id)}
+              >
+                Set Inactive
+              </Form.Button>
+            </Segment>
+          ))}
         </Segment>
       </Segment.Group>
       <div>
