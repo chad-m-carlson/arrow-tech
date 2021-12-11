@@ -4,12 +4,12 @@ class Mutations::UpdateActiveCalCert < Mutations::BaseMutation
   #field :errors, String, null: false
 
   def resolve(id:)
-    CalibratorCert.where(active: true).update(active: false)
+    # CalibratorCert.where(active: true).update(active: false)
     
     calibrator_cert = CalibratorCert.where(id: id).first
 
 
-    if calibrator_cert.update(active: true)
+    if calibrator_cert.update(active: !calibrator_cert.active)
       # Successful creation, return the created object with no errors
       {
         calibrator_cert: calibrator_cert,

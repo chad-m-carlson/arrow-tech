@@ -32,6 +32,9 @@ const CalibrationReports = (props) => {
   const [savingCalibratorData, setSavingCalibratorData] = useState(false);
   useState();
   const [uniqueCertificateNumbers, setUniqueCertificateNumbers] = useState([]);
+  const [pnnlCerts, setPnnlCerts] = useState([
+    { key: null, value: null, text: null, tfn: null, date: null },
+  ]);
 
   const { data } = useQuery(CALIBRATOR_CERTS, {
     variables: {
@@ -107,6 +110,16 @@ const CalibrationReports = (props) => {
 
   useEffect(() => {
     calibratorSet();
+    if (data)
+      setPnnlCerts(
+        data.calibratorCerts.map((cc) => ({
+          key: cc.id,
+          text: "TFN: " + cc.tfn + " | Dated: " + cc.date,
+          value: cc.id,
+          tfn: cc.tfn,
+          date: cc.date,
+        }))
+      );
   }, [cocCounter, data, viewUniqueCalibrationReport, viewCalibrationReport]);
 
   const determineDosimetersToView = () => {
@@ -169,6 +182,12 @@ const CalibrationReports = (props) => {
 
   const setCalibratorExposureRate = (e, { value }) => {
     setCalibrator({ ...calibrator, exposureRate: value });
+  };
+
+  const setPnnlCert = (e, { value }) => {
+    let pc = pnnlCerts.find(({ key }) => key == value);
+    setCalibrator({ ...calibrator, tfn: pc.tfn, date: pc.date });
+    // setCalibrator({ ...calibrator, exposureRate: value });
   };
 
   const handleSubmit = () => {
@@ -411,6 +430,11 @@ const CalibrationReports = (props) => {
                   label="Exposure Rate"
                   options={calibratorExposureRateList}
                   onChange={setCalibratorExposureRate}
+                />
+                <Form.Select
+                  label="PNNL"
+                  options={pnnlCerts}
+                  onChange={setPnnlCert}
                 />
               </Form.Group>
               <Button>Save</Button>

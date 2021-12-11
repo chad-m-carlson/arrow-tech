@@ -6,7 +6,7 @@ class Mutations::AddNewCalibratorCert < Mutations::BaseMutation
 
   def resolve(tfn:, date:)
 
-    CalibratorCert.where(active: true).update(active: false)
+    # CalibratorCert.where(active: true).update(active: false)
     cal_cert = CalibratorCert.create(tfn: tfn, date: date, active: true)
 
     {calibrator_cert: cal_cert}
