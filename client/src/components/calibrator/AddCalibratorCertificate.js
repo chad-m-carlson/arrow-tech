@@ -30,7 +30,7 @@ const AddCalibratorCertificate = ({ refetch }) => {
   };
 
   return (
-    <>
+    <div style={{ marginLeft: "15px" }}>
       <h2>Add Certificate</h2>
       <Form style={{ width: "200px" }}>
         <Form.Input
@@ -45,7 +45,7 @@ const AddCalibratorCertificate = ({ refetch }) => {
         ></Form.Input>
         <Form.Button onClick={() => handleSubmit()}>Submit</Form.Button>
       </Form>
-    </>
+    </div>
   );
 };
 
