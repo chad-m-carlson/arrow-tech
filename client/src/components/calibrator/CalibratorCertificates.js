@@ -57,43 +57,52 @@ const CalibratorCertificates = () => {
 
   return (
     <>
-      <Segment.Group>
-        <Segment>
-          <h3>Active Calibrator Certificates</h3>
-          {activeCerts.map((ac) => (
-            <Segment key={ac.id}>
-              <div>PNNL Tracking Number: {ac.tfn}</div>
-              <div>Calibration Date: {ac.date}</div>
-              <Form.Button
-                checked={activeCertId == ac.id}
-                onClick={() => handleSetActive(ac.id)}
-              >
-                Set Inactive
-              </Form.Button>
-            </Segment>
-          ))}
-        </Segment>
-      </Segment.Group>
-      <div>
-        <AddCalibratorCertificates refetch={refetch} />
-        <Segment.Group>
+      <div style={{ display: "flex" }}>
+        <Segment.Group style={{ width: "50%" }}>
           <Segment>
-            <h3>In-Active Calibrator Certificates</h3>
-            {certData.map((c) => (
-              <Segment key={c.id}>
-                <div>Calibration Date: {c.date}</div>
-                <div>PNNL Tracking Number: {c.tfn}</div>
+            <h3>Active Calibrator Certificates</h3>
+            {activeCerts.map((ac) => (
+              <Segment key={ac.id}>
+                <div>PNNL Tracking Number: {ac.tfn}</div>
+                <div>Calibration Date: {ac.date}</div>
                 <Form.Button
-                  checked={activeCertId == c.id}
-                  onClick={() => handleSetActive(c.id)}
+                  checked={activeCertId == ac.id}
+                  onClick={() => handleSetActive(ac.id)}
                 >
-                  Set Active
+                  Set In-active
                 </Form.Button>
               </Segment>
             ))}
           </Segment>
         </Segment.Group>
+        <Segment.Group
+          style={{
+            width: "50%",
+            marginLeft: "20px",
+            marginTop: "0px",
+            height: "292px",
+          }}
+        >
+          <AddCalibratorCertificates refetch={refetch} />
+        </Segment.Group>
       </div>
+      <Segment.Group style={{ width: "50%" }}>
+        <Segment>
+          <h3>In-Active Calibrator Certificates</h3>
+          {certData.map((c) => (
+            <Segment key={c.id}>
+              <div>Calibration Date: {c.date}</div>
+              <div>PNNL Tracking Number: {c.tfn}</div>
+              <Form.Button
+                checked={activeCertId == c.id}
+                onClick={() => handleSetActive(c.id)}
+              >
+                Set Active
+              </Form.Button>
+            </Segment>
+          ))}
+        </Segment>
+      </Segment.Group>
     </>
   );
 };
