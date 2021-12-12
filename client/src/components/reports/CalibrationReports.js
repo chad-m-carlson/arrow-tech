@@ -96,6 +96,7 @@ const CalibrationReports = (props) => {
     },
     onError(error) {
       toastMessage(error.graphQLErrors[0].message, "error");
+      setSavingCalibratorData(!savingCalibratorData);
     },
   });
 
@@ -153,14 +154,14 @@ const CalibrationReports = (props) => {
     if (viewUniqueCalibrationReport) return;
     if (dosimetersToView[0].calibrator === null) {
       setAddCalibrator(true);
-      setCalibrator({
-        id: null,
-        model: "",
-        serialNumber: "",
-        tfn: data ? data.calibratorCerts[0].tfn : null,
-        exposureRate: "",
-        date: data ? data.calibratorCerts[0].date : null,
-      });
+      // setCalibrator({
+      //   id: null,
+      //   model: "",
+      //   serialNumber: "",
+      //   tfn: data ? data.calibratorCerts[0].tfn : null,
+      //   exposureRate: "",
+      //   date: data ? data.calibratorCerts[0].date : null,
+      // });
     } else {
       const { id, model, serialNumber, tfn, exposureRate, date } =
         dosimetersToView[0].calibrator;
