@@ -288,13 +288,15 @@ const DosimeterDataForm = (props) => {
     let lowestAcceptable =
       midRange -
       (!customTolerance
-        ? dosimeterRange * 0.05
-        : (dosimeterRange * (tolerance / 100)) / 2);
+        ? dosimeterRange * 0.05 - 0.01
+        : (dosimeterRange * (tolerance / 100)) / 2) -
+      0.01;
     let highestAcceptable =
       midRange +
       (!customTolerance
-        ? dosimeterRange * 0.05
-        : (dosimeterRange * (tolerance / 100)) / 2);
+        ? dosimeterRange * 0.05 + 0.01
+        : (dosimeterRange * (tolerance / 100)) / 2) +
+      0.01;
     if (valueRead === "") {
       setAccPass(false);
       return;
