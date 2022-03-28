@@ -37,6 +37,7 @@ export const CREATE_CALIBRATION_RECORD = gql`
     $vac_test_performed: Boolean!
     $acc_test_performed: Boolean!
     $due_date_required: Boolean!
+    $el_units_in_mr: Boolean!
   ) {
     createCalibrationRecord(
       input: {
@@ -75,6 +76,7 @@ export const CREATE_CALIBRATION_RECORD = gql`
         vacTestPerformed: $vac_test_performed
         accTestPerformed: $acc_test_performed
         dueDateRequired: $due_date_required
+        elUnitsInMr: $el_units_in_mr
       }
     ) {
       calibration {
@@ -109,6 +111,7 @@ export const CREATE_CALIBRATION_RECORD = gql`
         vacTestPerformed
         accTestPerformed
         dueDateRequired
+        elUnitsInMr
       }
       messages
       dosimetersInBatch

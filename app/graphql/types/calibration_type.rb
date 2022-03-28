@@ -34,6 +34,7 @@ module Types
     field :vac_test_performed, Boolean, null: true
     field :vip_test_performed, Boolean, null: true
     field :due_date_required, Boolean, null: true
+    field :el_units_in_mr, Boolean, null: true
 
     field :calibrator, Types::CalibratorType, null: true
     field :dosimeter, Types::DosimeterType, null: false

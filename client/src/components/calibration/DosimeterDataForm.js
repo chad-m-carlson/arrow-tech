@@ -61,6 +61,7 @@ const DosimeterDataForm = (props) => {
   const [dosimeterInBatch, setDosimeterInBatch] = useState();
   const [dueDateRequired, setDueDateRequired] = useState(true);
   const [dueDateError, setDueDateError] = useState(true);
+  const [elUnitsInMr, setElUnitsInMr] = useState(false);
   // const [back, setBack] = useState(true);
   // const [forward, setForward] = useState(false);
 
@@ -127,6 +128,7 @@ const DosimeterDataForm = (props) => {
         vacTestPerformed,
         vipTestPerformed,
         accTestPerformed,
+        elUnitsInMr,
       } = props.calibration.calibration;
       const { modelNumber, serialNumber, range, isR, isMr, isSv, isMsv } =
         props.calibration.calibration.dosimeter;
@@ -164,7 +166,8 @@ const DosimeterDataForm = (props) => {
         elTestPerformed,
         vacTestPerformed,
         vipTestPerformed,
-        accTestPerformed
+        accTestPerformed,
+        elUnitsInMr
       );
     }
     setBatch(props.batchNumber);
@@ -189,6 +192,10 @@ const DosimeterDataForm = (props) => {
       else if (finalPass && dueDate != "") setDueDateError(false);
     } else setDueDateError(false);
   }, [dueDateRequired, finalPass, dueDate]);
+
+  useEffect(() => {
+    handleElReading(elRead);
+  }, [elUnitsInMr]);
 
   const setCurrentRecordToState = (
     accDate,
@@ -223,7 +230,8 @@ const DosimeterDataForm = (props) => {
     elTestPerformed,
     vacTestPerformed,
     vipTestPerformed,
-    accTestPerformed
+    accTestPerformed,
+    elUnitsInMr
   ) => {
     setEditing(true);
     setCalibrationId(id);
@@ -259,6 +267,7 @@ const DosimeterDataForm = (props) => {
     setVacTestPerformed(vacTestPerformed);
     setVipTestPerformed(vipTestPerformed);
     setAccTestPerformed(accTestPerformed);
+    setElUnitsInMr(elUnitsInMr);
   };
 
   const handleDosimeterModelSelection = (e, { value }) => {
@@ -318,7 +327,9 @@ const DosimeterDataForm = (props) => {
       const perDayLeakageAllowed = 0.025 * dosimeterRange;
       if (
         testDuration * perDayLeakageAllowed >=
-        convertValueReadToMr(valueRead, isR, isMr, isSv, isMsv)
+        (elUnitsInMr
+          ? valueRead
+          : convertValueReadToMr(valueRead, isR, isMr, isSv, isMsv))
       ) {
         setElPass(true);
       } else setElPass(false);
@@ -367,6 +378,7 @@ const DosimeterDataForm = (props) => {
         vac_test_performed: vacTestPerformed,
         vip_test_performed: vipTestPerformed,
         acc_test_performed: accTestPerformed,
+        el_units_in_mr: elUnitsInMr,
       },
     });
   };
@@ -529,6 +541,17 @@ const DosimeterDataForm = (props) => {
           style={{ zIndex: "0" }}
           onChange={() => setElTestPerformed(!elTestPerformed)}
         />
+        <Form.Group
+          style={{ display: "flex", justifyContent: "space-between" }}
+          fluid
+        >
+          <Form.Checkbox
+            label="EL Read in mR"
+            checked={elUnitsInMr}
+            onChange={() => setElUnitsInMr(!elUnitsInMr)}
+            style={!elTestPerformed ? { display: "none" } : {}}
+          />
+        </Form.Group>
         <Form.Group
           fluid
           style={{ display: "flex", justifyContent: "space-between" }}

@@ -51,6 +51,7 @@ ActiveRecord::Schema.define(version: 2020_10_17_160432) do
     t.boolean "vac_test_performed"
     t.boolean "vip_test_performed"
     t.boolean "due_date_required", default: true
+    t.boolean "el_units_in_mr", default: false
     t.index ["calibrator_id"], name: "index_calibrations_on_calibrator_id"
     t.index ["dosimeter_id"], name: "index_calibrations_on_dosimeter_id"
     t.index ["user_id"], name: "index_calibrations_on_user_id"
@@ -122,6 +123,34 @@ ActiveRecord::Schema.define(version: 2020_10_17_160432) do
     t.index ["customer_id"], name: "index_dosimeters_on_customer_id"
   end
 
+  create_table "exercise_categories", force: :cascade do |t|
+    t.string "category_name"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "exercise_categories_exercises", id: false, force: :cascade do |t|
+    t.bigint "exercise_id", null: false
+    t.bigint "exercise_category_id", null: false
+  end
+
+  create_table "exercises", force: :cascade do |t|
+    t.string "name"
+    t.boolean "core", default: false
+    t.boolean "legs", default: false
+    t.boolean "chest", default: false
+    t.boolean "back", default: false
+    t.boolean "arms", default: false
+    t.boolean "shoulders", default: false
+    t.boolean "cardio", default: false
+    t.boolean "superset", default: false
+    t.boolean "is_active", default: true
+    t.text "description"
+    t.string "video_url"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
   create_table "exposure_rates", force: :cascade do |t|
     t.string "value"
     t.boolean "is_r", default: false
@@ -131,6 +160,31 @@ ActiveRecord::Schema.define(version: 2020_10_17_160432) do
     t.boolean "inactive"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+  end
+
+  create_table "rep_amounts", force: :cascade do |t|
+    t.string "amount"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "rep_paces", force: :cascade do |t|
+    t.string "pace"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "user_logs", force: :cascade do |t|
+    t.integer "weight"
+    t.integer "reps"
+    t.bigint "work_out_id"
+    t.bigint "user_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.string "work_out_date"
+    t.string "notes"
+    t.index ["user_id"], name: "index_user_logs_on_user_id"
+    t.index ["work_out_id"], name: "index_user_logs_on_work_out_id"
   end
 
   create_table "users", force: :cascade do |t|
@@ -165,8 +219,23 @@ ActiveRecord::Schema.define(version: 2020_10_17_160432) do
     t.index ["uid", "provider"], name: "index_users_on_uid_and_provider", unique: true
   end
 
+  create_table "work_outs", force: :cascade do |t|
+    t.string "date"
+    t.string "notes"
+    t.bigint "exercise_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.string "rep_pace"
+    t.string "rep_amount"
+    t.integer "exercise_order"
+    t.boolean "has_superset"
+    t.index ["exercise_id"], name: "index_work_outs_on_exercise_id"
+  end
+
   add_foreign_key "calibrations", "dosimeters"
   add_foreign_key "calibrations", "users"
   add_foreign_key "calibrator_models", "calibrator_certs"
   add_foreign_key "dosimeters", "customers"
+  add_foreign_key "user_logs", "work_outs"
+  add_foreign_key "work_outs", "exercises"
 end
