@@ -233,9 +233,11 @@ const FailureReport = ({ calData, calibratorData, dateTested, customer }) => {
                                   <br />
                                   {c.elTestPerformed && (
                                     <span>
-                                      ({c.elRead})
+                                      {c.elRead + " "}
                                       <span style={{ textTransform: "none" }}>
-                                        ({printUnit(isR, isMr, isSv, isMsv)})
+                                        {c.elUnitsInMr
+                                          ? "mR"
+                                          : printUnit(isR, isMr, isSv, isMsv)}
                                       </span>
                                     </span>
                                   )}

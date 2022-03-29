@@ -189,6 +189,7 @@ export const CALIBRATIONS_BY_BATCH = gql`
       vipTestPerformed
       vacTestPerformed
       accTestPerformed
+      elUnitsInMr
       calibrator {
         model
         serialNumber
@@ -256,6 +257,7 @@ export const CALIBRATION = gql`
       vipTestPerformed
       vacTestPerformed
       accTestPerformed
+      elUnitsInMr
       dosimeter {
         modelNumber
         serialNumber

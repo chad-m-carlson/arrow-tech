@@ -32,6 +32,7 @@ class Mutations::CreateCalibrationRecord < Mutations::BaseMutation
   argument :vip_test_performed, Boolean, required: true
   argument :acc_test_performed, Boolean, required: true
   argument :due_date_required, Boolean, required: true
+  argument :el_units_in_mr, Boolean, required: true
 
   argument :customer_id, Int, required: false
   argument :model_number, String, required: false
@@ -42,7 +43,7 @@ class Mutations::CreateCalibrationRecord < Mutations::BaseMutation
   field :messages, String, null: true
   field :dosimeters_in_batch, Int, null: true
 
-  def resolve( id:, user_id:, dosimeter_id:,  date_received:, el_date_in:, el_date_out:, acc_date:, vac_date_in:, vac_date_out:, final_date:, due_date:, el_pass: , vip_pass: , vac_required:,  vac_pass: , acc_pass: , final_pass: ,el_read:, acc_read:, vip_problems:, vac_reading:, vac_ref_reading:, certificate_number:, batch:, customer_id:, model_number:, serial_number:, tolerance:, tech_first_name:, tech_last_name:, el_test_performed:, vac_test_performed:, vip_test_performed:, acc_test_performed:, due_date_required:)
+  def resolve( id:, user_id:, dosimeter_id:,  date_received:, el_date_in:, el_date_out:, acc_date:, vac_date_in:, vac_date_out:, final_date:, due_date:, el_pass: , vip_pass: , vac_required:,  vac_pass: , acc_pass: , final_pass: ,el_read:, acc_read:, vip_problems:, vac_reading:, vac_ref_reading:, certificate_number:, batch:, customer_id:, model_number:, serial_number:, tolerance:, tech_first_name:, tech_last_name:, el_test_performed:, vac_test_performed:, vip_test_performed:, acc_test_performed:, due_date_required:, el_units_in_mr:)
 
     @dosimeters_in_batch = Calibration.where(batch: batch).count
     
@@ -153,7 +154,9 @@ class Mutations::CreateCalibrationRecord < Mutations::BaseMutation
                             vip_test_performed: vip_test_performed,
                             vac_test_performed: vac_test_performed,
                             acc_test_performed: acc_test_performed,
-                            calibrator_id: calibrator_id)
+                            calibrator_id: calibrator_id,
+                            el_units_in_mr: el_units_in_mr
+                          )
         { calibration: calibration,
           messages: @message,
           dosimeters_in_batch: @dosimeters_in_batch }
@@ -194,7 +197,9 @@ class Mutations::CreateCalibrationRecord < Mutations::BaseMutation
                                           el_test_performed: el_test_performed,
                                           vip_test_performed: vip_test_performed,
                                           vac_test_performed: vac_test_performed,
-                                          acc_test_performed: acc_test_performed)
+                                          acc_test_performed: acc_test_performed,
+                                          el_units_in_mr: el_units_in_mr
+                                          )
 
         calibrations_without_calibrator_count = Calibration.where(batch: batch, calibrator_id: nil).count 
         if calibrations_without_calibrator_count > 0 && calibrations_without_calibrator_count != Calibration.where(batch: batch).count

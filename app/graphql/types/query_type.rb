@@ -121,7 +121,8 @@ module Types
                  el_test_performed,
                  vip_test_performed,
                  vac_test_performed,
-                 acc_test_performed
+                 acc_test_performed,
+                 el_units_in_mr
           FROM calibrations AS c
           LEFT JOIN dosimeters as d ON c.dosimeter_id = d.id
           WHERE c.batch = ?

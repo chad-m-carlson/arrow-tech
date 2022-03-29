@@ -326,7 +326,10 @@ const CertificateOfCalibration = ({ customer, calData }) => {
                                     {c.elTestPerformed && (
                                       <span>
                                         ({c.elRead}
-                                        {printUnit(isR, isMr, isSv, isMsv)})
+                                        {c.elUnitsInMr
+                                          ? "mR"
+                                          : printUnit(isR, isMr, isSv, isMsv)}
+                                        )
                                       </span>
                                     )}
                                   </p>
