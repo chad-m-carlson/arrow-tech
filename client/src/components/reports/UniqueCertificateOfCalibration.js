@@ -29,9 +29,13 @@ const CertificateOfCalibration = ({ customer, calData }) => {
         .filter((c) => c.finalPass === true)
         .map((c) => {
           i++;
+          let lastI =
+            i == calData.filter((c) => c.finalPass === true).length
+              ? true
+              : false;
           const { serialNumber, range, isR, isMr, isMsv, isSv } = c.dosimeter;
           return (
-            <table key={c.id}>
+            <table key={i}>
               <div style={{ maxWidth: "7.5in", fontSize: "10pt" }}>
                 <CertificateHeader
                   batchNumber={c.batch}
@@ -40,11 +44,20 @@ const CertificateOfCalibration = ({ customer, calData }) => {
                 <tbody>
                   <tr>
                     <td>
-                      <Page style={{ marginTop: i == 1 ? "0px" : "155px" }}>
+                      <Page
+                        style={{
+                          marginTop: i <= 2 ? "0px" : "155px",
+                          pageBreakAfter: lastI ? "avoid" : "always",
+                        }}
+                        cert="unique"
+                      >
                         <h1
                           id="UI-title"
+                          className="unique_ui_title"
                           style={{ textAlign: "center", fontWeight: "900" }}
-                        ></h1>
+                        >
+                          {certType}
+                        </h1>
                         <p>
                           Certificate Number:{" "}
                           <span style={{ paddingLeft: "15px" }}>

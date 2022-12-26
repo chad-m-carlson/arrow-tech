@@ -220,6 +220,7 @@ const CalibrationReports = (props) => {
 
   const printCoc = () => {
     const toastContainer = document.querySelectorAll(".Toastify");
+    const uniqueDocTitle = document.querySelectorAll(".unique_ui_title");
     document.getElementById("navbar").style.display = "none";
     document.getElementById("hide-to-print").style.display = "none";
     document.getElementById("UI-title").style.display = "none";
@@ -227,8 +228,10 @@ const CalibrationReports = (props) => {
     document.getElementById("footer").style.display = "block";
     document.getElementById("page-container").style.margin = "0";
     document.getElementById("pdf-container").style.width = "100%";
+    uniqueDocTitle.forEach((e) => (e.style.display = "none"));
     toastContainer.forEach((e) => (e.style.display = "none"));
     window.print();
+    uniqueDocTitle.forEach((e) => (e.style.display = "inline"));
     toastContainer.forEach((e) => (e.style.display = "inline"));
     document.getElementById("header").style.display = "none";
     document.getElementById("footer").style.display = "none";
