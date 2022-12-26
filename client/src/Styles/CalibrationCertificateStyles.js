@@ -45,7 +45,7 @@ export const PageFooter = styled.div`
 `;
 
 export const Page = styled.div`
-  page-break-after: always;
+  page-break-after: ${(props) => (props.cert == "unique" ? "always" : "avoid")};
 `;
 
 export const CertTitle = styled.h1`
