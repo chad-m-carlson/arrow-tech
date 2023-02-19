@@ -171,7 +171,7 @@ const CertificateOfCalibration = ({ customer, calData, calibratorData }) => {
                     padding: "0px 30px 0px 30px",
                   }}
                 >
-                  <div style={{ margin: "0px 30px 30px 30px" }}>
+                  <div style={{ margin: "0px 30px 10px 30px" }}>
                     <p>
                       Calibration Performed By:{" "}
                       <BaseCalDetails>

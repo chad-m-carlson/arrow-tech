@@ -37,6 +37,7 @@ export const Footer = styled.div`
   bottom: 0mm;
   width: 100%;
   border-top: 1px solid black;
+  height: 45px;
 `;
 
 export const PageFooter = styled.div`
