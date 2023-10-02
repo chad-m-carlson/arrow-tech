@@ -42,7 +42,7 @@ export const Footer = styled.div`
 
 export const PageFooter = styled.div`
   display: none;
-  height: 50px;
+  height: 5px;
 `;
 
 export const Page = styled.div`

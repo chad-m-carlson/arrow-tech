@@ -3,17 +3,17 @@ import { PageFooter, Footer } from "../../Styles/CalibrationCertificateStyles";
 
 const CertificateFooter = () => {
   return (
-    <tfoot>
+    <tfoot style={{ height: "75px" }}>
       <tr>
         <td>
-          <PageFooter id="footer">
+          <PageFooter id="footer" style={{ height: "25px", marginTop: "35px" }}>
             <Footer>
               <div
                 style={{
                   fontSize: "10px",
                   lineHeight: "13px",
                   display: "flex",
-                  justifyContent: "space-evenly"
+                  justifyContent: "space-evenly",
                 }}
               >
                 <span>417 Main Avenue West</span>
