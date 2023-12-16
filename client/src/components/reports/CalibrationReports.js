@@ -51,6 +51,15 @@ const CalibrationReports = (props) => {
   ];
 
   const calibratorExposureRateList = [
+    { key: 20, text: "316 mSv/hr", value: "316 mSv/hr" },
+    { key: 23, text: "31.6 R/hr", value: "31.6 R/hr" },
+    { key: 21, text: "35 R/hr", value: "35 R/hr" },
+    { key: 16, text: "3.83 R/hr", value: "3.83 R/hr" },
+    { key: 19, text: "38.3 mSv/hr", value: "38.3 mSv/hr" },
+    { key: 15, text: "460 mR/hr", value: "460 mR/hr" },
+    { key: 18, text: "4.60 mSv/hr", value: "4.60 mSv/hr" },
+    { key: 22, text: "612.2 R/hr", value: "612.2 R/hr" },
+    //old exposure rates below
     { key: 1, text: "40 mR/hr", value: "40 mR/hr" },
     { key: 2, text: "480 mR/hr", value: "480 mR/hr" },
     { key: 3, text: "4.8 mSv/hr", value: "4.8 mSv/hr" },
