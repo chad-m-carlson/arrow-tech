@@ -714,6 +714,7 @@ const DosimeterDataForm = (props) => {
           </div>
           <Form.Input
             label="VIP Problems"
+            value={vipProblems}
             onChange={(e) => setVipProblems(e.target.value)}
           />
         </Form.Group>
