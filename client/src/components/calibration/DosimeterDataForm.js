@@ -97,7 +97,7 @@ const DosimeterDataForm = (props) => {
           key: o.id,
           text: o.modelNumber,
           value: o.modelNumber,
-        }))
+        })),
       );
     }
     if (props.calibration) {
@@ -167,7 +167,7 @@ const DosimeterDataForm = (props) => {
         vacTestPerformed,
         vipTestPerformed,
         accTestPerformed,
-        elUnitsInMr
+        elUnitsInMr,
       );
     }
     setBatch(props.batchNumber);
@@ -231,7 +231,7 @@ const DosimeterDataForm = (props) => {
     vacTestPerformed,
     vipTestPerformed,
     accTestPerformed,
-    elUnitsInMr
+    elUnitsInMr,
   ) => {
     setEditing(true);
     setCalibrationId(id);
@@ -273,19 +273,19 @@ const DosimeterDataForm = (props) => {
   const handleDosimeterModelSelection = (e, { value }) => {
     setDosimeterModelSelected(value);
     setDosimeterRange(
-      data.dosimeterTemplates.filter((d) => d.modelNumber === value)[0].range
+      data.dosimeterTemplates.filter((d) => d.modelNumber === value)[0].range,
     );
     setIsR(
-      data.dosimeterTemplates.filter((d) => d.modelNumber === value)[0].isR
+      data.dosimeterTemplates.filter((d) => d.modelNumber === value)[0].isR,
     );
     setIsMr(
-      data.dosimeterTemplates.filter((d) => d.modelNumber === value)[0].isMr
+      data.dosimeterTemplates.filter((d) => d.modelNumber === value)[0].isMr,
     );
     setIsMsv(
-      data.dosimeterTemplates.filter((d) => d.modelNumber === value)[0].isMsv
+      data.dosimeterTemplates.filter((d) => d.modelNumber === value)[0].isMsv,
     );
     setIsSv(
-      data.dosimeterTemplates.filter((d) => d.modelNumber === value)[0].isSv
+      data.dosimeterTemplates.filter((d) => d.modelNumber === value)[0].isSv,
     );
     handleAccReading(accRead);
     handleElReading(elRead);
@@ -529,7 +529,7 @@ const DosimeterDataForm = (props) => {
               isR,
               isMr,
               isSv,
-              isMsv
+              isMsv,
             )}
           </p>
         )}
@@ -738,7 +738,7 @@ const DosimeterDataForm = (props) => {
           </Form.Input>
           <Form.Input
             label="Certificate Number"
-            value={finalPass ? certificateNumber : ""}
+            value={certificateNumber}
             error={finalPass && certificateNumber === ""}
             onChange={(e) => setCertificateNumber(e.target.value)}
           />

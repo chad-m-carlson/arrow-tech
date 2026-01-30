@@ -118,7 +118,6 @@ const CalibrationReports = (props) => {
   useEffect(() => {
     setAllCalibrationData(calData);
     setUniqueCertificateNumbers(
-      // need to better filter this to check and see if all models have the same certificate number to avoid showing multiple times when assigning bathces
       [...new Set(calData.map((c) => c.certificateNumber))].filter(
         (c) => c != null,
       ),
@@ -157,14 +156,13 @@ const CalibrationReports = (props) => {
       let dosimetersToView = determineDosimetersToView();
       determineCalibratorData(dosimetersToView);
       setCurrentCalibrationData(dosimetersToView);
+    } else {
+      setAddCalibrator(false);
+      setCalibrator({
+        ...calibrator,
+        id: 1,
+      });
     }
-    // else {
-    //   setAddCalibrator(false);
-    //   setCalibrator({
-    //     ...calibrator,
-    //     id: 1,
-    //   });
-    // }
   };
 
   const determineCalibratorData = (dosimetersToView) => {
@@ -426,7 +424,7 @@ const CalibrationReports = (props) => {
         >
           Back to Batch #{calData[0].batch} Report
         </Button>
-        {addCalibrator && (
+        {addCalibrator && viewCalibrationReport && (
           <div
             style={{
               display: "flex",

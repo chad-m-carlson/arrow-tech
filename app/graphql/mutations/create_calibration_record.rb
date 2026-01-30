@@ -65,7 +65,7 @@ class Mutations::CreateCalibrationRecord < Mutations::BaseMutation
 
     if final_pass == false
       # final_date = nil
-      certificate_number = model_number + '-' + batch.to_s
+      certificate_number = nil
       due_date = nil
     end
     unless el_test_performed

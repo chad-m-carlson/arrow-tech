@@ -74,7 +74,7 @@ const BatchReportTable = ({ calData, handleDelete }) => {
                   color={c.finalPass ? "green" : "red"}
                 />
               </Table.Cell>
-              <Table.Cell>{c.finalPass ? c.certificateNumber : ""}</Table.Cell>
+              <Table.Cell>{c.certificateNumber}</Table.Cell>
               <Table.Cell>
                 <Link
                   to={{
