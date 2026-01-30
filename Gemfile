@@ -1,6 +1,6 @@
 source 'https://rubygems.org'
 git_source(:github) { |repo| "https://github.com/#{repo}.git" }
-
+gem 'concurrent-ruby', '1.3.4'
 ruby '3.1.2'
 
 gem 'net-smtp', require: false
@@ -11,7 +11,7 @@ gem 'rails', '~> 6.1.0', '<7.0.0'
 # Use postgresql as the database for Active Record
 gem 'pg', '>= 0.18', '< 2.0'
 # Use Puma as the app server
-gem 'puma', '~> 3.12'
+gem 'puma', '~> 5.6'
 # Build JSON APIs with ease. Read more: https://github.com/rails/jbuilder
 # gem 'jbuilder', '~> 2.7'
 # Use Redis adapter to run Action Cable in production
@@ -31,6 +31,10 @@ gem "devise_token_auth"
 gem 'graphql'
 gem 'graphiql-rails'
 gem "ar_lazy_preload"
+gem 'logger'
+gem 'net-smtp'
+gem 'net-pop'
+gem 'net-imap'
 
 gem "faker", :git => "https://github.com/stympy/faker.git", :branch => "master"
 group :development, :test do
