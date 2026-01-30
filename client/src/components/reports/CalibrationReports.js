@@ -51,6 +51,12 @@ const CalibrationReports = (props) => {
   ];
 
   const calibratorExposureRateList = [
+    { key: 30, text: "443 mR/hr", value: "443 mR/hr" },
+    { key: 31, text: "3.33 R/hr", value: "3.33 R/hr" },
+    { key: 32, text: "30.5 R/hr", value: "30.5 R/hr" },
+    { key: 33, text: "510.63 R/hr", value: "510.63 R/hr" },
+
+    //exposure rates update 1/29/26
     { key: 20, text: "316 mSv/hr", value: "316 mSv/hr" },
     { key: 23, text: "31.6 R/hr", value: "31.6 R/hr" },
     { key: 21, text: "35 R/hr", value: "35 R/hr" },
@@ -84,7 +90,7 @@ const CalibrationReports = (props) => {
         id: data.createCalibratorRecord.calibrator.id,
       });
       let x = allCalibrationData.filter(
-        (c) => c.certificateNumber === uniqueCertificateNumbers[cocCounter]
+        (c) => c.certificateNumber === uniqueCertificateNumbers[cocCounter],
       );
       x.forEach((c) => {
         {
@@ -96,7 +102,7 @@ const CalibrationReports = (props) => {
       });
       setAllCalibrationData([
         ...allCalibrationData.filter(
-          (c) => c.certificateNumber !== uniqueCertificateNumbers[cocCounter]
+          (c) => c.certificateNumber !== uniqueCertificateNumbers[cocCounter],
         ),
         ...x,
       ]);
@@ -112,9 +118,10 @@ const CalibrationReports = (props) => {
   useEffect(() => {
     setAllCalibrationData(calData);
     setUniqueCertificateNumbers(
+      // need to better filter this to check and see if all models have the same certificate number to avoid showing multiple times when assigning bathces
       [...new Set(calData.map((c) => c.certificateNumber))].filter(
-        (c) => c != null
-      )
+        (c) => c != null,
+      ),
     );
   }, []);
 
@@ -128,7 +135,7 @@ const CalibrationReports = (props) => {
           value: cc.id,
           tfn: cc.tfn,
           date: cc.date,
-        }))
+        })),
       );
   }, [cocCounter, data, viewUniqueCalibrationReport, viewCalibrationReport]);
 
@@ -136,7 +143,7 @@ const CalibrationReports = (props) => {
     let dosimetersToView;
     if (viewCalibrationReport) {
       dosimetersToView = calData.filter(
-        (c) => c.certificateNumber === uniqueCertificateNumbers[cocCounter]
+        (c) => c.certificateNumber === uniqueCertificateNumbers[cocCounter],
       );
     } else {
       dosimetersToView = calData;
@@ -150,13 +157,14 @@ const CalibrationReports = (props) => {
       let dosimetersToView = determineDosimetersToView();
       determineCalibratorData(dosimetersToView);
       setCurrentCalibrationData(dosimetersToView);
-    } else {
-      setAddCalibrator(false);
-      setCalibrator({
-        ...calibrator,
-        id: 1,
-      });
     }
+    // else {
+    //   setAddCalibrator(false);
+    //   setCalibrator({
+    //     ...calibrator,
+    //     id: 1,
+    //   });
+    // }
   };
 
   const determineCalibratorData = (dosimetersToView) => {
@@ -202,7 +210,7 @@ const CalibrationReports = (props) => {
 
   const handleSubmit = () => {
     let dosimeterModel = calData.find(
-      (l) => l.certificateNumber === uniqueCertificateNumbers[cocCounter]
+      (l) => l.certificateNumber === uniqueCertificateNumbers[cocCounter],
     ).dosimeter.modelNumber;
     createCalibratorRecord({
       variables: {
@@ -418,7 +426,7 @@ const CalibrationReports = (props) => {
         >
           Back to Batch #{calData[0].batch} Report
         </Button>
-        {addCalibrator && viewCalibrationReport && (
+        {addCalibrator && (
           <div
             style={{
               display: "flex",

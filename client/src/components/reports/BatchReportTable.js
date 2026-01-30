@@ -18,7 +18,7 @@ const BatchReportTable = ({ calData, handleDelete }) => {
     <Table
       celled
       style={{
-        position: "relative"
+        position: "relative",
       }}
     >
       <Table.Header>
@@ -74,7 +74,7 @@ const BatchReportTable = ({ calData, handleDelete }) => {
                   color={c.finalPass ? "green" : "red"}
                 />
               </Table.Cell>
-              <Table.Cell>{c.certificateNumber}</Table.Cell>
+              <Table.Cell>{c.finalPass ? c.certificateNumber : ""}</Table.Cell>
               <Table.Cell>
                 <Link
                   to={{
@@ -83,8 +83,8 @@ const BatchReportTable = ({ calData, handleDelete }) => {
                       batch: c.batch,
                       calibrationId: c.id,
                       customerId: c.dosimeter.customer.id,
-                      calData: calData
-                    }
+                      calData: calData,
+                    },
                   }}
                 >
                   <Icon name="edit" color="green" />

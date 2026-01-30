@@ -738,7 +738,7 @@ const DosimeterDataForm = (props) => {
           </Form.Input>
           <Form.Input
             label="Certificate Number"
-            value={certificateNumber}
+            value={finalPass ? certificateNumber : ""}
             error={finalPass && certificateNumber === ""}
             onChange={(e) => setCertificateNumber(e.target.value)}
           />
