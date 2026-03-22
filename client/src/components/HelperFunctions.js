@@ -4,7 +4,7 @@ export const determineCalculatedDosimeterRange = (
   isR,
   isMr,
   isSv,
-  isMsv
+  isMsv,
 ) => {
   if (isR) {
     return `${dosimeterRange / 1000} R`;
@@ -35,7 +35,7 @@ export const printUnit = (isR, isMr, isSv, isMsv) => {
   else return "mSv";
 };
 
-export const printDate = dateToBePrinted => {
+export const printDate = (dateToBePrinted) => {
   let date = new Date(dateToBePrinted);
   return `${date.getMonth() + 1}/${date.getDate()}/${date.getFullYear()}`;
 };

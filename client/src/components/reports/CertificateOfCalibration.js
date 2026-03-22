@@ -98,7 +98,7 @@ const CertificateOfCalibration = ({ customer, calData, calibratorData }) => {
                         isR,
                         isMr,
                         isSv,
-                        isMsv
+                        isMsv,
                       )}
                     </BaseCalDetails>
                   </p>
@@ -195,13 +195,15 @@ const CertificateOfCalibration = ({ customer, calData, calibratorData }) => {
                         {printDate(
                           calData[0].finalDate !== null
                             ? calData[0].finalDate
-                            : calData[0].accDate
+                            : calData[0].accDate,
                         )}
                       </BaseCalDetails>
                     </p>
                     <p>
                       Calibration Due Date:{" "}
-                      <BaseCalDetails>{handleDueDate(calData)}</BaseCalDetails>{" "}
+                      <BaseCalDetails>
+                        {handleDueDate(calData)}
+                      </BaseCalDetails>{" "}
                     </p>
                   </div>
                 </div>
@@ -279,8 +281,8 @@ const CertificateOfCalibration = ({ customer, calData, calibratorData }) => {
                                   range,
                                   isR,
                                   isMr,
+                                  isSv,
                                   isMsv,
-                                  isSv
                                 ).replace(/\D/gm, "") / 2}{" "}
                                 {printUnit(isR, isMr, isSv, isMsv)}{" "}
                               </TableData>
@@ -292,7 +294,7 @@ const CertificateOfCalibration = ({ customer, calData, calibratorData }) => {
                                 <p>
                                   {renderPassFail(
                                     c.accTestPerformed,
-                                    c.accPass
+                                    c.accPass,
                                   )}
                                 </p>
                               </TableData>
@@ -301,7 +303,7 @@ const CertificateOfCalibration = ({ customer, calData, calibratorData }) => {
                                 <p>
                                   {renderPassFail(
                                     c.vipTestPerformed,
-                                    c.vipPass
+                                    c.vipPass,
                                   )}
                                 </p>
                               </TableData>
@@ -327,7 +329,7 @@ const CertificateOfCalibration = ({ customer, calData, calibratorData }) => {
                                   <p>
                                     {renderPassFail(
                                       c.vacTestPerformed,
-                                      c.vacPass
+                                      c.vacPass,
                                     )}
                                   </p>
                                 </TableData>

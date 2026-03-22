@@ -181,7 +181,7 @@ const FailureReport = ({ calData, calibratorData, dateTested, customer }) => {
                                   isR,
                                   isMr,
                                   isSv,
-                                  isMsv
+                                  isMsv,
                                 )}
                               </TableData>
                               <TableData>
@@ -189,8 +189,8 @@ const FailureReport = ({ calData, calibratorData, dateTested, customer }) => {
                                   range,
                                   isR,
                                   isMr,
+                                  isSv,
                                   isMsv,
-                                  isSv
                                 ).replace(/\D/gm, "") / 2}{" "}
                                 {printUnit(isR, isMr, isSv, isMsv)}{" "}
                               </TableData>
@@ -211,7 +211,7 @@ const FailureReport = ({ calData, calibratorData, dateTested, customer }) => {
                                 <p>
                                   {renderPassFail(
                                     c.accTestPerformed,
-                                    c.accPass
+                                    c.accPass,
                                   )}
                                 </p>
                               </TableData>
@@ -221,7 +221,7 @@ const FailureReport = ({ calData, calibratorData, dateTested, customer }) => {
                                 <p>
                                   {renderPassFail(
                                     c.vipTestPerformed,
-                                    c.vipPass
+                                    c.vipPass,
                                   )}
                                 </p>
                               </TableData>
@@ -250,7 +250,7 @@ const FailureReport = ({ calData, calibratorData, dateTested, customer }) => {
                                   <p>
                                     {renderPassFail(
                                       c.vacTestPerformed,
-                                      c.vacPass
+                                      c.vacPass,
                                     )}
                                   </p>
                                 </TableData>
